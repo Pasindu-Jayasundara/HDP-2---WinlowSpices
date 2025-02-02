@@ -13,6 +13,54 @@
         android:theme="@style/Theme.WinlowCustomer"
         tools:targetApi="31">
         <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CheckoutActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RegisterStep_2_Activity"
+            android:exported="false" />
+        <activity
+            android:name=".RegisterStep_1_Activity"
+            android:exported="false" />
+        <activity
+            android:name=".AddNewAddressActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AddNewPaymentCardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AddressActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PaymentCardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LanguageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CustomerAccountActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CartActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SearchProductActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ProductViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".HomeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".WelcomeActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
