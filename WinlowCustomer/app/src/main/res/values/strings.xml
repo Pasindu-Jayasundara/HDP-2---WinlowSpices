@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">WinlowCustomer</string>
+    <string name="welcome_title_txt">Welcome To Winlow Spices</string>
+    <string name="welcome_language_txt">Select Your Language</string>
+    <string name="welcome_language_change_txt">Your language preference can be changed at any time in Settings</string>
+    <string name="language_1">English</string>
+    <string name="language_2">Sinhala</string>
 </resources>
