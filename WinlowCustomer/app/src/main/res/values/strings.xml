@@ -17,4 +17,10 @@
     <string name="category_2">Spices</string>
     <string name="category_3">Gift Packs</string>
     <string name="profile_img_desc">Profile Image</string>
+
+    <!--  product view  -->
+    <string name="product_view_title">Product View</string>
+    <string name="product_view_Name">Product Name</string>
+    <string name="product_view_Category">Seasoning</string>
+    <string name="product_view_Select_Size">Select Size</string>
 </resources>
