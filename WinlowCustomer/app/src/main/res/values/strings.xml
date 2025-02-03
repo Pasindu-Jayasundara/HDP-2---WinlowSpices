@@ -1,8 +1,20 @@
 <resources>
     <string name="app_name">WinlowCustomer</string>
-    <string name="welcome_title_txt">Welcome To Winlow Spices</string>
+
+    <!-- welcome language select  -->
+    <string name="welcome_title_txt">Welcome To Winlo Spices</string>
     <string name="welcome_language_txt">Select Your Language</string>
     <string name="welcome_language_change_txt">Your language preference can be changed at any time in Settings</string>
     <string name="language_1">English</string>
     <string name="language_2">Sinhala</string>
+
+    <!--  home  -->
+    <string name="addr_text">Now</string>
+    <string name="addr_text_2">Select Location</string>
+    <string name="search_placeholder">Search on Winlo</string>
+    <string name="title_1">Products</string>
+    <string name="category_1">All</string>
+    <string name="category_2">Spices</string>
+    <string name="category_3">Gift Packs</string>
+    <string name="profile_img_desc">Profile Image</string>
 </resources>
