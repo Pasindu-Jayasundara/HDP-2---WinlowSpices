@@ -106,4 +106,10 @@
     <string name="tract_order_delivering">Order Delivering</string>
     <string name="tract_order_delivered">Order Delivered</string>
     <string name="tract_order_sample">On 2025/12/11</string>
+
+    <!--  login  -->
+    <string name="login_title">Login to My Account</string>
+    <string name="login_mobile_number">Mobile Number (Ex: 0740211671)</string>
+    <string name="login_mobile_verify">Verify</string>
+    <string name="login_mobile_register">Create New Account</string>
 </resources>
