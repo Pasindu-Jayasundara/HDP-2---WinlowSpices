@@ -93,4 +93,7 @@
     <string name="checkout_payment_method">Payment Method</string>
     <string name="checkout_payment_method_1">Pay Online</string>
     <string name="checkout_payment_method_2">Cash On Delivery</string>
+
+    <!--  order history  -->
+    <string name="order_history_title">Order History</string>
 </resources>
