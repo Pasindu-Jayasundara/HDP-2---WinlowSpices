@@ -69,4 +69,14 @@
     <!--  address  -->
     <string name="address_title">Address</string>
     <string name="address_add_new">Add New Address</string>
+
+    <!--  add new address  -->
+    <string name="add_new_address_title">Add New Address</string>
+    <string name="new_address_line_1">Address Line 1</string>
+    <string name="new_address_line_1_sample">70/1/3, Police Quarters, Foreshore, Colombo 13</string>
+    <string name="new_address_line_2">Address Line 2 (Optional)</string>
+    <string name="new_address_province">Province</string>
+    <string name="new_address_city">City</string>
+    <string name="new_address_postal_code">Postal Code</string>
+    <string name="new_address_save">Save</string>
 </resources>
