@@ -86,4 +86,11 @@
     <string name="registration_step_2">Verify</string>
     <string name="registration_step_3">Address</string>
     <string name="registration_step_next">Next</string>
+
+    <!--  checkout  -->
+    <string name="checkout_title">Checkout</string>
+    <string name="checkout_address">Delivery To</string>
+    <string name="checkout_payment_method">Payment Method</string>
+    <string name="checkout_payment_method_1">Pay Online</string>
+    <string name="checkout_payment_method_2">Cash On Delivery</string>
 </resources>
