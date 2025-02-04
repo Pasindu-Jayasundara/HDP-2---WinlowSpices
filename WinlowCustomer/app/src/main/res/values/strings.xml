@@ -28,4 +28,12 @@
     <!--  search product  -->
     <string name="search_txt">Search</string>
     <string name="search_icon">Search Icon</string>
+
+    <!--  cart  -->
+    <string name="cart_title">Cart</string>
+    <string name="cart_btn_txt">Go to Checkout</string>
+    <string name="total_items">Total</string>
+    <string name="delivery_fee">Delivery Fee</string>
+    <string name="sub_total">Sub Total</string>
+    <string name="initial_zero">0.00</string>
 </resources>
