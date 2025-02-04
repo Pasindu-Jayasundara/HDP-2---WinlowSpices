@@ -24,4 +24,8 @@
     <string name="product_view_Category">Seasoning</string>
     <string name="product_view_Select_Size">Select Size</string>
     <string name="add_to_cart_btn">Add to Cart</string>
+
+    <!--  search product  -->
+    <string name="search_txt">Search</string>
+    <string name="search_icon">Search Icon</string>
 </resources>
