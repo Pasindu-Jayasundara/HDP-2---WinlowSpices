@@ -104,14 +104,147 @@
         app:layout_constraintStart_toStartOf="@+id/frameLayout2"
         app:layout_constraintTop_toBottomOf="@+id/divider2" />
 
-    <ProgressBar
-        android:id="@+id/progressBar2"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="0dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="16dp"
-        android:rotation="90"
-        app:layout_constraintStart_toStartOf="@+id/textView43"
-        app:layout_constraintTop_toBottomOf="@+id/textView43" />
+    <com.mobven.progress.MBVerticalProgressBar
+        android:id="@+id/vertical_progress_bar"
+        android:layout_width="8dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="32dp"
+        app:bgColor="#E0E0E0"
+        app:fgColor="#FF5722"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView43"
+        app:layout_constraintVertical_bias="0.0"
+        app:max="100"
+        app:min="0"
+        app:progress="50" />
+
+    <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="@+id/vertical_progress_bar"
+        app:layout_constraintStart_toStartOf="@+id/vertical_progress_bar"
+        app:layout_constraintTop_toTopOf="@+id/vertical_progress_bar"
+        app:srcCompat="@drawable/add" />
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/vertical_progress_bar"
+        app:layout_constraintEnd_toEndOf="@+id/vertical_progress_bar"
+        app:layout_constraintStart_toStartOf="@+id/vertical_progress_bar"
+        app:srcCompat="@drawable/add" />
+
+    <ImageView
+        android:id="@+id/imageView8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/imageView5"
+        app:layout_constraintEnd_toEndOf="@+id/vertical_progress_bar"
+        app:layout_constraintStart_toStartOf="@+id/vertical_progress_bar"
+        app:layout_constraintTop_toBottomOf="@+id/imageView9"
+        app:srcCompat="@drawable/add" />
+
+    <ImageView
+        android:id="@+id/imageView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/vertical_progress_bar"
+        app:layout_constraintStart_toStartOf="@+id/vertical_progress_bar"
+        app:layout_constraintTop_toBottomOf="@+id/imageView6"
+        app:layout_constraintBottom_toTopOf="@+id/imageView8"
+        app:srcCompat="@drawable/add" />
+
+    <TextView
+        android:id="@+id/textView39"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:text="@string/tract_order_confirmed"
+        android:textSize="15sp"
+        app:layout_constraintStart_toEndOf="@+id/imageView6"
+        app:layout_constraintTop_toTopOf="@+id/imageView6"
+        app:layout_constraintBottom_toTopOf="@+id/textView47"
+        />
+
+    <TextView
+        android:id="@+id/textView44"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tract_order_delivering"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="@+id/textView45"
+        app:layout_constraintTop_toTopOf="@+id/imageView8"
+        app:layout_constraintBottom_toTopOf="@+id/textView48"
+        />
+
+    <TextView
+        android:id="@+id/textView46"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tract_order_delivered"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="@+id/textView44"
+        app:layout_constraintTop_toTopOf="@+id/imageView5"
+        app:layout_constraintBottom_toTopOf="@+id/textView50"
+        />
+
+    <TextView
+        android:id="@+id/textView45"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tract_order_processed"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="@+id/textView39"
+        app:layout_constraintTop_toTopOf="@+id/imageView9"
+        app:layout_constraintBottom_toTopOf="@+id/textView49"
+        />
+
+    <TextView
+        android:id="@+id/textView47"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="3dp"
+        android:text="@string/tract_order_sample"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView6"
+        app:layout_constraintStart_toStartOf="@+id/textView39"
+        app:layout_constraintTop_toBottomOf="@+id/textView39" />
+
+    <TextView
+        android:id="@+id/textView48"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tract_order_sample"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView8"
+        app:layout_constraintStart_toStartOf="@+id/textView49"
+        app:layout_constraintTop_toBottomOf="@+id/textView44" />
+
+    <TextView
+        android:id="@+id/textView50"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tract_order_sample"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/vertical_progress_bar"
+        app:layout_constraintStart_toStartOf="@+id/textView48"
+        app:layout_constraintTop_toBottomOf="@+id/textView46" />
+
+    <TextView
+        android:id="@+id/textView49"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tract_order_sample"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView9"
+        app:layout_constraintStart_toStartOf="@+id/textView47"
+        app:layout_constraintTop_toBottomOf="@+id/textView45" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

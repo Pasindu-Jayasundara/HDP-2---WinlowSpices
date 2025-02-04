@@ -49,4 +49,7 @@ dependencies {
     // steps
     // implementation("com.stepstone.stepper:material-stepper:4.3.1")
     // implementation("com.github.acefalobi:android-stepper:0.3.0")
+
+    // progress bar
+    implementation("com.github.mobven:MBAndroidProgressBar:1.0.0")
 }
