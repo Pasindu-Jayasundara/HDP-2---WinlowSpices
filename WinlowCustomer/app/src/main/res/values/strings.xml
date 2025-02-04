@@ -54,4 +54,9 @@
     <!--  language  -->
     <string name="language_title">Language</string>
     <string name="language_select">Select Language</string>
+
+    <!--  payment card  -->
+    <string name="payment_card_title">Payment</string>
+    <string name="payment_card_list">Card List</string>
+    <string name="payment_card_new">Add New Card</string>
 </resources>
