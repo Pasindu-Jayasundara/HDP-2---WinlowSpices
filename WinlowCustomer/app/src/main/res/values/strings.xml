@@ -59,4 +59,14 @@
     <string name="payment_card_title">Payment</string>
     <string name="payment_card_list">Card List</string>
     <string name="payment_card_new">Add New Card</string>
+
+    <!--  add new card  -->
+    <string name="add_new_card_title">Add New Card</string>
+    <string name="add_new_card_number">Card Number</string>
+    <string name="add_new_card_name">Card Holder Name</string>
+    <string name="add_new_card_date">Expiry Date</string>
+
+    <!--  address  -->
+    <string name="address_title">Address</string>
+    <string name="address_add_new">Add New Address</string>
 </resources>
