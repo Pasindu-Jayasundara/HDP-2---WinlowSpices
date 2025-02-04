@@ -36,4 +36,12 @@
     <string name="delivery_fee">Delivery Fee</string>
     <string name="sub_total">Sub Total</string>
     <string name="initial_zero">0.00</string>
+
+    <!--  Account  -->
+    <string name="account_title">Account</string>
+    <string name="account_name">Your Name</string>
+    <string name="profile_edit">Profile Edit</string>
+    <string name="profile_address">Address</string>
+    <string name="profile_language">Language</string>
+    <string name="profile_payment">Payment</string>
 </resources>
