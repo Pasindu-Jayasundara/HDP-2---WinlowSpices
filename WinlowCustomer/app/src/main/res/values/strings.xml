@@ -79,4 +79,11 @@
     <string name="new_address_city">City</string>
     <string name="new_address_postal_code">Postal Code</string>
     <string name="new_address_save">Save</string>
+
+    <!--  registration  -->
+    <string name="registration_title">Let\'s Create a Account</string>
+    <string name="registration_step_1">My Info</string>
+    <string name="registration_step_2">Verify</string>
+    <string name="registration_step_3">Address</string>
+    <string name="registration_step_next">Next</string>
 </resources>

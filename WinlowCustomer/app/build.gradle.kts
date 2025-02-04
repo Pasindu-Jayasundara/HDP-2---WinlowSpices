@@ -46,4 +46,7 @@ dependencies {
     implementation("me.relex:circleindicator:2.1.6")
     implementation("org.imaginativeworld.whynotimagecarousel:whynotimagecarousel:2.1.0")
     implementation("com.github.skydoves:expandablelayout:1.0.7")
+    // steps
+    // implementation("com.stepstone.stepper:material-stepper:4.3.1")
+    // implementation("com.github.acefalobi:android-stepper:0.3.0")
 }
