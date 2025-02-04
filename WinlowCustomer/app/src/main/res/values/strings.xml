@@ -96,4 +96,9 @@
 
     <!--  order history  -->
     <string name="order_history_title">Order History</string>
+
+    <!--  tract order  -->
+    <string name="tract_order_title">Track My Order</string>
+    <string name="tract_order_id">Order ID: </string>
+    <string name="tract_order_status">Order Status</string>
 </resources>
