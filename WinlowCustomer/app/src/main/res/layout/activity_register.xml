@@ -5,7 +5,7 @@
     android:id="@+id/cordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegisterStep_1_Activity">
+    tools:context=".RegisterActivity">
 
 
     <androidx.cardview.widget.CardView

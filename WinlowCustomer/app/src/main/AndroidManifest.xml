@@ -13,6 +13,9 @@
         android:theme="@style/Theme.WinlowCustomer"
         tools:targetApi="31" >
         <activity
+            android:name=".OrderHistoryActivity"
+            android:exported="false" />
+        <activity
             android:name=".ProfileActivity"
             android:exported="false" />
         <activity
@@ -25,7 +28,7 @@
             android:name=".RegisterStep_2_Activity"
             android:exported="false" />
         <activity
-            android:name=".RegisterStep_1_Activity"
+            android:name=".RegisterActivity"
             android:exported="false" />
         <activity
             android:name=".AddNewAddressActivity"
