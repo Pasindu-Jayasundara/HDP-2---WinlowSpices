@@ -61,25 +61,24 @@
         app:layout_constraintTop_toBottomOf="@+id/textView19">
 
         <Button
-            android:id="@+id/button5"
+            android:id="@+id/imageButton6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/transparent"
             android:contentDescription="@string/profile_edit"
             android:text="@string/profile_edit"
             android:textColor="@color/black_1"
-            app:cornerRadius="5dp"
             app:icon="@drawable/profile"
+            app:cornerRadius="5dp"
             app:iconGravity="start"
             app:iconTint="@color/black" />
 
         <Button
-            android:id="@+id/button7"
+            android:id="@+id/imageButton7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:backgroundTint="@color/transparent"
-            android:text="Button"
             app:icon="@drawable/forward_arrow"
             app:iconGravity="end"
             app:iconTint="#000000" />
@@ -99,25 +98,24 @@
         app:layout_constraintTop_toBottomOf="@+id/cardView2">
 
         <Button
-            android:id="@+id/button5"
+            android:id="@+id/imageButton8"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/transparent"
             android:contentDescription="@string/profile_address"
             android:text="@string/profile_address"
             android:textColor="@color/black_1"
-            app:cornerRadius="5dp"
             app:icon="@drawable/location"
+            app:cornerRadius="5dp"
             app:iconGravity="start"
             app:iconTint="@color/black" />
 
         <Button
-            android:id="@+id/button7"
+            android:id="@+id/imageButton9"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:backgroundTint="@color/transparent"
-            android:text="Button"
             app:icon="@drawable/forward_arrow"
             app:iconGravity="end"
             app:iconTint="#000000" />
@@ -137,24 +135,23 @@
         app:layout_constraintTop_toBottomOf="@+id/cardView3">
 
         <Button
-            android:id="@+id/button5"
+            android:id="@+id/imageButton10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/transparent"
             android:text="@string/profile_language"
             android:textColor="@color/black_1"
-            app:cornerRadius="5dp"
             app:icon="@drawable/language"
+            app:cornerRadius="5dp"
             app:iconGravity="start"
             app:iconTint="@color/black" />
 
         <Button
-            android:id="@+id/button7"
+            android:id="@+id/imageButton11"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:backgroundTint="@color/transparent"
-            android:text="Button"
             app:icon="@drawable/forward_arrow"
             app:iconGravity="end"
             app:iconTint="#000000" />
@@ -190,7 +187,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:backgroundTint="@color/transparent"
-            android:text="Button"
             app:icon="@drawable/forward_arrow"
             app:iconGravity="end"
             app:iconTint="#000000" />

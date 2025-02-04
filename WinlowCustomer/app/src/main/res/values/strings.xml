@@ -50,4 +50,8 @@
     <string name="profile_name">Your Name</string>
     <string name="profile_mobile">Mobile</string>
     <string name="profile_save">Save</string>
+
+    <!--  language  -->
+    <string name="language_title">Language</string>
+    <string name="language_select">Select Language</string>
 </resources>
