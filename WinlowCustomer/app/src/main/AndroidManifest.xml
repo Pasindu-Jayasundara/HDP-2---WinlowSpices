@@ -28,9 +28,6 @@
             android:name=".CheckoutActivity"
             android:exported="false" />
         <activity
-            android:name=".RegisterStep_2_Activity"
-            android:exported="false" />
-        <activity
             android:name=".RegisterActivity"
             android:exported="false" />
         <activity
@@ -59,25 +56,25 @@
             android:exported="false" />
         <activity
             android:name=".SearchProductActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="false"/>
         <activity
             android:name=".ProductViewActivity"
-            android:exported="false"></activity>
+            android:exported="false"/>
         <activity
             android:name=".HomeActivity"
-            android:exported="false"></activity>
+            android:exported="false"/>
         <activity
             android:name=".WelcomeActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true"></activity>
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
