@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SearchProductActivity"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     >
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayout"
@@ -39,26 +39,26 @@
         app:layout_constraintTop_toTopOf="@+id/textInputLayout"
         app:srcCompat="@drawable/search" />
 
-    <com.skydoves.expandablelayout.ExpandableLayout
-        android:id="@+id/expandable"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        app:expandable_animation="normal"
-        app:expandable_duration="300"
-        app:expandable_isExpanded="false"
-        app:expandable_parentLayout="@layout/expandable_parent_layout"
-        app:expandable_secondLayout="@layout/expandable_child_layout"
-        app:expandable_showSpinner="true"
-        app:expandable_spinner="@drawable/ic_arrow_down"
-        app:expandable_spinner_animate="true"
-        app:expandable_spinner_gravity="start"
-        app:expandable_spinner_margin="14dp"
-        app:expandable_spinner_size="32dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+<!--    <com.skydoves.expandablelayout.ExpandableLayout-->
+<!--        android:id="@+id/expandable"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="24dp"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:layout_marginEnd="24dp"-->
+<!--        app:expandable_animation="normal"-->
+<!--        app:expandable_duration="300"-->
+<!--        app:expandable_isExpanded="false"-->
+<!--        app:expandable_parentLayout="@layout/expandable_parent_layout"-->
+<!--        app:expandable_secondLayout="@layout/expandable_child_layout"-->
+<!--        app:expandable_showSpinner="true"-->
+<!--        app:expandable_spinner="@drawable/ic_arrow_down"-->
+<!--        app:expandable_spinner_animate="true"-->
+<!--        app:expandable_spinner_gravity="start"-->
+<!--        app:expandable_spinner_margin="14dp"-->
+<!--        app:expandable_spinner_size="32dp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

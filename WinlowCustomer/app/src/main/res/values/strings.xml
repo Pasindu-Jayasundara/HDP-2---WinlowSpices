@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">WinlowCustomer</string>
 
+    <!--  welcome  -->
+    <string name="welcome_animation_text">WinloSpices</string>
+
     <!-- welcome language select  -->
     <string name="welcome_title_txt">Welcome To Winlo Spices</string>
     <string name="welcome_language_txt">Select Your Language</string>
