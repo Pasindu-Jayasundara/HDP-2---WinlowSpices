@@ -1,10 +1,10 @@
 package com.example.winlowcustomer;
 
+import static com.example.winlowcustomer.modal.SetUpLanguage.setAppLanguage;
 import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.widget.TextView;
 
@@ -16,17 +16,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import android.animation.ValueAnimator;
-import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
-import android.widget.TextView;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
 
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -84,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             intent = new Intent(MainActivity.this, HomeActivity.class);
 
-                            setAppLanguage(language);
+                            setAppLanguage(language, getApplicationContext());
 
                         }
                         startActivity(intent);
@@ -108,17 +103,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setAppLanguage(String languageCode) {
-        // Create a Locale object based on the language code
-        Locale locale = new Locale(languageCode);
-        Locale.setDefault(locale);
-
-        // Update the configuration with the new locale
-        Configuration config = new Configuration();
-        config.setLocale(locale);
-
-        // Apply the new configuration to the current app context
-        getBaseContext().getResources().updateConfiguration(config,
-                getBaseContext().getResources().getDisplayMetrics());
-    }
 }

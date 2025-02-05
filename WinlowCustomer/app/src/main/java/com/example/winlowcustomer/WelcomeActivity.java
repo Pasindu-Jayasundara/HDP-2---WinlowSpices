@@ -1,6 +1,10 @@
 package com.example.winlowcustomer;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,5 +24,36 @@ public class WelcomeActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        Button englishButton = findViewById(R.id.button);
+        Button sinhalaButton = findViewById(R.id.button2);
+
+        englishButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                saveLanguage("en");
+            }
+        });
+
+        sinhalaButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                saveLanguage("si");
+            }
+        });
+    }
+
+    private void saveLanguage(String language) {
+
+        SharedPreferences.Editor editor = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE).edit();
+        editor.putString("language", language);
+        editor.apply();
+
+        Intent intent = new Intent(WelcomeActivity.this, HomeActivity.class);
+        startActivity(intent);
+        finish();
+
     }
 }
