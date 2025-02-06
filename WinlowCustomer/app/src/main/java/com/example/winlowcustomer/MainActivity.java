@@ -23,18 +23,29 @@ import android.text.style.ForegroundColorSpan;
 
 import android.graphics.Color;
 
+import com.example.winlowcustomer.dto.BannerDTO;
+import com.example.winlowcustomer.dto.ProductDTO;
+import com.example.winlowcustomer.dto.WeightCategoryDTO;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private boolean isDataLoadingFinished;
+    private static HashMap<String,Object> productHashMap;
+    private static ArrayList<BannerDTO> bannerArrayList;
+    private static ArrayList<String> categoryList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +68,53 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
 
+                Gson gson = new Gson();
                 FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+
+                // products
                 firestore.collection("product")
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                                productHashMap = new HashMap<>();
+
+                                if(task.isSuccessful()){
+
+                                    List<DocumentSnapshot> documents = task.getResult().getDocuments();
+                                    for(DocumentSnapshot document : documents){
+
+                                        List<Object> weightCategoryRawList = (List<Object>) document.get("weightCategory");
+                                        String weightCategoryJson = gson.toJson(weightCategoryRawList);
+
+                                        Type listType = new TypeToken<List<WeightCategoryDTO>>() {}.getType();
+                                        List<WeightCategoryDTO> weightCategoryDTOList = gson.fromJson(weightCategoryJson, listType);
+
+                                        categoryList.add(document.getString("category"));
+                                        productHashMap.put(
+                                                document.getId(),
+                                                new ProductDTO(
+                                                        document.getId(),
+                                                        document.getString("category"),
+                                                        document.getString("name"),
+                                                        document.getString("stock"),
+                                                        document.getDouble("discount"),
+                                                        weightCategoryDTOList
+                                                )
+                                        );
+
+                                    }
+
+                                }else{
+                                    // load from sqlite
+                                }
+
+                            }
+                        });
+
+                // banners & category
+                firestore.collection("banner")
                         .get()
                         .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
@@ -69,7 +125,12 @@ public class MainActivity extends AppCompatActivity {
                                     List<DocumentSnapshot> documents = task.getResult().getDocuments();
                                     for(DocumentSnapshot document : documents){
 
-                                        document.getId()
+                                        List<Object> bannerPathRawList = (List<Object>) document.get("path");
+                                        String bannerPathJson = gson.toJson(bannerPathRawList);
+
+                                        Type listType = new TypeToken<List<BannerDTO>>() {}.getType();
+                                        List<BannerDTO> bannerDTOList = gson.fromJson(bannerPathJson, listType);
+                                        bannerArrayList = (ArrayList<BannerDTO>) bannerDTOList;
 
                                     }
 
@@ -79,6 +140,8 @@ public class MainActivity extends AppCompatActivity {
 
                             }
                         });
+
+                isDataLoadingFinished = true;
 
             }
         }).start();

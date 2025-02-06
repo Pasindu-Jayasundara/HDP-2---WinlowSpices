@@ -58,4 +58,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.8.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-firestore")
+
+    // gson
+    implementation ("com.google.code.gson:gson:2.12.1")
 }
