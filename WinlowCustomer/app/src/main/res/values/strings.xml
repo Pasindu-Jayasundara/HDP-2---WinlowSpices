@@ -4,6 +4,12 @@
     <!--  welcome  -->
     <string name="welcome_animation_text">WinloSpices</string>
 
+    <!--  network connection  -->
+    <string name="connection_lost">Internet Connection Lost</string>
+    <string name="connection_unavailable">Internet Connection UnAvailable</string>
+    <string name="connection_unavailable_title">Not Connected</string>
+    <string name="connection_available">Internet Connection Available</string>
+
     <!-- welcome language select  -->
     <string name="welcome_title_txt">Welcome To Winlo Spices</string>
     <string name="welcome_language_txt">Select Your Language</string>
