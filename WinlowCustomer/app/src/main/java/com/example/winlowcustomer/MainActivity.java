@@ -26,6 +26,7 @@ import android.graphics.Color;
 import com.example.winlowcustomer.dto.BannerDTO;
 import com.example.winlowcustomer.dto.ProductDTO;
 import com.example.winlowcustomer.dto.WeightCategoryDTO;
+import com.example.winlowcustomer.modal.NetworkConnection;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -43,9 +44,11 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private boolean isDataLoadingFinished;
-    private static HashMap<String,Object> productHashMap;
-    private static ArrayList<BannerDTO> bannerArrayList;
-    private static ArrayList<String> categoryList;
+    public static HashMap<String,Object> productHashMap;
+    public static ArrayList<BannerDTO> bannerArrayList;
+    public static ArrayList<String> categoryList;
+
+    private static final String ALL = "all", PRODUCTS = "products", BANNERS = "banners", CATEGORY = "category";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +67,18 @@ public class MainActivity extends AppCompatActivity {
         TextView textView = findViewById(R.id.welcometxt);
         String animateText = getString(R.string.welcome_animation_text);
 
+        if(!NetworkConnection.hasConnection){
+            loadFromSQLite(MainActivity.ALL);
+        }else{
+            loadFromFirebase();
+        }
+
+
+        animateEachCharacter(textView, animateText);
+
+    }
+
+    private void loadFromFirebase(){
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -79,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
                                 productHashMap = new HashMap<>();
+                                categoryList = new ArrayList<>();
 
                                 if(task.isSuccessful()){
 
@@ -108,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 }else{
                                     // load from sqlite
+                                    loadFromSQLite(MainActivity.PRODUCTS);
                                 }
 
                             }
@@ -136,6 +153,8 @@ public class MainActivity extends AppCompatActivity {
 
                                 }else{
                                     // load from sqlite
+                                    loadFromSQLite(MainActivity.BANNERS);
+                                    loadFromSQLite(MainActivity.CATEGORY);
                                 }
 
                             }
@@ -145,9 +164,30 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }).start();
+    }
 
-        animateEachCharacter(textView, animateText);
+    private void loadFromSQLite(String whichOne){
+        // load from sqlite
 
+        if(whichOne.equals(MainActivity.ALL)){
+            loadFromSQLite(MainActivity.PRODUCTS);
+            loadFromSQLite(MainActivity.BANNERS);
+            loadFromSQLite(MainActivity.CATEGORY);
+        }
+
+        if(whichOne.equals(MainActivity.PRODUCTS)){
+            // load product
+        }
+
+        if(whichOne.equals(MainActivity.BANNERS)){
+            // load banners
+        }
+
+        if(whichOne.equals(MainActivity.CATEGORY)){
+            // load category
+        }
+
+        isDataLoadingFinished = true;
     }
 
     private void navigateToNextActivity() {

@@ -96,15 +96,6 @@ public class HomeActivity extends AppCompatActivity {
 
     private void loadFromFirebase(List<Integer> checkedIds){
 
-        String category = "*";
-        if(checkedIds.contains(R.id.chipAll)){
-            category = "*";
-        }else if(checkedIds.contains(R.id.chipSpices)){
-            category = "Spices";
-        }else if(checkedIds.contains(R.id.chipGiftPacks)){
-            category = "Gift Packs";
-        }
-
 
 
     }
