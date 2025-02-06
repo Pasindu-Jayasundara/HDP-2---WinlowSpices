@@ -91,28 +91,34 @@
         </com.google.android.material.chip.ChipGroup>
     </LinearLayout>
 
-    <org.imaginativeworld.whynotimagecarousel.ImageCarousel
-        android:id="@+id/imageCarousel"
-        android:layout_width="0dp"
-        android:layout_height="120dp"
-        android:layout_marginTop="24dp"
-        android:scrollIndicators="bottom"
-        app:layout_constraintEnd_toEndOf="@+id/linearLayout3"
-        app:layout_constraintStart_toStartOf="@+id/linearLayout3"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
-        app:showIndicator="true"
-        app:showNavigationButtons="false" />
-
-    <FrameLayout
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/imageCarousel"
-        app:layout_constraintStart_toStartOf="@+id/imageCarousel"
-        app:layout_constraintTop_toBottomOf="@+id/imageCarousel">
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/fragmentContainerView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
 
-    </FrameLayout>
+        <!--        <org.imaginativeworld.whynotimagecarousel.ImageCarousel-->
+        <!--            android:id="@+id/imageCarousel"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="120dp"-->
+        <!--            android:layout_marginTop="24dp"-->
+        <!--            android:scrollIndicators="bottom"-->
+        <!--            app:showIndicator="true"-->
+        <!--            app:showNavigationButtons="false" />-->
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
