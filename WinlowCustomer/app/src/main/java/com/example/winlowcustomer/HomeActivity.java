@@ -1,12 +1,6 @@
 package com.example.winlowcustomer;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.Network;
-import android.net.NetworkCapabilities;
-import android.net.NetworkRequest;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -79,12 +73,33 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(@NonNull ChipGroup group, @NonNull List<Integer> checkedIds) {
 
-                if(checkedIds.contains("chipAll")){
-                    loadProduct("a");
+                if(!NetworkConnection.hasConnection){
+                    loadFromSQLite();
+                }else{
+                    loadFromFirebase(checkedIds);
                 }
 
             }
         });
+
+    }
+
+    private void loadFromSQLite(){
+
+    }
+
+    private void loadFromFirebase(List<Integer> checkedIds){
+
+        String category = "*";
+        if(checkedIds.contains(R.id.chipAll)){
+            category = "*";
+        }else if(checkedIds.contains(R.id.chipSpices)){
+            category = "Spices";
+        }else if(checkedIds.contains(R.id.chipGiftPacks)){
+            category = "Gift Packs";
+        }
+
+
 
     }
 

@@ -16,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar;
 public class NetworkConnection {
 
     private static AlertDialog alertDialog;
+    public static boolean hasConnection;
 
     public static void register(Context context){
 
@@ -28,6 +29,7 @@ public class NetworkConnection {
                     alertDialog.dismiss();
                 }
 
+                hasConnection = true;
                 Toast.makeText(context, R.string.connection_available,Toast.LENGTH_LONG).show();
 
             }
@@ -35,12 +37,17 @@ public class NetworkConnection {
             @Override
             public void onLost(@NonNull Network network) {
                 super.onLost(network);
+
+                hasConnection = false;
                 Toast.makeText(context, R.string.connection_lost,Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onUnavailable() {
                 super.onUnavailable();
+
+                hasConnection = false;
+
                 if (alertDialog == null) {
                     alertDialog = new AlertDialog.Builder(context)
                             .setTitle(R.string.connection_unavailable_title)

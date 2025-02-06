@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "441817025989",
+    "project_id": "winlospices-9fb24",
+    "storage_bucket": "winlospices-9fb24.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:441817025989:android:79b22fe8316b8e02088fac",
+        "android_client_info": {
+          "package_name": "com.example.winlowcustomer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzkr5Fzf4RZQcReRWXjoOxov0RLZg3wBM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
