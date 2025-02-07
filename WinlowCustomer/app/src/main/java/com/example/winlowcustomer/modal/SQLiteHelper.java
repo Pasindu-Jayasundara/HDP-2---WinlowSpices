@@ -391,7 +391,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                 
                 SQLiteDatabase db = sqLiteHelper.getReadableDatabase();
 
-                String[] projection = {"name","stock","unit_price","doc_id","discount","image_path"};
+                String[] projection = {"name","stock","doc_id","discount","image_path"};
                 Cursor cursor = db.query(
                         "recently_viewed_product",
                         projection,

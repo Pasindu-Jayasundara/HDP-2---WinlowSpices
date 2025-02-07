@@ -1,12 +1,14 @@
 package com.example.winlowcustomer;
 
 import static com.example.winlowcustomer.modal.SetUpLanguage.setAppLanguage;
+
 import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -48,7 +50,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private boolean isDataLoadingFinished;
-    public static HashMap<String,ProductDTO> productHashMap = new HashMap<>();
+    public static HashMap<String, ProductDTO> productHashMap = new HashMap<>();
     public static ArrayList<BannerDTO> bannerArrayList = new ArrayList<>();
     public static ArrayList<String> categoryList = new ArrayList<>();
 
@@ -62,8 +64,7 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
 
 
         TextView textView = findViewById(R.id.welcometxt);
@@ -79,116 +80,117 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void loadData(){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
+    private void loadData() {
 
-                Gson gson = new Gson();
-                FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        Gson gson = new Gson();
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
-                // products
-                firestore.collection("product")
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+        // products
+        firestore.collection("product")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
-                                if(task.isSuccessful()){
+                        if (task.isSuccessful()) {
 
-                                    List<DocumentSnapshot> documents = task.getResult().getDocuments();
-                                    for(DocumentSnapshot document : documents){
+                            List<DocumentSnapshot> documents = task.getResult().getDocuments();
+                            for (DocumentSnapshot document : documents) {
 
-                                        List<Object> weightCategoryRawList = (List<Object>) document.get("weightCategory");
-                                        String weightCategoryJson = gson.toJson(weightCategoryRawList);
+                                List<Object> weightCategoryRawList = (List<Object>) document.get("weightCategory");
+                                String weightCategoryJson = gson.toJson(weightCategoryRawList);
 
-                                        Type listType = new TypeToken<List<WeightCategoryDTO>>() {}.getType();
-                                        List<WeightCategoryDTO> weightCategoryDTOList = gson.fromJson(weightCategoryJson, listType);
+                                Type listType = new TypeToken<List<WeightCategoryDTO>>() {
+                                }.getType();
+                                List<WeightCategoryDTO> weightCategoryDTOList = gson.fromJson(weightCategoryJson, listType);
 
-                                        categoryList.add(document.getString("category"));
-                                        productHashMap.put(
+                                categoryList.add(document.getString("category"));
+                                productHashMap.put(
+                                        document.getId(),
+                                        new ProductDTO(
                                                 document.getId(),
-                                                new ProductDTO(
-                                                        document.getId(),
-                                                        document.getString("category"),
-                                                        document.getString("name"),
-                                                        document.getString("stock"),
-                                                        document.getDouble("discount"),
-                                                        weightCategoryDTOList,
-                                                        document.getString("image_path")
-                                                )
-                                        );
-
-                                    }
-
-                                }
-
-                            }
-                        });
-
-                // banners & category
-                firestore.collection("banner")
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                                if(task.isSuccessful()){
-
-                                    List<DocumentSnapshot> documents = task.getResult().getDocuments();
-                                    for(DocumentSnapshot document : documents){
-
-                                        List<Object> bannerPathRawList = (List<Object>) document.get("path");
-                                        String bannerPathJson = gson.toJson(bannerPathRawList);
-
-                                        Type listType = new TypeToken<List<BannerDTO>>() {}.getType();
-                                        List<BannerDTO> bannerDTOList = gson.fromJson(bannerPathJson, listType);
-                                        bannerArrayList = (ArrayList<BannerDTO>) bannerDTOList;
-
-                                    }
-
-                                }
-
-                            }
-                        });
-
-                if(productHashMap.isEmpty()){
-                    // load recently viewed products
-
-                    SQLiteHelper helper = new SQLiteHelper(getApplicationContext(), "winlow.db", null, 1);
-                    helper.getRecentlyViewedProduct(helper, new GetDataCallback() {
-                        @Override
-                        public void onGetData(Cursor cursor) {
-
-                            while (cursor.moveToNext()){
-
-                                String name = cursor.getString(0);
-                                String stock = cursor.getString(1);
-                                String docId = cursor.getString(3);
-                                String discount = cursor.getString(4);
-                                String imagePath = cursor.getString(5);
-
-
-                                ProductDTO productDTO = new ProductDTO();
-                                productDTO.setId(docId);
-                                productDTO.setName(name);
-                                productDTO.setStock(stock);
-                                productDTO.setDiscount(Double.parseDouble(discount));
-                                productDTO.setWeightCategoryDTOList(new ArrayList<>());
-                                productDTO.setImagePath(imagePath);
-
-                                productHashMap.put(docId,productDTO);
+                                                document.getString("category"),
+                                                document.getString("name"),
+                                                document.getString("stock"),
+                                                document.getDouble("discount"),
+                                                weightCategoryDTOList,
+                                                document.getString("image_path")
+                                        )
+                                );
 
                             }
 
                         }
-                    });
+
+                    }
+                });
+
+        // banners & category
+        firestore.collection("banner")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                        if (task.isSuccessful()) {
+//
+                            List<DocumentSnapshot> documents = task.getResult().getDocuments();
+                            for (DocumentSnapshot document : documents) {
+//
+                                List<Object> bannerPathRawList = (List<Object>) document.get("path");
+                                String bannerPathJson = gson.toJson(bannerPathRawList);
+//
+                                Type listType = new TypeToken<ArrayList<String>>() {
+                                }.getType();
+
+                                Log.i("xyz", bannerPathJson);
+//
+                                List<String> bannerList = gson.fromJson(bannerPathJson, listType);
+
+                                BannerDTO bannerDTO = new BannerDTO();
+                                bannerDTO.setImagePathList(bannerList);
+                                bannerArrayList.add(bannerDTO);
+
+                            }
+                        }
+                    }
+                });
+
+        if (productHashMap.isEmpty()) {
+            // load recently viewed products
+
+            SQLiteHelper helper = new SQLiteHelper(getApplicationContext(), "winlow.db", null, 1);
+            helper.getRecentlyViewedProduct(helper, new GetDataCallback() {
+                @Override
+                public void onGetData(Cursor cursor) {
+
+                    while (cursor.moveToNext()) {
+
+                        String name = cursor.getString(0);
+                        String stock = cursor.getString(1);
+                        String docId = cursor.getString(3);
+                        String discount = cursor.getString(4);
+                        String imagePath = cursor.getString(5);
+
+
+                        ProductDTO productDTO = new ProductDTO();
+                        productDTO.setId(docId);
+                        productDTO.setName(name);
+                        productDTO.setStock(stock);
+                        productDTO.setDiscount(Double.parseDouble(discount));
+                        productDTO.setWeightCategoryDTOList(new ArrayList<>());
+                        productDTO.setImagePath(imagePath);
+
+                        productHashMap.put(docId, productDTO);
+
+                    }
+
                 }
+            });
+        }
 
-                isDataLoadingFinished = true;
+        isDataLoadingFinished = true;
 
-            }
-        }).start();
     }
 
     private void navigateToNextActivity() {
@@ -237,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
 
                         if (isDataLoadingFinished) {
                             navigateToNextActivity();
-                        }else{
+                        } else {
                             animateEachCharacter(textView, text);
                         }
 

@@ -41,7 +41,7 @@ public class HomeActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
 
         // bottom navigation
         getSupportFragmentManager().beginTransaction()
@@ -122,12 +122,12 @@ public class HomeActivity extends AppCompatActivity {
 
     private void changeActivity(String activityName){
 
-        try {
-            Intent intent = new Intent(HomeActivity.this, Class.forName(activityName));
-            startActivity(intent);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+//            Intent intent = new Intent(HomeActivity.this, Class.forName(activityName));
+//            startActivity(intent);
+//        } catch (ClassNotFoundException e) {
+//            throw new RuntimeException(e);
+//        }
 
     }
 
