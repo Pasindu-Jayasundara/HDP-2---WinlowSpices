@@ -36,7 +36,7 @@ public class AccountActivity extends AppCompatActivity {
         });
 
         // profile edit img
-        ImageButton profileEditImg = findViewById(R.id.imageButton6);
+        Button profileEditImg = findViewById(R.id.imageButton6);
         profileEditImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -45,7 +45,7 @@ public class AccountActivity extends AppCompatActivity {
         });
 
         // profile edit arrow
-        ImageButton profileEditArrow = findViewById(R.id.imageButton7);
+        Button profileEditArrow = findViewById(R.id.imageButton7);
         profileEditArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,7 +72,7 @@ public class AccountActivity extends AppCompatActivity {
         });
 
         // profile address arrow
-        CardView profileAddressCardView = findViewById(R.id.cardView3);
+        Button profileAddressArrow = findViewById(R.id.imageButton9);
         profileAddressCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,7 +90,8 @@ public class AccountActivity extends AppCompatActivity {
         });
 
         // profile language img
-        profileLanguageCardView.setOnClickListener(new View.OnClickListener() {
+        Button profileLanguageImg = findViewById(R.id.imageButton10);
+        profileLanguageImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 gotoActivity(LanguageActivity.class);
@@ -98,7 +99,8 @@ public class AccountActivity extends AppCompatActivity {
         });
 
         // profile language arrow
-        profileLanguageCardView.setOnClickListener(new View.OnClickListener() {
+        Button profileLanguageArrow = findViewById(R.id.imageButton11);
+        profileLanguageArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 gotoActivity(LanguageActivity.class);
@@ -115,8 +117,8 @@ public class AccountActivity extends AppCompatActivity {
         });
 
         // profile payment img
-        CardView profilePaymentCardView = findViewById(R.id.cardView6);
-        profilePaymentCardView.setOnClickListener(new View.OnClickListener() {
+        Button profilePaymentImg = findViewById(R.id.button5);
+        profilePaymentImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 gotoActivity(PaymentCardActivity.class);
@@ -124,8 +126,8 @@ public class AccountActivity extends AppCompatActivity {
         });
 
         // profile payment arrow
-        CardView profilePaymentCardView = findViewById(R.id.cardView6);
-        profilePaymentCardView.setOnClickListener(new View.OnClickListener() {
+        Button profilePaymentArrow = findViewById(R.id.button7);
+        profilePaymentArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 gotoActivity(PaymentCardActivity.class);
