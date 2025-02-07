@@ -2,11 +2,13 @@ package com.example.winlowcustomer.modal;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
+import com.example.winlowcustomer.modal.callback.GetDataCallback;
 import com.example.winlowcustomer.modal.callback.SingleInsertCallback;
 
 public class SQLiteHelper extends SQLiteOpenHelper {
@@ -42,6 +44,15 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                 "    cvv    TEXT\n" +
                 ")");
 
+        db.execSQL("CREATE TABLE IF NOT EXISTS recently_viewed_product (\n" +
+                "    id             INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+                "    name           TEXT,\n" +
+                "    stock          TEXT,\n" +
+                "    doc_id         TEXT,\n" +
+                "    image_path     TEXT,\n" +
+                "    discount       NUMERIC\n" +
+                ")");
+
     }
 
     @Override
@@ -51,6 +62,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS address");
         db.execSQL("DROP TABLE IF EXISTS order_history");
         db.execSQL("DROP TABLE IF EXISTS payment_card");
+        db.execSQL("DROP TABLE IF EXISTS recently_viewed_product");
 
         onCreate(db);
 
@@ -73,6 +85,10 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     }
 
     public void insertSingleUser(SQLiteHelper sqLiteHelper, SingleInsertCallback singleInsertCallback, String id, String name, String mobile, String email){
+
+        if(id == null || name == null || mobile == null || email == null){
+            return;
+        }
 
         new Thread(new Runnable() {
             @Override
@@ -100,6 +116,10 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
     public void insertSingleAddress(SQLiteHelper sqLiteHelper, SingleInsertCallback singleInsertCallback, String address){
 
+        if(address == null){
+            return;
+        }
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -122,6 +142,11 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     }
 
     public void insertSingleOrderHistory(SQLiteHelper sqLiteHelper, SingleInsertCallback singleInsertCallback, String referencePath){
+
+        if(referencePath == null){
+            return;
+        }
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -143,6 +168,10 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     }
 
     public void insertSinglePaymentCard(SQLiteHelper sqLiteHelper, SingleInsertCallback singleInsertCallback, String doe, String number, String cvv){
+
+        if(doe == null || number == null || cvv == null){
+            return;
+        }
 
         new Thread(new Runnable() {
             @Override
@@ -168,6 +197,10 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
     public void insertMultipleOrderHistory(SQLiteHelper sqLiteHelper, String[] referencePaths){
 
+        if(referencePaths == null){
+            return;
+        }
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -186,5 +219,199 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             }
         }).start();
 
+    }
+
+    public void insertSingleRecentlyViewedProduct(SQLiteHelper sqLiteHelper, String name, String stock, String docId, String discount,String imagePath) {
+        insertSingleRecentlyViewedProduct(sqLiteHelper, null, name, stock, docId, discount,imagePath);
+    }
+
+    public void insertSingleRecentlyViewedProduct(SQLiteHelper sqLiteHelper, SingleInsertCallback singleInsertCallback, String name, String stock, String docId, String discount,String imagePath){
+        
+        if(name == null || stock == null || docId == null || discount == null || imagePath == null){
+            return;
+        }
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                SQLiteDatabase db = sqLiteHelper.getWritableDatabase();
+                
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("name",name);
+                contentValues.put("stock",stock);
+                contentValues.put("doc_id",docId);
+                contentValues.put("discount",discount);
+                contentValues.put("image_path",imagePath);
+
+                long inserted = db.insert("recently_viewed_product", null, contentValues);
+                db.close();
+                
+                if(singleInsertCallback != null){
+                    singleInsertCallback.onUserInserted(inserted);
+                }
+
+            }
+        }).start();
+    }
+    
+    public void getUser(SQLiteHelper sqLiteHelper, GetDataCallback getDataCallback){
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                SQLiteDatabase db = sqLiteHelper.getReadableDatabase();
+
+                String[] projection = {"id","name","mobile","email"};
+                String limit = "1";
+
+                Cursor cursor = db.query(
+                        "user",
+                        projection,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        limit
+                );
+
+                if(getDataCallback !=null){
+                    getDataCallback.onGetData(cursor);
+                }
+
+                cursor.close();
+                db.close();
+
+            }
+        }).start();
+
+    }
+
+    public void getAddress(SQLiteHelper sqLiteHelper, GetDataCallback getDataCallback){
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                SQLiteDatabase db = sqLiteHelper.getReadableDatabase();
+
+                String[] projection = {"address"};
+                Cursor cursor = db.query(
+                        "address",
+                        projection,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                );
+
+                if(getDataCallback != null){
+                    getDataCallback.onGetData(cursor);
+                }
+
+                cursor.close();
+                db.close();
+            }
+        }).start();
+
+    }
+
+    public void getOrderHistory(SQLiteHelper sqLiteHelper, GetDataCallback getDataCallback){
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                SQLiteDatabase db = sqLiteHelper.getReadableDatabase();
+
+                String[] projection = {"reference_path"};
+                Cursor cursor = db.query(
+                        "order_history",
+                        projection,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                );
+
+                if(getDataCallback != null){
+                    getDataCallback.onGetData(cursor);
+                }
+
+                cursor.close();
+                db.close();
+
+            }
+        }).start();
+
+    }
+
+    public void getPaymentCard(SQLiteHelper sqLiteHelper, GetDataCallback getDataCallback){
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                SQLiteDatabase db = sqLiteHelper.getReadableDatabase();
+
+                String[] projection = {"doe","number","cvv"};
+                Cursor cursor = db.query(
+                        "payment_card",
+                        projection,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                );
+
+                if(getDataCallback != null){
+                    getDataCallback.onGetData(cursor);
+                }
+
+                cursor.close();
+                db.close();
+            }
+        }).start();
+
+    }
+    
+    public void getRecentlyViewedProduct(SQLiteHelper sqLiteHelper, GetDataCallback getDataCallback){
+        
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                
+                SQLiteDatabase db = sqLiteHelper.getReadableDatabase();
+
+                String[] projection = {"name","stock","unit_price","doc_id","discount","image_path"};
+                Cursor cursor = db.query(
+                        "recently_viewed_product",
+                        projection,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                );
+                
+                if(getDataCallback != null){
+                    getDataCallback.onGetData(cursor);
+                }
+                
+                cursor.close();
+                db.close();
+                
+            }
+        }).start();
+        
     }
 }

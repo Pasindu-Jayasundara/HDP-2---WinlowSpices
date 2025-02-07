@@ -5,6 +5,7 @@ import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -22,11 +23,14 @@ import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 
 import android.graphics.Color;
+import android.widget.Toast;
 
 import com.example.winlowcustomer.dto.BannerDTO;
 import com.example.winlowcustomer.dto.ProductDTO;
 import com.example.winlowcustomer.dto.WeightCategoryDTO;
 import com.example.winlowcustomer.modal.NetworkConnection;
+import com.example.winlowcustomer.modal.SQLiteHelper;
+import com.example.winlowcustomer.modal.callback.GetDataCallback;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -44,9 +48,10 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private boolean isDataLoadingFinished;
-    public static HashMap<String,Object> productHashMap;
-    public static ArrayList<BannerDTO> bannerArrayList;
-    public static ArrayList<String> categoryList;
+    public static HashMap<String,ProductDTO> productHashMap = new HashMap<>();
+    public static ArrayList<BannerDTO> bannerArrayList = new ArrayList<>();
+    public static ArrayList<String> categoryList = new ArrayList<>();
+    private SQLiteHelper helper;
 
     private static final String ALL = "all", PRODUCTS = "products", BANNERS = "banners", CATEGORY = "category";
 
@@ -68,17 +73,15 @@ public class MainActivity extends AppCompatActivity {
         String animateText = getString(R.string.welcome_animation_text);
 
         if(!NetworkConnection.hasConnection){
-            loadFromSQLite(MainActivity.ALL);
-        }else{
-            loadFromFirebase();
+            Toast.makeText(getApplicationContext(),R.string.connection_unavailable,Toast.LENGTH_LONG).show();
         }
-
+        loadData();
 
         animateEachCharacter(textView, animateText);
 
     }
 
-    private void loadFromFirebase(){
+    private void loadData(){
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -92,9 +95,6 @@ public class MainActivity extends AppCompatActivity {
                         .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                                productHashMap = new HashMap<>();
-                                categoryList = new ArrayList<>();
 
                                 if(task.isSuccessful()){
 
@@ -116,15 +116,13 @@ public class MainActivity extends AppCompatActivity {
                                                         document.getString("name"),
                                                         document.getString("stock"),
                                                         document.getDouble("discount"),
-                                                        weightCategoryDTOList
+                                                        weightCategoryDTOList,
+                                                        document.getString("image_path")
                                                 )
                                         );
 
                                     }
 
-                                }else{
-                                    // load from sqlite
-                                    loadFromSQLite(MainActivity.PRODUCTS);
                                 }
 
                             }
@@ -151,43 +149,48 @@ public class MainActivity extends AppCompatActivity {
 
                                     }
 
-                                }else{
-                                    // load from sqlite
-                                    loadFromSQLite(MainActivity.BANNERS);
-                                    loadFromSQLite(MainActivity.CATEGORY);
                                 }
 
                             }
                         });
 
+                if(productHashMap.isEmpty()){
+                    // load recently viewed products
+
+                    SQLiteHelper helper = new SQLiteHelper(getApplicationContext(), "winlow.db", null, 1);
+                    helper.getRecentlyViewedProduct(helper, new GetDataCallback() {
+                        @Override
+                        public void onGetData(Cursor cursor) {
+
+                            while (cursor.moveToNext()){
+
+                                String name = cursor.getString(0);
+                                String stock = cursor.getString(1);
+                                String docId = cursor.getString(3);
+                                String discount = cursor.getString(4);
+                                String imagePath = cursor.getString(5);
+
+
+                                ProductDTO productDTO = new ProductDTO();
+                                productDTO.setId(docId);
+                                productDTO.setName(name);
+                                productDTO.setStock(stock);
+                                productDTO.setDiscount(Double.parseDouble(discount));
+                                productDTO.setWeightCategoryDTOList(new ArrayList<>());
+                                productDTO.setImagePath(imagePath);
+
+                                productHashMap.put(docId,productDTO);
+
+                            }
+
+                        }
+                    });
+                }
+
                 isDataLoadingFinished = true;
 
             }
         }).start();
-    }
-
-    private void loadFromSQLite(String whichOne){
-        // load from sqlite
-
-        if(whichOne.equals(MainActivity.ALL)){
-            loadFromSQLite(MainActivity.PRODUCTS);
-            loadFromSQLite(MainActivity.BANNERS);
-            loadFromSQLite(MainActivity.CATEGORY);
-        }
-
-        if(whichOne.equals(MainActivity.PRODUCTS)){
-            // load product
-        }
-
-        if(whichOne.equals(MainActivity.BANNERS)){
-            // load banners
-        }
-
-        if(whichOne.equals(MainActivity.CATEGORY)){
-            // load category
-        }
-
-        isDataLoadingFinished = true;
     }
 
     private void navigateToNextActivity() {

@@ -1,27 +1,40 @@
 package com.example.winlowcustomer.dto;
 
+import androidx.annotation.Nullable;
+
 import java.io.Serializable;
 import java.util.List;
 
 public class ProductDTO implements Serializable {
 
-    private String id;
+    private String id; // doc id
     private String category;
     private String name;
     private String stock;
     private double discount;
     private List<WeightCategoryDTO> weightCategoryDTOList;
 
+    private String imagePath;
+
     public ProductDTO() {
     }
 
-    public ProductDTO(String id, String category, String name, String stock, double discount, List<WeightCategoryDTO> weightCategoryDTOList) {
+    public ProductDTO(String id, String category, String name, String stock, double discount, List<WeightCategoryDTO> weightCategoryDTOList , String imagePath) {
         this.id = id;
         this.category = category;
         this.name = name;
         this.stock = stock;
         this.discount = discount;
         this.weightCategoryDTOList = weightCategoryDTOList;
+        this.imagePath = imagePath;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     public String getId() {
@@ -64,7 +77,7 @@ public class ProductDTO implements Serializable {
         this.discount = discount;
     }
 
-    public List<WeightCategoryDTO> getWeightCategoryDTOList() {
+    public @Nullable List<WeightCategoryDTO> getWeightCategoryDTOList() {
         return weightCategoryDTOList;
     }
 
