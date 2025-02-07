@@ -45,7 +45,7 @@ public class HomeActivity extends AppCompatActivity {
 
         // bottom navigation
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragmentContainerView, BottomNavigationFragment.class,null)
+                .replace(R.id.fragmentContainerView, BottomNavigationFragment.class, null)
                 .setReorderingAllowed(true)
                 .commit();
 
@@ -63,7 +63,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                changeActivity("SearchProductActivity");
+                changeActivity(SearchProductActivity.class);
 
             }
         });
@@ -74,7 +74,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                changeActivity("ProfileActivity");
+                changeActivity(AccountActivity.class);
 
             }
         });
@@ -85,7 +85,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                changeActivity("SelectLocationActivity");
+                changeActivity(SelectLocationActivity.class);
             }
         });
 
@@ -117,17 +117,12 @@ public class HomeActivity extends AppCompatActivity {
     private void changeProductOrder(List<Integer> checkedIds) {
 
 
-
     }
 
-    private void changeActivity(String activityName){
+    private void changeActivity(Class<?> activityName) {
 
-//        try {
-//            Intent intent = new Intent(HomeActivity.this, Class.forName(activityName));
-//            startActivity(intent);
-//        } catch (ClassNotFoundException e) {
-//            throw new RuntimeException(e);
-//        }
+        Intent intent = new Intent(HomeActivity.this, activityName);
+        startActivity(intent);
 
     }
 
