@@ -47,7 +47,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                changeActivity(SearchProductActivity);
+                changeActivity("SearchProductActivity");
 
             }
         });
@@ -58,7 +58,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                changeActivity(ProfileActivity);
+                changeActivity("ProfileActivity");
 
             }
         });
@@ -69,7 +69,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                changeActivity(SelectLocationActivity);
+                changeActivity("SelectLocationActivity");
             }
         });
 
@@ -100,9 +100,15 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    private void changeActivity(){
-        Intent intent = new Intent(HomeActivity.this, activity);
-        startActivity(intent);
+    private void changeActivity(String activityName){
+
+        try {
+            Intent intent = new Intent(HomeActivity.this, Class.forName(activityName));
+            startActivity(intent);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 }
