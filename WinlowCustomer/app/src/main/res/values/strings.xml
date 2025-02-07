@@ -4,6 +4,11 @@
     <!--  welcome  -->
     <string name="welcome_animation_text">WinloSpices</string>
 
+    <!--  bottom navigation  -->
+    <string name="nav_home">Home</string>
+    <string name="nav_orders">Orders</string>
+    <string name="nav_cart">Cart</string>
+
     <!--  network connection  -->
     <string name="connection_lost">Internet Connection Lost</string>
     <string name="connection_unavailable">Internet Connection UnAvailable</string>

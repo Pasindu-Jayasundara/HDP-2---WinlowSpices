@@ -43,6 +43,13 @@ public class HomeActivity extends AppCompatActivity {
         });
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
+        // bottom navigation
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainerView, BottomNavigationFragment.class,null)
+                .setReorderingAllowed(true)
+                .commit();
+
+        // data load
         loadCategories(MainActivity.categoryList);
         loadProducts(MainActivity.productHashMap);
         loadBanners(MainActivity.bannerArrayList);
