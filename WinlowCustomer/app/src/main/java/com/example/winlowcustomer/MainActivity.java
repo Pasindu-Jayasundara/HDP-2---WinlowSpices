@@ -51,9 +51,6 @@ public class MainActivity extends AppCompatActivity {
     public static HashMap<String,ProductDTO> productHashMap = new HashMap<>();
     public static ArrayList<BannerDTO> bannerArrayList = new ArrayList<>();
     public static ArrayList<String> categoryList = new ArrayList<>();
-    private SQLiteHelper helper;
-
-    private static final String ALL = "all", PRODUCTS = "products", BANNERS = "banners", CATEGORY = "category";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,9 +69,10 @@ public class MainActivity extends AppCompatActivity {
         TextView textView = findViewById(R.id.welcometxt);
         String animateText = getString(R.string.welcome_animation_text);
 
-        if(!NetworkConnection.hasConnection){
-            Toast.makeText(getApplicationContext(),R.string.connection_unavailable,Toast.LENGTH_LONG).show();
-        }
+        // check network connection
+        NetworkConnection.register(getApplicationContext());
+
+
         loadData();
 
         animateEachCharacter(textView, animateText);

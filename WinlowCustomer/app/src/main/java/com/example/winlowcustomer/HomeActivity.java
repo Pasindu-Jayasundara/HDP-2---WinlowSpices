@@ -14,6 +14,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.winlowcustomer.dto.BannerDTO;
+import com.example.winlowcustomer.dto.ProductDTO;
 import com.example.winlowcustomer.modal.NetworkConnection;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -23,6 +25,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
@@ -37,6 +41,11 @@ public class HomeActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+
+        loadCategories(MainActivity.categoryList);
+        loadProducts(MainActivity.productHashMap);
+        loadBanners(MainActivity.bannerArrayList);
 
         // check network connection
         NetworkConnection.register(getApplicationContext());
@@ -79,22 +88,26 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(@NonNull ChipGroup group, @NonNull List<Integer> checkedIds) {
 
-                if(!NetworkConnection.hasConnection){
-                    loadFromSQLite();
-                }else{
-                    loadFromFirebase(checkedIds);
-                }
+                changeProductOrder(checkedIds);
 
             }
         });
 
     }
 
-    private void loadFromSQLite(){
+    private void loadBanners(ArrayList<BannerDTO> bannerArrayList) {
 
     }
 
-    private void loadFromFirebase(List<Integer> checkedIds){
+    private void loadProducts(HashMap<String, ProductDTO> productHashMap) {
+
+    }
+
+    private void loadCategories(ArrayList<String> categoryList) {
+
+    }
+
+    private void changeProductOrder(List<Integer> checkedIds) {
 
 
 
