@@ -17,6 +17,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.winlowcustomer.dto.BannerDTO;
 import com.example.winlowcustomer.dto.ProductDTO;
@@ -111,6 +112,15 @@ public class HomeActivity extends AppCompatActivity {
             public void onCheckedChanged(@NonNull ChipGroup group, @NonNull List<Integer> checkedIds) {
 
                 changeProductOrder(checkedIds);
+
+            }
+        });
+
+        // refresh
+        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.refreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
 
             }
         });

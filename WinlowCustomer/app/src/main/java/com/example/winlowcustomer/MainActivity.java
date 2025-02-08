@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.example.winlowcustomer.dto.BannerDTO;
 import com.example.winlowcustomer.dto.ProductDTO;
 import com.example.winlowcustomer.dto.WeightCategoryDTO;
+import com.example.winlowcustomer.modal.MainLoadData;
 import com.example.winlowcustomer.modal.NetworkConnection;
 import com.example.winlowcustomer.modal.SQLiteHelper;
 import com.example.winlowcustomer.modal.callback.GetDataCallback;
@@ -50,7 +51,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private boolean isDataLoadingFinished;
+    private static boolean isDataLoadingFinished;
     private ArrayList<ProductDTO> productDTOArrayList =new ArrayList<>();
     private ArrayList<BannerDTO> bannerArrayList = new ArrayList<>();
     private HashSet<String> categoryHashSet = new HashSet<>();
@@ -76,142 +77,142 @@ public class MainActivity extends AppCompatActivity {
         NetworkConnection.register(getApplicationContext());
 
 
-        loadData();
+        isDataLoadingFinished = MainLoadData.mainLoadData(productDTOArrayList, bannerArrayList, categoryHashSet, isDataLoadingFinished, this);
 
         animateEachCharacter(textView, animateText);
 
     }
 
-    private void loadData() {
-
-        Gson gson = new Gson();
-        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-
-        // products
-        firestore.collection("product")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                        if (task.isSuccessful()) {
-
-                            List<DocumentSnapshot> documents = task.getResult().getDocuments();
-                            for (DocumentSnapshot document : documents) {
-
-                                List<Object> weightCategoryRawList = (List<Object>) document.get("weightCategory");
-                                String weightCategoryJson = gson.toJson(weightCategoryRawList);
-
-                                Type listType = new TypeToken<List<WeightCategoryDTO>>() {
-                                }.getType();
-                                List<WeightCategoryDTO> weightCategoryDTOList = gson.fromJson(weightCategoryJson, listType);
-
-                                categoryHashSet.add(document.getString("category"));
-                                productDTOArrayList.add(
-                                        new ProductDTO(
-                                                document.getId(),
-                                                document.getString("category"),
-                                                document.getString("name"),
-                                                document.getString("stock"),
-                                                document.getDouble("discount"),
-                                                weightCategoryDTOList,
-                                                document.getString("image_path")
-                                        )
-                                );
-
-                            }
-
-                            SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-
-                            String categoryJson = gson.toJson(categoryHashSet);
-                            String productJson = gson.toJson(productDTOArrayList);
-
-                            editor.putString("category", categoryJson);
-                            editor.putString("product", productJson);
-                            editor.apply();
-
-                        }
-
-                    }
-                });
-
-        // banners & category
-        firestore.collection("banner")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                        if (task.isSuccessful()) {
+//    private void mainLoadData() {
 //
-                            List<DocumentSnapshot> documents = task.getResult().getDocuments();
-                            for (DocumentSnapshot document : documents) {
+//        Gson gson = new Gson();
+//        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 //
-                                List<Object> bannerPathRawList = (List<Object>) document.get("path");
-                                String bannerPathJson = gson.toJson(bannerPathRawList);
+//        // products
+//        firestore.collection("product")
+//                .get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
 //
-                                Type listType = new TypeToken<ArrayList<String>>() {
-                                }.getType();
-
-                                Log.i("xyz", bannerPathJson);
+//                        if (task.isSuccessful()) {
 //
-                                List<String> bannerList = gson.fromJson(bannerPathJson, listType);
-
-                                BannerDTO bannerDTO = new BannerDTO();
-                                bannerDTO.setImagePathList(bannerList);
-                                bannerArrayList.add(bannerDTO);
-
-                            }
-
-                            SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-
-                            String bannerString = gson.toJson(bannerArrayList);
-
-                            editor.putString("banner", bannerString);
-                            editor.apply();
-
-                        }
-                    }
-                });
-
-        if (productDTOArrayList.isEmpty()) {
-            // load recently viewed products
-
-            SQLiteHelper helper = new SQLiteHelper(getApplicationContext(), "winlow.db", null, 1);
-            helper.getRecentlyViewedProduct(helper, new GetDataCallback() {
-                @Override
-                public void onGetData(Cursor cursor) {
-
-                    while (cursor.moveToNext()) {
-
-                        String name = cursor.getString(0);
-                        String stock = cursor.getString(1);
-                        String docId = cursor.getString(3);
-                        String discount = cursor.getString(4);
-                        String imagePath = cursor.getString(5);
-
-
-                        ProductDTO productDTO = new ProductDTO();
-                        productDTO.setId(docId);
-                        productDTO.setName(name);
-                        productDTO.setStock(stock);
-                        productDTO.setDiscount(Double.parseDouble(discount));
-                        productDTO.setWeightCategoryDTOList(new ArrayList<>());
-                        productDTO.setImagePath(imagePath);
-
-                        productDTOArrayList.add(productDTO);
-
-                    }
-
-                }
-            });
-        }
-
-        isDataLoadingFinished = true;
-
-    }
+//                            List<DocumentSnapshot> documents = task.getResult().getDocuments();
+//                            for (DocumentSnapshot document : documents) {
+//
+//                                List<Object> weightCategoryRawList = (List<Object>) document.get("weightCategory");
+//                                String weightCategoryJson = gson.toJson(weightCategoryRawList);
+//
+//                                Type listType = new TypeToken<List<WeightCategoryDTO>>() {
+//                                }.getType();
+//                                List<WeightCategoryDTO> weightCategoryDTOList = gson.fromJson(weightCategoryJson, listType);
+//
+//                                categoryHashSet.add(document.getString("category"));
+//                                productDTOArrayList.add(
+//                                        new ProductDTO(
+//                                                document.getId(),
+//                                                document.getString("category"),
+//                                                document.getString("name"),
+//                                                document.getString("stock"),
+//                                                document.getDouble("discount"),
+//                                                weightCategoryDTOList,
+//                                                document.getString("image_path")
+//                                        )
+//                                );
+//
+//                            }
+//
+//                            SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", Context.MODE_PRIVATE);
+//                            SharedPreferences.Editor editor = sharedPreferences.edit();
+//
+//                            String categoryJson = gson.toJson(categoryHashSet);
+//                            String productJson = gson.toJson(productDTOArrayList);
+//
+//                            editor.putString("category", categoryJson);
+//                            editor.putString("product", productJson);
+//                            editor.apply();
+//
+//                        }
+//
+//                    }
+//                });
+//
+//        // banners & category
+//        firestore.collection("banner")
+//                .get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//
+//                        if (task.isSuccessful()) {
+//
+//                            List<DocumentSnapshot> documents = task.getResult().getDocuments();
+//                            for (DocumentSnapshot document : documents) {
+//
+//                                List<Object> bannerPathRawList = (List<Object>) document.get("path");
+//                                String bannerPathJson = gson.toJson(bannerPathRawList);
+//
+//                                Type listType = new TypeToken<ArrayList<String>>() {
+//                                }.getType();
+//
+//                                Log.i("xyz", bannerPathJson);
+//
+//                                List<String> bannerList = gson.fromJson(bannerPathJson, listType);
+//
+//                                BannerDTO bannerDTO = new BannerDTO();
+//                                bannerDTO.setImagePathList(bannerList);
+//                                bannerArrayList.add(bannerDTO);
+//
+//                            }
+//
+//                            SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", Context.MODE_PRIVATE);
+//                            SharedPreferences.Editor editor = sharedPreferences.edit();
+//
+//                            String bannerString = gson.toJson(bannerArrayList);
+//
+//                            editor.putString("banner", bannerString);
+//                            editor.apply();
+//
+//                        }
+//                    }
+//                });
+//
+//        if (productDTOArrayList.isEmpty()) {
+//            // load recently viewed products
+//
+//            SQLiteHelper helper = new SQLiteHelper(getApplicationContext(), "winlow.db", null, 1);
+//            helper.getRecentlyViewedProduct(helper, new GetDataCallback() {
+//                @Override
+//                public void onGetData(Cursor cursor) {
+//
+//                    while (cursor.moveToNext()) {
+//
+//                        String name = cursor.getString(0);
+//                        String stock = cursor.getString(1);
+//                        String docId = cursor.getString(3);
+//                        String discount = cursor.getString(4);
+//                        String imagePath = cursor.getString(5);
+//
+//
+//                        ProductDTO productDTO = new ProductDTO();
+//                        productDTO.setId(docId);
+//                        productDTO.setName(name);
+//                        productDTO.setStock(stock);
+//                        productDTO.setDiscount(Double.parseDouble(discount));
+//                        productDTO.setWeightCategoryDTOList(new ArrayList<>());
+//                        productDTO.setImagePath(imagePath);
+//
+//                        productDTOArrayList.add(productDTO);
+//
+//                    }
+//
+//                }
+//            });
+//        }
+//
+//        isDataLoadingFinished = true;
+//
+//    }
 
     private void navigateToNextActivity() {
         SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", Context.MODE_PRIVATE);
