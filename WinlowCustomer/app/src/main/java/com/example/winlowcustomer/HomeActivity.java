@@ -1,7 +1,10 @@
 package com.example.winlowcustomer;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,14 +22,17 @@ import com.example.winlowcustomer.dto.ProductDTO;
 import com.example.winlowcustomer.modal.NetworkConnection;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.search.SearchBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
@@ -42,6 +48,7 @@ public class HomeActivity extends AppCompatActivity {
             return insets;
         });
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
         // bottom navigation
         getSupportFragmentManager().beginTransaction()
@@ -50,9 +57,23 @@ public class HomeActivity extends AppCompatActivity {
                 .commit();
 
         // data load
-        loadCategories(MainActivity.categoryList);
-        loadProducts(MainActivity.productHashMap);
-        loadBanners(MainActivity.bannerArrayList);
+        SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String category = sharedPreferences.getString("category", null);
+        String product = sharedPreferences.getString("product", null);
+        String banner = sharedPreferences.getString("banner", null);
+
+        HashSet<String> categoryHashSet;
+        if (category != null) {
+            categoryHashSet = gson.fromJson(category, HashSet.class);
+        }else{
+            categoryHashSet = new HashSet<String>();
+        }
+
+
+        loadCategories(categoryHashSet);
+//        loadProducts(MainActivity.productHashMap);
+//        loadBanners(MainActivity.bannerArrayList);
 
         // check network connection
         NetworkConnection.register(getApplicationContext());
@@ -104,13 +125,42 @@ public class HomeActivity extends AppCompatActivity {
 
     private void loadBanners(ArrayList<BannerDTO> bannerArrayList) {
 
+        for(BannerDTO bannerDTO:bannerArrayList){
+
+        }
+
     }
 
     private void loadProducts(HashMap<String, ProductDTO> productHashMap) {
 
+        productHashMap.forEach((string, productDTO) -> {
+
+        });
+
     }
 
-    private void loadCategories(ArrayList<String> categoryList) {
+    private void loadCategories(HashSet<String> categoryHashSet) {
+
+        boolean isFirstTime = true;
+        ChipGroup chipGroup = findViewById(R.id.categoryChipGroup);
+
+        for(String category : categoryHashSet){
+
+            Chip chip = new Chip(new ContextThemeWrapper(this, com.mobven.progress.R.style.Widget_MaterialComponents_Chip_Filter));
+            chip.setText(category);
+            chip.setCheckable(true);
+            chip.setClickable(true);
+
+            if (isFirstTime){
+                chip.setChecked(true);
+                isFirstTime = false;
+                chipGroup.removeAllViews();
+            } else{
+                chip.setChecked(false);
+            }
+
+            chipGroup.addView(chip);
+        }
 
     }
 

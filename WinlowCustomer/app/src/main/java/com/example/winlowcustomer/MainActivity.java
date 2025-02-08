@@ -44,15 +44,16 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private boolean isDataLoadingFinished;
-    public static HashMap<String, ProductDTO> productHashMap = new HashMap<>();
-    public static ArrayList<BannerDTO> bannerArrayList = new ArrayList<>();
-    public static ArrayList<String> categoryList = new ArrayList<>();
+    private HashMap<String, ProductDTO> productHashMap = new HashMap<>();
+    private ArrayList<BannerDTO> bannerArrayList = new ArrayList<>();
+    private HashSet<String> categoryHashSet = new HashSet<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
 
         TextView textView = findViewById(R.id.welcometxt);
@@ -104,7 +106,10 @@ public class MainActivity extends AppCompatActivity {
                                 }.getType();
                                 List<WeightCategoryDTO> weightCategoryDTOList = gson.fromJson(weightCategoryJson, listType);
 
-                                categoryList.add(document.getString("category"));
+                                categoryHashSet.add(document.getString("category"));
+                                Log.i("asd", "onComplete: " + document);
+                                Log.i("asd", "onComplete: " + document.getString("category"));
+                                Log.i("asd", "onComplete: " + categoryHashSet);
                                 productHashMap.put(
                                         document.getId(),
                                         new ProductDTO(
@@ -119,6 +124,16 @@ public class MainActivity extends AppCompatActivity {
                                 );
 
                             }
+
+                            SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                            String categoryJson = gson.toJson(categoryHashSet);
+                            String productJson = gson.toJson(productHashMap);
+
+                            editor.putString("category", categoryJson);
+                            editor.putString("product", productJson);
+                            editor.apply();
 
                         }
 
@@ -152,6 +167,15 @@ public class MainActivity extends AppCompatActivity {
                                 bannerArrayList.add(bannerDTO);
 
                             }
+
+                            SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                            String bannerString = gson.toJson(bannerArrayList);
+
+                            editor.putString("banner", bannerString);
+                            editor.apply();
+
                         }
                     }
                 });
