@@ -41,6 +41,15 @@ public class MainLoadData {
 
                         if (task.isSuccessful()) {
 
+                            if(!categoryHashSet.isEmpty()){
+                                categoryHashSet.clear();
+                            }
+                            if(!productDTOArrayList.isEmpty()){
+                                productDTOArrayList.clear();
+                            }
+
+                            boolean isFirstTime = true;
+
                             List<DocumentSnapshot> documents = task.getResult().getDocuments();
                             for (DocumentSnapshot document : documents) {
 
@@ -51,6 +60,10 @@ public class MainLoadData {
                                 }.getType();
                                 List<WeightCategoryDTO> weightCategoryDTOList = gson.fromJson(weightCategoryJson, listType);
 
+                                if(isFirstTime){
+                                    categoryHashSet.add("All");
+                                    isFirstTime = false;
+                                }
                                 categoryHashSet.add(document.getString("category"));
                                 productDTOArrayList.add(
                                         new ProductDTO(
@@ -89,6 +102,10 @@ public class MainLoadData {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
                         if (task.isSuccessful()) {
+
+                            if(!bannerArrayList.isEmpty()){
+                                bannerArrayList.clear();
+                            }
 
                             List<DocumentSnapshot> documents = task.getResult().getDocuments();
                             for (DocumentSnapshot document : documents) {

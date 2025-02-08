@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -21,6 +23,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.winlowcustomer.dto.BannerDTO;
 import com.example.winlowcustomer.dto.ProductDTO;
+import com.example.winlowcustomer.modal.MainLoadData;
 import com.example.winlowcustomer.modal.NetworkConnection;
 import com.example.winlowcustomer.modal.HomeRecyclerViewAdapter;
 import com.google.android.material.chip.Chip;
@@ -44,6 +47,7 @@ public class HomeActivity extends AppCompatActivity {
 
     ArrayList<ProductDTO> productDTOArrayList;
     ArrayList<BannerDTO> bannerArrayList;
+    HashSet<String> categoryHashSet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,11 +121,24 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         // refresh
+        ProgressBar progressBar = findViewById(R.id.progressBar2);
+        progressBar.setVisibility(View.GONE);
+
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.refreshLayout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                progressBar.setVisibility(View.VISIBLE);
 
+                MainLoadData.mainLoadData(productDTOArrayList, bannerArrayList, categoryHashSet, false, HomeActivity.this);
+                loadData();
+
+                RecyclerView recyclerView = findViewById(R.id.recyclerView2);
+                recyclerView.getAdapter().notifyDataSetChanged();
+
+                progressBar.setVisibility(View.GONE);
+
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
 
@@ -138,7 +155,7 @@ public class HomeActivity extends AppCompatActivity {
 
         if (category != null) {
             Type listType = new TypeToken<HashSet<String>>() {}.getType();
-            HashSet<String> categoryHashSet = gson.fromJson(category, listType);
+            categoryHashSet = gson.fromJson(category, listType);
             loadCategories(categoryHashSet);
         }
 
@@ -178,6 +195,8 @@ public class HomeActivity extends AppCompatActivity {
             chip.setCheckable(true);
             chip.setClickable(true);
 
+            chip.setId(View.generateViewId());
+
             if (isFirstTime){
                 chip.setChecked(true);
                 isFirstTime = false;
@@ -193,11 +212,29 @@ public class HomeActivity extends AppCompatActivity {
 
     private void changeProductOrder(List<Integer> checkedIds) {
 
+        Chip chip = findViewById(checkedIds.get(0));
+        String chipTxt = chip.getText().toString();
+
+        for(ProductDTO productDTO : productDTOArrayList){
+            if(productDTO.getCategory().equals(chipTxt)){
+                productDTOArrayList.remove(productDTO);
+                productDTOArrayList.add(0, productDTO);
+            }
+        }
+
+        RecyclerView recyclerView = findViewById(R.id.recyclerView2);
+        recyclerView.getAdapter().notifyDataSetChanged();
 
     }
 
     private void loadBanner(){
 
+        ImageCarousel imageCarousel = findViewById(R.id.imageCarousel);
+
+        if(bannerArrayList.isEmpty()){
+            imageCarousel.setVisibility(View.GONE);
+            return;
+        }
         List<CarouselItem> carouselItemList = new ArrayList<>();
 
         BannerDTO dto = bannerArrayList.get(0);
@@ -207,7 +244,6 @@ public class HomeActivity extends AppCompatActivity {
             carouselItemList.add(carouselItem);
         }
 
-        ImageCarousel imageCarousel = findViewById(R.id.imageCarousel);
         imageCarousel.setAutoPlay(true);
         imageCarousel.setCarouselType(CarouselType.SHOWCASE);
         imageCarousel.setData(carouselItemList);
