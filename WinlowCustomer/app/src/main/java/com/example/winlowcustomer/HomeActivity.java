@@ -28,6 +28,11 @@ import com.google.android.material.search.SearchBar;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.imaginativeworld.whynotimagecarousel.ImageCarousel;
+import org.imaginativeworld.whynotimagecarousel.model.CarouselGravity;
+import org.imaginativeworld.whynotimagecarousel.model.CarouselItem;
+import org.imaginativeworld.whynotimagecarousel.model.CarouselType;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -134,13 +139,13 @@ public class HomeActivity extends AppCompatActivity {
             Type listType = new TypeToken<ArrayList<ProductDTO>>() {}.getType();
             productDTOArrayList = gson.fromJson(product, listType);
         }
-//
-//        if(banner != null){
-////
-//            Type listType = new TypeToken<ArrayList<BannerDTO>>() {}.getType();
-//            bannerArrayList = gson.fromJson(banner, listType);
-////            loadBanner();
-//        }
+
+        if(banner != null){
+
+            Type listType = new TypeToken<ArrayList<BannerDTO>>() {}.getType();
+            bannerArrayList = gson.fromJson(banner, listType);
+            loadBanner();
+        }
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView2);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2, RecyclerView.VERTICAL, false);
@@ -182,10 +187,20 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void loadBanner(){
-//        bannerArrayList
-//        for(BannerDTO bannerDTO:){
-//
-//        }
+
+        List<CarouselItem> carouselItemList = new ArrayList<>();
+
+        BannerDTO dto = bannerArrayList.get(0);
+        for(String imagePath : dto.getImagePathList()){
+
+            CarouselItem carouselItem = new CarouselItem(imagePath);
+            carouselItemList.add(carouselItem);
+        }
+
+        ImageCarousel imageCarousel = findViewById(R.id.imageCarousel);
+        imageCarousel.setAutoPlay(true);
+        imageCarousel.setCarouselType(CarouselType.SHOWCASE);
+        imageCarousel.setData(carouselItemList);
 
     }
 
