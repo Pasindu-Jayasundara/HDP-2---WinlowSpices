@@ -9,6 +9,13 @@
     <string name="nav_orders">Orders</string>
     <string name="nav_cart">Cart</string>
 
+    <!--  weight category card  -->
+    <string name="weight">00g</string>
+    <string name="weight_price">Rs. 00.00</string>
+    <string name="weight_qty">0</string>
+    <string name="weight_minus">-</string>
+    <string name="weight_plus">+</string>
+
     <!--  product card  -->
     <string name="discount">0% Off</string>
     <string name="discount_product_name">Product</string>
