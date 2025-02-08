@@ -8,7 +8,6 @@ import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -16,26 +15,29 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.winlowcustomer.dto.BannerDTO;
 import com.example.winlowcustomer.dto.ProductDTO;
 import com.example.winlowcustomer.modal.NetworkConnection;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.example.winlowcustomer.modal.HomeRecyclerViewAdapter;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.search.SearchBar;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
+
+    ArrayList<ProductDTO> productDTOArrayList;
+    ArrayList<BannerDTO> bannerArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,27 +59,9 @@ public class HomeActivity extends AppCompatActivity {
                 .commit();
 
         // data load
-        Gson gson = new Gson();
-        SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
+        loadData();
 
-        String category = sharedPreferences.getString("category", null);
-        String product = sharedPreferences.getString("product", null);
-        String banner = sharedPreferences.getString("banner", null);
 
-        if (category != null) {
-            HashSet<String> categoryHashSet = gson.fromJson(category, HashSet.class);
-            loadCategories(categoryHashSet);
-        }
-
-        if(product != null){
-            HashMap<String, ProductDTO> productHashMap = gson.fromJson(product, HashMap.class);
-            loadProducts(productHashMap);
-        }
-
-        if(banner != null){
-            ArrayList<BannerDTO> bannerArrayList = gson.fromJson(banner, ArrayList.class);
-            loadBanners(bannerArrayList);
-        }
 
 
         // check network connection
@@ -128,19 +112,42 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    private void loadBanners(ArrayList<BannerDTO> bannerArrayList) {
+    private void loadData(){
 
-        for(BannerDTO bannerDTO:bannerArrayList){
+        Gson gson = new Gson();
+        SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
 
+        String category = sharedPreferences.getString("category", null);
+        String product = sharedPreferences.getString("product", null);
+        String banner = sharedPreferences.getString("banner", null);
+
+        if (category != null) {
+            Type listType = new TypeToken<HashSet<String>>() {}.getType();
+            HashSet<String> categoryHashSet = gson.fromJson(category, listType);
+            loadCategories(categoryHashSet);
         }
 
-    }
+        Log.i("cccd",product);
+        Log.i("cccd",banner);
 
-    private void loadProducts(HashMap<String, ProductDTO> productHashMap) {
+        if(product != null){
+            Type listType = new TypeToken<ArrayList<ProductDTO>>() {}.getType();
+            productDTOArrayList = gson.fromJson(product, listType);
+        }
+//
+//        if(banner != null){
+////
+//            Type listType = new TypeToken<ArrayList<BannerDTO>>() {}.getType();
+//            bannerArrayList = gson.fromJson(banner, listType);
+////            loadBanner();
+//        }
 
-        productHashMap.forEach((string, productDTO) -> {
+        RecyclerView recyclerView = findViewById(R.id.recyclerView2);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2, RecyclerView.VERTICAL, false);
+        recyclerView.setLayoutManager(gridLayoutManager);
 
-        });
+        HomeRecyclerViewAdapter homeRecyclerViewAdapter = new HomeRecyclerViewAdapter(productDTOArrayList);
+        recyclerView.setAdapter(homeRecyclerViewAdapter);
 
     }
 
@@ -171,6 +178,14 @@ public class HomeActivity extends AppCompatActivity {
 
     private void changeProductOrder(List<Integer> checkedIds) {
 
+
+    }
+
+    private void loadBanner(){
+//        bannerArrayList
+//        for(BannerDTO bannerDTO:){
+//
+//        }
 
     }
 

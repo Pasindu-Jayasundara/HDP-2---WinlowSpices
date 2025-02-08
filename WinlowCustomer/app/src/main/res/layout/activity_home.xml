@@ -66,29 +66,22 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <!--            <com.google.android.material.chip.Chip-->
-            <!--                android:id="@+id/chipAll"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:checkable="true"-->
-            <!--                android:checked="true"-->
-            <!--                android:text="@string/category_1" />-->
-
-            <!--            <com.google.android.material.chip.Chip-->
-            <!--                android:id="@+id/chipSpices"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:checkable="true"-->
-            <!--                android:text="@string/category_2" />-->
-
-            <!--            <com.google.android.material.chip.Chip-->
-            <!--                android:id="@+id/chipGiftPacks"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:checkable="true"-->
-            <!--                android:text="@string/category_3" />-->
         </com.google.android.material.chip.ChipGroup>
     </LinearLayout>
+
+    <org.imaginativeworld.whynotimagecarousel.ImageCarousel
+        android:id="@+id/imageCarousel"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:scrollIndicators="bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
+        app:showIndicator="true"
+        app:showNavigationButtons="false" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView2"
@@ -101,16 +94,8 @@
         app:layout_constraintBottom_toTopOf="@+id/fragmentContainerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
+        app:layout_constraintTop_toBottomOf="@+id/imageCarousel">
 
-        <!--        <org.imaginativeworld.whynotimagecarousel.ImageCarousel-->
-        <!--            android:id="@+id/imageCarousel"-->
-        <!--            android:layout_width="0dp"-->
-        <!--            android:layout_height="120dp"-->
-        <!--            android:layout_marginTop="24dp"-->
-        <!--            android:scrollIndicators="bottom"-->
-        <!--            app:showIndicator="true"-->
-        <!--            app:showNavigationButtons="false" />-->
     </androidx.recyclerview.widget.RecyclerView>
 
     <androidx.fragment.app.FragmentContainerView

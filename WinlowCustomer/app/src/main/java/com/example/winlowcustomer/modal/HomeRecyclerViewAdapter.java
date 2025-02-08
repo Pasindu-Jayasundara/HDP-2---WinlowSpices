@@ -1,5 +1,6 @@
 package com.example.winlowcustomer.modal;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,27 +9,32 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.winlowcustomer.ProductViewActivity;
 import com.example.winlowcustomer.R;
 import com.example.winlowcustomer.dto.ProductDTO;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolder> {
+public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerViewAdapter.ProductViewHolder> {
 
     ArrayList<ProductDTO> productDTOArrayList;
 
-    public class RecyclerViewHolder extends RecyclerView.ViewHolder{
+    public class ProductViewHolder extends RecyclerView.ViewHolder {
 
         ImageView productImage;
         FrameLayout discountBadge;
         TextView discountText;
         TextView productName;
         TextView productPrice;
+        ConstraintLayout productCardConstraintLayout;
 
-        public RecyclerViewHolder(@NonNull View itemView) {
+        public ProductViewHolder(@NonNull View itemView) {
             super(itemView);
 
             productImage = itemView.findViewById(R.id.imageView12);
@@ -36,30 +42,32 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             discountText = itemView.findViewById(R.id.textView58);
             productName = itemView.findViewById(R.id.textView53);
             productPrice = itemView.findViewById(R.id.textView54);
+            productCardConstraintLayout = itemView.findViewById(R.id.productCardContraintLayout);
         }
     }
 
-    public RecyclerViewAdapter(ArrayList<ProductDTO> productDTOArrayList) {
+    public HomeRecyclerViewAdapter(ArrayList<ProductDTO> productDTOArrayList) {
         this.productDTOArrayList = productDTOArrayList;
     }
 
     @NonNull
     @Override
-    public RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public HomeRecyclerViewAdapter.ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View productCard = layoutInflater.inflate(R.layout.product_card_layout,parent,false);
+        View productCard = layoutInflater.inflate(R.layout.product_card_layout, parent, false);
 
-        return new RecyclerViewHolder(productCard);
+        return new HomeRecyclerViewAdapter.ProductViewHolder(productCard);
+
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull HomeRecyclerViewAdapter.ProductViewHolder holder, int position) {
 
         ProductDTO productDTO = productDTOArrayList.get(position);
 
         String imageUrl = productDTO.getImagePath();
-        Glide.with(holder.productImage.getContext()) // Use context
+        Glide.with(holder.itemView.getContext()) // Use context
                 .load(imageUrl) // Load image URL
                 .placeholder(R.drawable.product_placeholder) // Optional: placeholder image
                 .error(R.drawable.product_placeholder) // Optional: error image
@@ -69,16 +77,26 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.productPrice.setVisibility(View.GONE);
 
         double discount = productDTO.getDiscount();
-        if(discount > 0){
+        if (discount > 0) {
             holder.discountBadge.setVisibility(View.VISIBLE);
 
-            String discountTxt = String.valueOf(discount)+"% Off";
+            String discountTxt = String.valueOf(discount) + "% Off";
             holder.discountText.setText(discountTxt);
-        }else{
+        } else {
             holder.discountBadge.setVisibility(View.GONE);
         }
 
         holder.productName.setText(productDTO.getName());
+        holder.productCardConstraintLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(v.getContext(), ProductViewActivity.class);
+                intent.putExtra("productDTO", productDTO);
+                v.getContext().startActivity(intent);
+
+            }
+        });
 
     }
 

@@ -51,7 +51,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private boolean isDataLoadingFinished;
-    private HashMap<String, ProductDTO> productHashMap = new HashMap<>();
+    private ArrayList<ProductDTO> productDTOArrayList =new ArrayList<>();
     private ArrayList<BannerDTO> bannerArrayList = new ArrayList<>();
     private HashSet<String> categoryHashSet = new HashSet<>();
 
@@ -107,11 +107,7 @@ public class MainActivity extends AppCompatActivity {
                                 List<WeightCategoryDTO> weightCategoryDTOList = gson.fromJson(weightCategoryJson, listType);
 
                                 categoryHashSet.add(document.getString("category"));
-                                Log.i("asd", "onComplete: " + document);
-                                Log.i("asd", "onComplete: " + document.getString("category"));
-                                Log.i("asd", "onComplete: " + categoryHashSet);
-                                productHashMap.put(
-                                        document.getId(),
+                                productDTOArrayList.add(
                                         new ProductDTO(
                                                 document.getId(),
                                                 document.getString("category"),
@@ -129,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
                             SharedPreferences.Editor editor = sharedPreferences.edit();
 
                             String categoryJson = gson.toJson(categoryHashSet);
-                            String productJson = gson.toJson(productHashMap);
+                            String productJson = gson.toJson(productDTOArrayList);
 
                             editor.putString("category", categoryJson);
                             editor.putString("product", productJson);
@@ -180,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        if (productHashMap.isEmpty()) {
+        if (productDTOArrayList.isEmpty()) {
             // load recently viewed products
 
             SQLiteHelper helper = new SQLiteHelper(getApplicationContext(), "winlow.db", null, 1);
@@ -205,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
                         productDTO.setWeightCategoryDTOList(new ArrayList<>());
                         productDTO.setImagePath(imagePath);
 
-                        productHashMap.put(docId, productDTO);
+                        productDTOArrayList.add(productDTO);
 
                     }
 
