@@ -1,6 +1,7 @@
 package com.example.winlowcustomer.modal;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.example.winlowcustomer.ProductViewActivity;
 import com.example.winlowcustomer.R;
 import com.example.winlowcustomer.dto.ProductDTO;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,7 +94,10 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
             public void onClick(View v) {
 
                 Intent intent = new Intent(v.getContext(), ProductViewActivity.class);
-                intent.putExtra("productDTO", productDTO);
+                Gson gson = new Gson();
+
+                intent.putExtra("productDTO", gson.toJson(productDTO));
+
                 v.getContext().startActivity(intent);
 
             }

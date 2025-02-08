@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,10 +14,11 @@ import com.example.winlowcustomer.R;
 import com.example.winlowcustomer.dto.WeightCategoryDTO;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SingleProductViewRecyclerViewAdapter extends RecyclerView.Adapter<SingleProductViewRecyclerViewAdapter.SingleProductViewRecyclerViewHolder>{
 
-    ArrayList<WeightCategoryDTO> weightCategoryDTOArrayList;
+    List<WeightCategoryDTO> weightCategoryDTOArrayList;
 
     public class SingleProductViewRecyclerViewHolder extends RecyclerView.ViewHolder{
 
@@ -37,7 +39,7 @@ public class SingleProductViewRecyclerViewAdapter extends RecyclerView.Adapter<S
         }
     }
 
-    public SingleProductViewRecyclerViewAdapter(ArrayList<WeightCategoryDTO> weightCategoryDTOArrayList) {
+    public SingleProductViewRecyclerViewAdapter(List<WeightCategoryDTO> weightCategoryDTOArrayList) {
         this.weightCategoryDTOArrayList = weightCategoryDTOArrayList;
     }
 
@@ -61,7 +63,7 @@ public class SingleProductViewRecyclerViewAdapter extends RecyclerView.Adapter<S
         String unitPrice = "Rs. "+ String.valueOf(weightCategoryDTO.getUnitPrice());
         holder.weightUnitPrice.setText(unitPrice);
 
-        holder.selectedQty.setText(0);
+        holder.selectedQty.setText("0");
 
         holder.weightMinus.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,6 +73,8 @@ public class SingleProductViewRecyclerViewAdapter extends RecyclerView.Adapter<S
                 if(qty>0){
                     qty--;
                     holder.selectedQty.setText(String.valueOf(qty));
+                }else{
+                    Toast.makeText(v.getContext(), R.string.weight_zero_qty, Toast.LENGTH_SHORT).show();
                 }
 
             }

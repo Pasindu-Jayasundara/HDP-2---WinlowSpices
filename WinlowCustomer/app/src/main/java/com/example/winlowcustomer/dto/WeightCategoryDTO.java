@@ -4,30 +4,30 @@ import java.io.Serializable;
 
 public class WeightCategoryDTO implements Serializable {
 
-    private double weight;
-    private double unitPrice;
+    private long weight;
+    private long unitPrice;
 
     public WeightCategoryDTO() {
     }
 
-    public WeightCategoryDTO(double weight, double unitPrice) {
+    public WeightCategoryDTO(long weight, long unitPrice) {
         this.weight = weight;
         this.unitPrice = unitPrice;
     }
 
-    public double getWeight() {
+    public long getWeight() {
         return weight;
     }
 
-    public void setWeight(double weight) {
+    public void setWeight(long weight) {
         this.weight = weight;
     }
 
-    public double getUnitPrice() {
+    public long getUnitPrice() {
         return unitPrice;
     }
 
-    public void setUnitPrice(double unitPrice) {
+    public void setUnitPrice(long unitPrice) {
         this.unitPrice = unitPrice;
     }
 }

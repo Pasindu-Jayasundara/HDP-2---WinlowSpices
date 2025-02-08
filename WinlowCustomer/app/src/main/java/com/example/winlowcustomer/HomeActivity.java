@@ -128,7 +128,6 @@ public class HomeActivity extends AppCompatActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                progressBar.setVisibility(View.VISIBLE);
 
                 MainLoadData.mainLoadData(productDTOArrayList, bannerArrayList, categoryHashSet, false, HomeActivity.this);
                 loadData();
@@ -136,7 +135,6 @@ public class HomeActivity extends AppCompatActivity {
                 RecyclerView recyclerView = findViewById(R.id.recyclerView2);
                 recyclerView.getAdapter().notifyDataSetChanged();
 
-                progressBar.setVisibility(View.GONE);
 
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -158,9 +156,6 @@ public class HomeActivity extends AppCompatActivity {
             categoryHashSet = gson.fromJson(category, listType);
             loadCategories(categoryHashSet);
         }
-
-        Log.i("cccd",product);
-        Log.i("cccd",banner);
 
         if(product != null){
             Type listType = new TypeToken<ArrayList<ProductDTO>>() {}.getType();
