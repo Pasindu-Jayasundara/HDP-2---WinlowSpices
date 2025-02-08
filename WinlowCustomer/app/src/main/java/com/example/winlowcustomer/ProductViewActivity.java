@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.winlowcustomer.dto.ProductDTO;
 import com.example.winlowcustomer.dto.WeightCategoryDTO;
+import com.example.winlowcustomer.modal.CartOperations;
 import com.example.winlowcustomer.modal.SingleProductViewRecyclerViewAdapter;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -146,6 +147,8 @@ public class ProductViewActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                CartOperations cartOperations = new CartOperations();
+                cartOperations.addToCart(productDTO, getApplicationContext());
 
             }
         });
