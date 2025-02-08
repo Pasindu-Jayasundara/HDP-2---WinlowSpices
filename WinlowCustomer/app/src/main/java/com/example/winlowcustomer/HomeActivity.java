@@ -121,9 +121,6 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         // refresh
-        ProgressBar progressBar = findViewById(R.id.progressBar2);
-        progressBar.setVisibility(View.GONE);
-
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.refreshLayout);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -154,7 +151,10 @@ public class HomeActivity extends AppCompatActivity {
         if (category != null) {
             Type listType = new TypeToken<HashSet<String>>() {}.getType();
             categoryHashSet = gson.fromJson(category, listType);
-            loadCategories(categoryHashSet);
+
+            ChipGroup chipGroup = findViewById(R.id.categoryChipGroup);
+
+            loadCategories(categoryHashSet,chipGroup);
         }
 
         if(product != null){
@@ -178,10 +178,9 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    private void loadCategories(HashSet<String> categoryHashSet) {
+    public void loadCategories(HashSet<String> categoryHashSet,ChipGroup chipGroup) {
 
         boolean isFirstTime = true;
-        ChipGroup chipGroup = findViewById(R.id.categoryChipGroup);
 
         for(String category : categoryHashSet){
 

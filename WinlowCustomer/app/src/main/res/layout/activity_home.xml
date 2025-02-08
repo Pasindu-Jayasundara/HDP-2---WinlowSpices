@@ -51,15 +51,6 @@
         app:layout_constraintStart_toStartOf="@+id/textView4"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
-    <ProgressBar
-        android:id="@+id/progressBar2"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="35dp"
-        android:layout_height="29dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/refreshLayout" />
-
     <LinearLayout
         android:id="@+id/linearLayout3"
         android:layout_width="0dp"
@@ -73,7 +64,8 @@
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/categoryChipGroup"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            app:singleSelection="true">
 
         </com.google.android.material.chip.ChipGroup>
     </LinearLayout>
