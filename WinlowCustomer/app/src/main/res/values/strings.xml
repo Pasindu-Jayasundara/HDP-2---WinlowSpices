@@ -9,6 +9,11 @@
     <string name="nav_orders">Orders</string>
     <string name="nav_cart">Cart</string>
 
+    <!--  product card  -->
+    <string name="discount">0% Off</string>
+    <string name="discount_product_name">Product</string>
+    <string name="discount_product_price">Rs. 5000.00</string>
+
     <!--  network connection  -->
     <string name="connection_lost">Internet Connection Lost</string>
     <string name="connection_unavailable">Internet Connection UnAvailable</string>

@@ -57,23 +57,28 @@ public class HomeActivity extends AppCompatActivity {
                 .commit();
 
         // data load
-        SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
         Gson gson = new Gson();
+        SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
+
         String category = sharedPreferences.getString("category", null);
         String product = sharedPreferences.getString("product", null);
         String banner = sharedPreferences.getString("banner", null);
 
-        HashSet<String> categoryHashSet;
         if (category != null) {
-            categoryHashSet = gson.fromJson(category, HashSet.class);
-        }else{
-            categoryHashSet = new HashSet<String>();
+            HashSet<String> categoryHashSet = gson.fromJson(category, HashSet.class);
+            loadCategories(categoryHashSet);
         }
 
+        if(product != null){
+            HashMap<String, ProductDTO> productHashMap = gson.fromJson(product, HashMap.class);
+            loadProducts(productHashMap);
+        }
 
-        loadCategories(categoryHashSet);
-//        loadProducts(MainActivity.productHashMap);
-//        loadBanners(MainActivity.bannerArrayList);
+        if(banner != null){
+            ArrayList<BannerDTO> bannerArrayList = gson.fromJson(banner, ArrayList.class);
+            loadBanners(bannerArrayList);
+        }
+
 
         // check network connection
         NetworkConnection.register(getApplicationContext());
