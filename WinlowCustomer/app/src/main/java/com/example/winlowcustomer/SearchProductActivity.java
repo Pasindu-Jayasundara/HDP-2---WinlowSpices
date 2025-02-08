@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.winlowcustomer.dto.BannerDTO;
 import com.example.winlowcustomer.dto.ProductDTO;
 import com.example.winlowcustomer.modal.HomeRecyclerViewAdapter;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
@@ -30,6 +31,7 @@ import java.util.HashSet;
 public class SearchProductActivity extends AppCompatActivity {
 
     ArrayList<ProductDTO> productDTOArrayList;
+    ArrayList<ProductDTO> productDTOArrayListOriginal;
     HashSet<String> categoryHashSet;
 
     @Override
@@ -83,14 +85,21 @@ public class SearchProductActivity extends AppCompatActivity {
     }
 
     private void filterProducts(String searchTxt) {
-        ArrayList<ProductDTO> filteredList = new ArrayList<>();
 
-        if (searchTxt.isEmpty()) {
-            filteredList.addAll(productDTOArrayList);
-        } else {
-            for (ProductDTO product : productDTOArrayList) {
-                if (product.getName().toLowerCase().contains(searchTxt.toLowerCase())) {
-                    filteredList.add(product);
+        ChipGroup categoryChipGroup = findViewById(R.id.chipGroup2);
+        int checkedChipId = categoryChipGroup.getCheckedChipId();
+        Chip chip = findViewById(checkedChipId);
+
+        String chipTxt = chip.getText().toString();
+
+        if(chipTxt.equals("All")){
+            productDTOArrayList = productDTOArrayListOriginal;
+
+        }else{
+            for(ProductDTO productDTO : productDTOArrayList){
+                if(productDTO.getCategory().equals(chipTxt) && productDTO.getName().toLowerCase().contains(searchTxt.toLowerCase())){
+                    productDTOArrayList.remove(productDTO);
+                    productDTOArrayList.add(0, productDTO);
                 }
             }
         }
@@ -120,6 +129,7 @@ public class SearchProductActivity extends AppCompatActivity {
         if(product != null){
             Type listType = new TypeToken<ArrayList<ProductDTO>>() {}.getType();
             productDTOArrayList = gson.fromJson(product, listType);
+            productDTOArrayListOriginal = gson.fromJson(product, listType);
         }
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView3);

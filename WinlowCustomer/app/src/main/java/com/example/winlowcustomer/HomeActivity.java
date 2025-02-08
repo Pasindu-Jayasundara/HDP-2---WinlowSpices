@@ -46,6 +46,7 @@ import java.util.List;
 public class HomeActivity extends AppCompatActivity {
 
     ArrayList<ProductDTO> productDTOArrayList;
+    ArrayList<ProductDTO> productDTOArrayListOriginal;
     ArrayList<BannerDTO> bannerArrayList;
     HashSet<String> categoryHashSet;
 
@@ -160,6 +161,7 @@ public class HomeActivity extends AppCompatActivity {
         if(product != null){
             Type listType = new TypeToken<ArrayList<ProductDTO>>() {}.getType();
             productDTOArrayList = gson.fromJson(product, listType);
+            productDTOArrayListOriginal = gson.fromJson(product, listType);
         }
 
         if(banner != null){
@@ -209,10 +211,14 @@ public class HomeActivity extends AppCompatActivity {
         Chip chip = findViewById(checkedIds.get(0));
         String chipTxt = chip.getText().toString();
 
-        for(ProductDTO productDTO : productDTOArrayList){
-            if(productDTO.getCategory().equals(chipTxt)){
-                productDTOArrayList.remove(productDTO);
-                productDTOArrayList.add(0, productDTO);
+        if (chipTxt.equals("All")){
+            productDTOArrayList = productDTOArrayListOriginal;
+        }else{
+            for(ProductDTO productDTO : productDTOArrayList){
+                if(productDTO.getCategory().equals(chipTxt)){
+                    productDTOArrayList.remove(productDTO);
+                    productDTOArrayList.add(0, productDTO);
+                }
             }
         }
 
