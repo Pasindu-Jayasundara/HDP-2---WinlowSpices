@@ -148,7 +148,7 @@ public class ProductViewActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 CartOperations cartOperations = new CartOperations();
-                cartOperations.addToCart(productDTO, getApplicationContext());
+                cartOperations.addToCart(productDTO, ProductViewActivity.this);
 
             }
         });

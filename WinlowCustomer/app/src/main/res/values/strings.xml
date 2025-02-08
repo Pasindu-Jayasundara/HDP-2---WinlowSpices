@@ -4,6 +4,10 @@
     <!--  welcome  -->
     <string name="welcome_animation_text">WinloSpices</string>
 
+    <!--  login  -->
+    <string name="not_logged_in">Please login to continue</string>
+    <string name="not_logged_in_btn">Login</string>
+
     <!--  bottom navigation  -->
     <string name="nav_home">Home</string>
     <string name="nav_orders">Orders</string>
