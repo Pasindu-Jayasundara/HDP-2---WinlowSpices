@@ -13,13 +13,13 @@ public class ProductDTO implements Serializable {
     private String stock;
     private double discount;
     private List<WeightCategoryDTO> weightCategoryDTOList;
-
     private String imagePath;
+    private String referencePath;
 
     public ProductDTO() {
     }
 
-    public ProductDTO(String id, String category, String name, String stock, double discount, List<WeightCategoryDTO> weightCategoryDTOList , String imagePath) {
+    public ProductDTO(String id, String category, String name, String stock, double discount, List<WeightCategoryDTO> weightCategoryDTOList, String imagePath, String referencePath) {
         this.id = id;
         this.category = category;
         this.name = name;
@@ -27,14 +27,7 @@ public class ProductDTO implements Serializable {
         this.discount = discount;
         this.weightCategoryDTOList = weightCategoryDTOList;
         this.imagePath = imagePath;
-    }
-
-    public String getImagePath() {
-        return imagePath;
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
+        this.referencePath = referencePath;
     }
 
     public String getId() {
@@ -77,11 +70,27 @@ public class ProductDTO implements Serializable {
         this.discount = discount;
     }
 
-    public @Nullable List<WeightCategoryDTO> getWeightCategoryDTOList() {
+    public List<WeightCategoryDTO> getWeightCategoryDTOList() {
         return weightCategoryDTOList;
     }
 
     public void setWeightCategoryDTOList(List<WeightCategoryDTO> weightCategoryDTOList) {
         this.weightCategoryDTOList = weightCategoryDTOList;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public String getReferencePath() {
+        return referencePath;
+    }
+
+    public void setReferencePath(String referencePath) {
+        this.referencePath = referencePath;
     }
 }

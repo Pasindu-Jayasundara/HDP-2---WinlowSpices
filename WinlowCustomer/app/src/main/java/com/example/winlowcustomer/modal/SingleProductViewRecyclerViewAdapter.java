@@ -12,15 +12,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.winlowcustomer.R;
 import com.example.winlowcustomer.dto.WeightCategoryDTO;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-public class SingleProductViewRecyclerViewAdapter extends RecyclerView.Adapter<SingleProductViewRecyclerViewAdapter.SingleProductViewRecyclerViewHolder>{
+public class SingleProductViewRecyclerViewAdapter extends RecyclerView.Adapter<SingleProductViewRecyclerViewAdapter.SingleProductViewRecyclerViewHolder> {
+
+    public static HashMap<Long, Integer> weightHashMap;
 
     List<WeightCategoryDTO> weightCategoryDTOArrayList;
 
-    public class SingleProductViewRecyclerViewHolder extends RecyclerView.ViewHolder{
+    public class SingleProductViewRecyclerViewHolder extends RecyclerView.ViewHolder {
 
         TextView weight;
         TextView weightUnitPrice;
@@ -48,7 +53,6 @@ public class SingleProductViewRecyclerViewAdapter extends RecyclerView.Adapter<S
     public SingleProductViewRecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View card = LayoutInflater.from(parent.getContext()).inflate(R.layout.single_weight_category_layout, parent, false);
-
         return new SingleProductViewRecyclerViewHolder(card);
     }
 
@@ -57,10 +61,10 @@ public class SingleProductViewRecyclerViewAdapter extends RecyclerView.Adapter<S
 
         WeightCategoryDTO weightCategoryDTO = weightCategoryDTOArrayList.get(position);
 
-        String weight = String.valueOf(weightCategoryDTO.getWeight())+ (weightCategoryDTO.getWeight()>1000?"Kg":"g");
+        String weight = String.valueOf(weightCategoryDTO.getWeight()) + (weightCategoryDTO.getWeight() > 1000 ? "Kg" : "g");
         holder.weight.setText(weight);
 
-        String unitPrice = "Rs. "+ String.valueOf(weightCategoryDTO.getUnitPrice());
+        String unitPrice = "Rs. " + String.valueOf(weightCategoryDTO.getUnitPrice());
         holder.weightUnitPrice.setText(unitPrice);
 
         holder.selectedQty.setText("0");
@@ -70,10 +74,12 @@ public class SingleProductViewRecyclerViewAdapter extends RecyclerView.Adapter<S
             public void onClick(View v) {
 
                 int qty = Integer.parseInt(holder.selectedQty.getText().toString());
-                if(qty>0){
+                if (qty > 0) {
                     qty--;
                     holder.selectedQty.setText(String.valueOf(qty));
-                }else{
+
+                    catList(qty,weightCategoryDTO.getWeight());
+                } else {
                     Toast.makeText(v.getContext(), R.string.weight_zero_qty, Toast.LENGTH_SHORT).show();
                 }
 
@@ -88,6 +94,8 @@ public class SingleProductViewRecyclerViewAdapter extends RecyclerView.Adapter<S
                 qty++;
                 holder.selectedQty.setText(String.valueOf(qty));
 
+                catList(qty,weightCategoryDTO.getWeight());
+
             }
         });
 
@@ -96,6 +104,15 @@ public class SingleProductViewRecyclerViewAdapter extends RecyclerView.Adapter<S
     @Override
     public int getItemCount() {
         return weightCategoryDTOArrayList.size();
+    }
+
+    private void catList(int qty,long weight){
+
+        if (weightHashMap == null) {
+            weightHashMap = new HashMap<>();
+        }
+
+        weightHashMap.put(weight,qty);
     }
 
 }

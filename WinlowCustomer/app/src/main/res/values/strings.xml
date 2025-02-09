@@ -15,6 +15,10 @@
     <string name="login_success">Login Success</string>
     <string name="user_not_found">Please Register First</string>
 
+    <!--  add to cart  -->
+    <string name="add_to_cart_success">Product Adding Success</string>
+    <string name="add_to_cart_failed">Product Adding Failed</string>
+
     <!--  register  -->
     <string name="step_1_title">Personal Info</string>
     <string name="step_1_name">Name</string>

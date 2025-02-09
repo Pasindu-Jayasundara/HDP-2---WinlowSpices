@@ -73,7 +73,8 @@ public class MainLoadData {
                                                 document.getString("stock"),
                                                 document.getDouble("discount"),
                                                 weightCategoryDTOList,
-                                                document.getString("image_path")
+                                                document.getString("image_path"),
+                                                document.getReference().getPath()
                                         )
                                 );
 

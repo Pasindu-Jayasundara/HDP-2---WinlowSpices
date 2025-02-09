@@ -7,7 +7,7 @@ public class UserDTO implements Serializable {
 
     private String id;
     private List<String> address;
-    private List<String> cart;
+//    private List<String> cart;
     private String email;
     private String mobile;
     private String name;
@@ -17,10 +17,11 @@ public class UserDTO implements Serializable {
     public UserDTO() {
     }
 
-    public UserDTO(String id, List<String> address, List<String> cart, String email, String mobile, String name, List<String> orderHistory, List<PaymentCardDTO> paymentCard) {
+//    List<String> cart,
+    public UserDTO(String id, List<String> address,  String email, String mobile, String name, List<String> orderHistory, List<PaymentCardDTO> paymentCard) {
         this.id = id;
         this.address = address;
-        this.cart = cart;
+//        this.cart = cart;
         this.email = email;
         this.mobile = mobile;
         this.name = name;
@@ -44,13 +45,13 @@ public class UserDTO implements Serializable {
         this.address = address;
     }
 
-    public List<String> getCart() {
-        return cart;
-    }
+//    public List<String> getCart() {
+//        return cart;
+//    }
 
-    public void setCart(List<String> cart) {
-        this.cart = cart;
-    }
+//    public void setCart(List<String> cart) {
+//        this.cart = cart;
+//    }
 
     public String getEmail() {
         return email;
