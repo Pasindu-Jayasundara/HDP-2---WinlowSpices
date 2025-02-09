@@ -27,6 +27,8 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 
 public class SearchProductActivity extends AppCompatActivity {
 
@@ -93,19 +95,27 @@ public class SearchProductActivity extends AppCompatActivity {
         String chipTxt = chip.getText().toString();
 
         if(chipTxt.equals("All")){
-            productDTOArrayList = productDTOArrayListOriginal;
+            productDTOArrayList = new ArrayList<>(productDTOArrayListOriginal);
 
         }else{
-            for(ProductDTO productDTO : productDTOArrayList){
-                if(productDTO.getCategory().equals(chipTxt) && productDTO.getName().toLowerCase().contains(searchTxt.toLowerCase())){
-                    productDTOArrayList.remove(productDTO);
-                    productDTOArrayList.add(0, productDTO);
+            List<ProductDTO> reorderedList = new ArrayList<>();
+            Iterator<ProductDTO> iterator = productDTOArrayList.iterator();
+
+            while (iterator.hasNext()) {
+                ProductDTO productDTO = iterator.next();
+                if (productDTO.getCategory().equals(chipTxt) && productDTO.getName().toLowerCase().contains(searchTxt.toLowerCase())) {
+                    reorderedList.add(productDTO);
+                    iterator.remove(); // Safe removal using iterator
                 }
             }
+            productDTOArrayList.addAll(0, reorderedList); // Add at the beginning
+
         }
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView3);
-        recyclerView.getAdapter().notifyDataSetChanged();
+        if (recyclerView.getAdapter() != null) {
+            recyclerView.getAdapter().notifyDataSetChanged();
+        }
     }
 
 
@@ -123,7 +133,7 @@ public class SearchProductActivity extends AppCompatActivity {
 
             ChipGroup chipGroup = findViewById(R.id.chipGroup2);
 
-            new HomeActivity().loadCategories(categoryHashSet,chipGroup);
+            new HomeActivity().loadCategories(categoryHashSet,chipGroup,this);
         }
 
         if(product != null){

@@ -1,5 +1,7 @@
 package com.example.winlowcustomer;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -156,7 +158,7 @@ public class HomeActivity extends AppCompatActivity {
 
             ChipGroup chipGroup = findViewById(R.id.categoryChipGroup);
 
-            loadCategories(categoryHashSet,chipGroup);
+            loadCategories(categoryHashSet,chipGroup,this);
         }
 
         if(product != null){
@@ -181,13 +183,13 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    public void loadCategories(HashSet<String> categoryHashSet,ChipGroup chipGroup) {
+    public void loadCategories(HashSet<String> categoryHashSet, ChipGroup chipGroup, Activity activity) {
 
         boolean isFirstTime = true;
 
         for(String category : categoryHashSet){
 
-            Chip chip = new Chip(new ContextThemeWrapper(this, com.mobven.progress.R.style.Widget_MaterialComponents_Chip_Filter));
+            Chip chip = new Chip(new ContextThemeWrapper(activity, com.mobven.progress.R.style.Widget_MaterialComponents_Chip_Filter));
             chip.setText(category);
             chip.setCheckable(true);
             chip.setClickable(true);
