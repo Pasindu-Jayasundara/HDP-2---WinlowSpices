@@ -18,6 +18,7 @@
     <!--  add to cart  -->
     <string name="add_to_cart_success">Product Adding Success</string>
     <string name="add_to_cart_failed">Product Adding Failed</string>
+    <string name="add_to_cart_qty">Please Select Product Count</string>
 
     <!--  register  -->
     <string name="step_1_title">Personal Info</string>
@@ -28,6 +29,8 @@
     <string name="step_2_desc">The otp code has sent to your mobile by sms, check your message list</string>
     <string name="step_2_otp">Received OTP</string>
     <string name="step_2_resend">Resend OTP</string>
+    <string name="step_2_resending">Resending OTP …</string>
+    <string name="step_2_resendIn">Resend OTP In : </string>
     <string name="step_3_delivery_address">My Delivery Address</string>
     <string name="step_1_not_complete">Please Provide All Details</string>
     <string name="step_3_not_complete">Please Provide the Address</string>

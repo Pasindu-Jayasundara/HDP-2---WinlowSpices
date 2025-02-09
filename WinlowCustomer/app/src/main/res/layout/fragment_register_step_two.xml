@@ -20,7 +20,8 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/otpChar6"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:maxLength="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -36,7 +37,8 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/otpChar5"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:maxLength="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -52,7 +54,8 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/otpChar4"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:maxLength="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -68,13 +71,16 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/otpChar3"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:maxLength="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/textView67"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="24dp"
         android:text="@string/step_2_title"
         android:textSize="22sp"
         android:textStyle="bold"
@@ -85,8 +91,11 @@
         android:id="@+id/textView68"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="10dp"
         android:text="@string/step_2_desc"
+        android:textColor="@color/design_default_color_secondary_variant"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -96,6 +105,7 @@
         android:id="@+id/textView69"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="50dp"
         android:text="@string/step_2_otp"
         android:textSize="18sp"
@@ -115,7 +125,8 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/otpChar2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:maxLength="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -131,7 +142,8 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/otpChar1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:maxLength="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView

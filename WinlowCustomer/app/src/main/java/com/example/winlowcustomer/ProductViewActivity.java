@@ -9,6 +9,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,6 +31,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ProductViewActivity extends AppCompatActivity {
 
@@ -111,8 +113,22 @@ public class ProductViewActivity extends AppCompatActivity {
                             List<WeightCategoryDTO> weightCategoryDTOList = new ArrayList<>();
 
                             for (Map<String, Object> weightCategory : weightCategories) {
-                                long weight = (long) weightCategory.get("weight");
-                                long unitPrice = (long) weightCategory.get("unit_price");
+
+                                double weight;
+                                double unitPrice;
+
+//                                try {
+
+                                    weight = Double.parseDouble(String.valueOf(weightCategory.get("weight")));
+                                    unitPrice = Double.parseDouble(String.valueOf(weightCategory.get("unit_price")));
+
+//                                }catch (Exception e){
+//
+//                                    weight = (long) weightCategory.get("weight");
+//                                    unitPrice = (long) weightCategory.get("unit_price");
+//
+//                                }
+
 
                                 WeightCategoryDTO weightCategoryDTO = new WeightCategoryDTO();
                                 weightCategoryDTO.setWeight(weight);
@@ -126,7 +142,7 @@ public class ProductViewActivity extends AppCompatActivity {
                         }
 
                         if(productDTO.getWeightCategoryDTOList() != null && !productDTO.getWeightCategoryDTOList().isEmpty()){
-                            SingleProductViewRecyclerViewAdapter singleProductViewRecyclerViewAdapter = new SingleProductViewRecyclerViewAdapter(productDTO.getWeightCategoryDTOList());
+                            SingleProductViewRecyclerViewAdapter singleProductViewRecyclerViewAdapter = new SingleProductViewRecyclerViewAdapter(productDTO);
                             recyclerView.setAdapter(singleProductViewRecyclerViewAdapter);
                         }
 
@@ -147,11 +163,23 @@ public class ProductViewActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                CartOperations cartOperations = new CartOperations();
-                cartOperations.addToCart(productDTO, ProductViewActivity.this);
+                if (SingleProductViewRecyclerViewAdapter.weightHashMap != null && !SingleProductViewRecyclerViewAdapter.weightHashMap.isEmpty()) {
+                    CartOperations cartOperations = new CartOperations();
+                    cartOperations.addToCart(productDTO, ProductViewActivity.this);
+                }else{
+                    Toast.makeText(ProductViewActivity.this,R.string.add_to_cart_qty,Toast.LENGTH_LONG).show();
+                }
+
 
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        SingleProductViewRecyclerViewAdapter.weightHashMap = null;
     }
 }

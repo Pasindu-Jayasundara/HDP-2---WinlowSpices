@@ -11,6 +11,8 @@
         android:id="@+id/textView71"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="24dp"
         android:text="@string/step_3_delivery_address"
         android:textSize="22sp"
         android:textStyle="bold"
@@ -18,9 +20,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="413dp"
+        android:layout_width="0dp"
         android:layout_height="161dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

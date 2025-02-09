@@ -202,7 +202,7 @@ public class CartOperations {
                                             if (!weightHashMap.isEmpty()) {
                                                 // add new weight category
 
-                                                for (Long weight : weightHashMap.keySet()) {
+                                                for (double weight : weightHashMap.keySet()) {
 
                                                     CartWeightCategoryDTO cartWeightCategoryDTO = new CartWeightCategoryDTO();
                                                     cartWeightCategoryDTO.setWeight(weight);
@@ -250,7 +250,7 @@ public class CartOperations {
                                     if (!weightHashMap.isEmpty()) {
                                         // add new weight category
 
-                                        for (Long weight : weightHashMap.keySet()) {
+                                        for (double weight : weightHashMap.keySet()) {
 
                                             CartWeightCategoryDTO cartWeightCategoryDTO = new CartWeightCategoryDTO();
                                             cartWeightCategoryDTO.setWeight(weight);

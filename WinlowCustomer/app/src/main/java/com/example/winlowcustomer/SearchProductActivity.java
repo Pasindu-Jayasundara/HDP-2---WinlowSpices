@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -63,11 +65,13 @@ public class SearchProductActivity extends AppCompatActivity {
         //search
         TextInputEditText searchTxt = findViewById(R.id.searchText);
         searchTxt.requestFocus();
-        searchTxt.setOnKeyListener(new View.OnKeyListener() {
+        searchTxt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 
-                if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE ||
+                        (event != null && event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+
                     filterProducts(searchTxt.getText().toString().trim());
                     return true;
                 }
@@ -75,6 +79,18 @@ public class SearchProductActivity extends AppCompatActivity {
                 return false;
             }
         });
+//        searchTxt.setOnKeyListener(new View.OnKeyListener() {
+//            @Override
+//            public boolean onKey(View v, int keyCode, KeyEvent event) {
+//
+//                if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+//                    filterProducts(searchTxt.getText().toString().trim());
+//                    return true;
+//                }
+//
+//                return false;
+//            }
+//        });
         ImageButton searchBtn = findViewById(R.id.imageButton4);
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -4,9 +4,11 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -74,14 +76,14 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                login();
+                sendOTP();
 
             }
         });
 
     }
 
-    private void login() {
+    private void sendOTP() {
 
         TextInputEditText mobileNumber = findViewById(R.id.loginMobile);
         String stringMobileNumber = mobileNumber.getText().toString();
@@ -93,13 +95,13 @@ public class LoginActivity extends AppCompatActivity {
             // show dialog popup to enter otp
             LayoutInflater layoutInflater = getLayoutInflater();
             View inflate = layoutInflater.inflate(R.layout.login_get_user_entered_otp_dialog_customize_view, null, false);
+            TextView otpInvalidText = inflate.findViewById(R.id.textView73);
+            otpInvalidText.setVisibility(View.GONE);
 
             AlertDialog alertDialog = new AlertDialog.Builder(LoginActivity.this)
                     .setView(inflate)
                     .setCancelable(false)
                     .show();
-
-            final String[] enteredOtp = {""};
 
             Button dialogButton = inflate.findViewById(R.id.button15);
             dialogButton.setOnClickListener(new View.OnClickListener() {
@@ -107,46 +109,52 @@ public class LoginActivity extends AppCompatActivity {
                 public void onClick(View v) {
 
                     TextInputEditText dialogOtp = inflate.findViewById(R.id.dialogOtp);
-                    enteredOtp[0] = dialogOtp.getText().toString();
 
-                    alertDialog.dismiss();
+                    if (!dialogOtp.getText().toString().equals(otp)) {
+                        otpInvalidText.setVisibility(View.VISIBLE);
+                    } else {
+                        alertDialog.dismiss();
+
+                        otpMatched(stringMobileNumber);
+                    }
 
                 }
             });
 
 
-            if (otp.equals(enteredOtp[0])) {
+        }
 
-                if (!isNewUser(stringMobileNumber)) {
+    }
 
-                    Toast.makeText(getApplicationContext(), R.string.login_success, Toast.LENGTH_LONG).show();
+    private void otpMatched(String stringMobileNumber) {
+        Log.i("otpMatched", "aaaaaaaaaaaa");
 
-                    Intent receivedIntent = getIntent();
-                    String fromCart = receivedIntent.getStringExtra("fromCart");
-                    String productDTO = receivedIntent.getStringExtra("productDTO");
+        if (!isNewUser(stringMobileNumber)) {
+            Log.i("otpMatched", "bbbbbbbbbbbbbbbbbbb");
 
-                    Gson gson = new Gson();
-                    if (gson.fromJson(fromCart, Boolean.class)) {
+            Toast.makeText(getApplicationContext(), R.string.login_success, Toast.LENGTH_LONG).show();
 
-                        ProductDTO productDTO1 = gson.fromJson(productDTO, ProductDTO.class);
-                        if (productDTO1 != null) {
+            Intent receivedIntent = getIntent();
+            String fromCart = receivedIntent.getStringExtra("fromCart");
+            String productDTO = receivedIntent.getStringExtra("productDTO");
 
-                            CartOperations cartOperations = new CartOperations();
-                            cartOperations.addToCart(productDTO1, LoginActivity.this);
+            Gson gson = new Gson();
+            if (gson.fromJson(fromCart, Boolean.class)) {
 
-                        }
+                ProductDTO productDTO1 = gson.fromJson(productDTO, ProductDTO.class);
+                if (productDTO1 != null) {
 
-                        Intent intent = new Intent(LoginActivity.this, ProductViewActivity.class);
-                        startActivity(intent);
-                    }
+                    CartOperations cartOperations = new CartOperations();
+                    cartOperations.addToCart(productDTO1, LoginActivity.this);
 
                 }
 
-            } else {
-                Toast.makeText(getApplicationContext(), R.string.invalid_otp, Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(LoginActivity.this, ProductViewActivity.class);
+                startActivity(intent);
             }
 
-
+        }else{
+            Toast.makeText(LoginActivity.this, R.string.user_not_found, Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -157,7 +165,7 @@ public class LoginActivity extends AppCompatActivity {
 
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         firestore.collection("user")
-                .where(Filter.equalTo("mobile",mobile))
+                .where(Filter.equalTo("mobile", mobile))
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -182,8 +190,6 @@ public class LoginActivity extends AppCompatActivity {
                             // store user in shared preferences
                             CartOperations.isLoggedIn(getApplicationContext());
 
-                        }else{
-                            Toast.makeText(LoginActivity.this, R.string.user_not_found, Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

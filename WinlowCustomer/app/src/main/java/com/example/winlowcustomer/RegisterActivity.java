@@ -2,9 +2,12 @@ package com.example.winlowcustomer;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -103,6 +106,27 @@ public class RegisterActivity extends AppCompatActivity {
                     otp = SendOtp.send(userDTO.getMobile());
                 }
 
+                TextView resendOtp = findViewById(R.id.textView70);
+//                resendOtp.setEnabled(false);
+//                resendOtp.setClickable(false);
+//                resendOtp.setText(R.string.step_2_resendIn);
+
+                startOtpReSendingProcess();
+
+                resendOtp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        resendOtp.setText(R.string.step_2_resending);
+
+                        otp = SendOtp.send(userDTO.getMobile());
+                        resendOtp.setText(R.string.step_2_resend);
+
+                        startOtpReSendingProcess();
+
+                    }
+                });
+
             } else {
                 Toast.makeText(RegisterActivity.this, R.string.step_1_not_complete, Toast.LENGTH_SHORT).show();
             }
@@ -134,6 +158,53 @@ public class RegisterActivity extends AppCompatActivity {
                 Toast.makeText(RegisterActivity.this, R.string.step_3_not_complete, Toast.LENGTH_SHORT).show();
             }
         }
+
+    }
+
+    private void startOtpReSendingProcess() {
+
+        TextView resendOtp = findViewById(R.id.textView70);
+        resendOtp.setText(R.string.step_2_resendIn);
+        resendOtp.setEnabled(false);
+        resendOtp.setClickable(false);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                for (int i = 60; i > 0; i--) {
+                    try{
+
+                        int finalI = i;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                String txt = R.string.step_2_resendIn + " " + String.valueOf(finalI);
+                                resendOtp.setText(txt);
+
+                            }
+                        });
+
+                        Thread.sleep(1000);
+                    } catch (Exception e) {
+//                                throw new RuntimeException(e);
+                    }
+                }
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        resendOtp.setEnabled(true);
+                        resendOtp.setClickable(true);
+                        resendOtp.setText(R.string.step_2_resend);
+
+                    }
+                });
+
+            }
+        }).start();
 
     }
 

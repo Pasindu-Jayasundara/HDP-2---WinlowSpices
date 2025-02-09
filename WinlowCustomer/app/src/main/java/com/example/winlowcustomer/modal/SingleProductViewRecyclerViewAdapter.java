@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.winlowcustomer.R;
+import com.example.winlowcustomer.dto.ProductDTO;
 import com.example.winlowcustomer.dto.WeightCategoryDTO;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -21,7 +22,8 @@ import java.util.List;
 
 public class SingleProductViewRecyclerViewAdapter extends RecyclerView.Adapter<SingleProductViewRecyclerViewAdapter.SingleProductViewRecyclerViewHolder> {
 
-    public static HashMap<Long, Integer> weightHashMap;
+    public static HashMap<Double, Integer> weightHashMap;
+//    public static ProductDTO product;
 
     List<WeightCategoryDTO> weightCategoryDTOArrayList;
 
@@ -44,8 +46,9 @@ public class SingleProductViewRecyclerViewAdapter extends RecyclerView.Adapter<S
         }
     }
 
-    public SingleProductViewRecyclerViewAdapter(List<WeightCategoryDTO> weightCategoryDTOArrayList) {
-        this.weightCategoryDTOArrayList = weightCategoryDTOArrayList;
+    public SingleProductViewRecyclerViewAdapter(ProductDTO productDTO) {
+        this.weightCategoryDTOArrayList = productDTO.getWeightCategoryDTOList();
+//        this.product = productDTO;
     }
 
     @NonNull
@@ -67,7 +70,11 @@ public class SingleProductViewRecyclerViewAdapter extends RecyclerView.Adapter<S
         String unitPrice = "Rs. " + String.valueOf(weightCategoryDTO.getUnitPrice());
         holder.weightUnitPrice.setText(unitPrice);
 
-        holder.selectedQty.setText("0");
+//        if(weightHashMap != null && weightHashMap.containsKey(weightCategoryDTO.getWeight())){
+//            holder.selectedQty.setText(String.valueOf(weightHashMap.get(weightCategoryDTO.getWeight())));
+//        }
+
+//        holder.selectedQty.setText("0");
 
         holder.weightMinus.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,12 +113,16 @@ public class SingleProductViewRecyclerViewAdapter extends RecyclerView.Adapter<S
         return weightCategoryDTOArrayList.size();
     }
 
-    private void catList(int qty,long weight){
+    private void catList(int qty,double weight){
 
         if (weightHashMap == null) {
             weightHashMap = new HashMap<>();
         }
 
+        if(qty == 0){
+            weightHashMap.remove(weight);
+            return;
+        }
         weightHashMap.put(weight,qty);
     }
 

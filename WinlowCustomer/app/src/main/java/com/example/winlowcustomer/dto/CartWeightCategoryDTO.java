@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class CartWeightCategoryDTO implements Serializable {
 
-    private long weight;
+    private double weight;
     private int qty;
 
     public CartWeightCategoryDTO() {
@@ -15,11 +15,11 @@ public class CartWeightCategoryDTO implements Serializable {
         this.qty = qty;
     }
 
-    public long getWeight() {
+    public double getWeight() {
         return weight;
     }
 
-    public void setWeight(long weight) {
+    public void setWeight(double weight) {
         this.weight = weight;
     }
 
