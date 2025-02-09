@@ -3,6 +3,7 @@ package com.example.winlowcustomer;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageButton;
@@ -88,29 +89,65 @@ public class SearchProductActivity extends AppCompatActivity {
 
     private void filterProducts(String searchTxt) {
 
+        Log.i("searchTxt", searchTxt);
+
         ChipGroup categoryChipGroup = findViewById(R.id.chipGroup2);
         int checkedChipId = categoryChipGroup.getCheckedChipId();
         Chip chip = findViewById(checkedChipId);
 
         String chipTxt = chip.getText().toString();
 
-        if(chipTxt.equals("All")){
-            productDTOArrayList = new ArrayList<>(productDTOArrayListOriginal);
 
-        }else{
-            List<ProductDTO> reorderedList = new ArrayList<>();
-            Iterator<ProductDTO> iterator = productDTOArrayList.iterator();
+        List<ProductDTO> reorderedList = new ArrayList<>();
+        Iterator<ProductDTO> iterator = productDTOArrayList.iterator();
 
-            while (iterator.hasNext()) {
-                ProductDTO productDTO = iterator.next();
+        Log.i("searchTxt", "11111111111");
+
+        boolean isCleanNew = false;
+
+        while (iterator.hasNext()) {
+            Log.i("searchTxt", "222222222222");
+            ProductDTO productDTO = iterator.next();
+
+            if(chipTxt.equals("All") && !searchTxt.isEmpty()){
+
+                Log.i("searchTxt", "3333333333333");
+
+                if (productDTO.getName().toLowerCase().contains(searchTxt.toLowerCase())) {
+                    Log.i("searchTxt", "444444444");
+
+                    reorderedList.add(productDTO);
+                    iterator.remove(); // Safe removal using iterator
+                }
+            }else if(chipTxt.equals("All")){// no txt
+//                productDTOArrayList =
+                isCleanNew = true;
+                reorderedList = new ArrayList<>(productDTOArrayListOriginal);
+
+            }else{
                 if (productDTO.getCategory().equals(chipTxt) && productDTO.getName().toLowerCase().contains(searchTxt.toLowerCase())) {
                     reorderedList.add(productDTO);
                     iterator.remove(); // Safe removal using iterator
                 }
             }
-            productDTOArrayList.addAll(0, reorderedList); // Add at the beginning
-
         }
+
+        if(!isCleanNew){
+            productDTOArrayList.addAll(0, reorderedList); // Add at the beginning
+        }else{
+            productDTOArrayList.clear();
+            productDTOArrayList.addAll(reorderedList);
+        }
+
+//        if(chipTxt.equals("All")){
+//            Log.i("searchTxt", String.valueOf(productDTOArrayList));
+//            Log.i("searchTxt", "222222222222");
+//
+//        }else{
+//
+            Log.i("searchTxt", String.valueOf(productDTOArrayList));
+//
+//        }
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView3);
         if (recyclerView.getAdapter() != null) {
