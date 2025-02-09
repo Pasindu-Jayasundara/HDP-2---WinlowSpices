@@ -7,6 +7,43 @@
     <!--  login  -->
     <string name="not_logged_in">Please login to continue</string>
     <string name="not_logged_in_btn">Login</string>
+    <string name="invalid_mobile_number">Invalid Mobile Number</string>
+    <string name="invalid_mobile_number_format">Invalid Mobile Format</string>
+    <string name="invalid_mobile_number_missing">Missing Mobile Number</string>
+    <string name="invalid_mobile_number_length">Mobile Number Must Have 10 Numbers</string>
+    <string name="invalid_otp">Invalid OTP</string>
+    <string name="login_success">Login Success</string>
+    <string name="user_not_found">Please Register First</string>
+
+    <!--  register  -->
+    <string name="step_1_title">Personal Info</string>
+    <string name="step_1_name">Name</string>
+    <string name="step_1_mobile">Mobile</string>
+    <string name="step_1_email">Email</string>
+    <string name="step_2_title">Enter Your OTP Code</string>
+    <string name="step_2_desc">The otp code has sent to your mobile by sms, check your message list</string>
+    <string name="step_2_otp">Received OTP</string>
+    <string name="step_2_resend">Resend OTP</string>
+    <string name="step_3_delivery_address">My Delivery Address</string>
+    <string name="step_1_not_complete">Please Provide All Details</string>
+    <string name="step_3_not_complete">Please Provide the Address</string>
+    <string name="step_2_not_complete">Please Provide Correct OTP</string>
+    <string name="step_3_done">Done</string>
+    <string name="user_already_exist">User Already Exists</string>
+    <string name="user_registration_success">User Registration Success</string>
+    <string name="user_registration_failed">User Registration Failed</string>
+
+    <!--  reg step 1  -->
+    <string name="name_required">Please Fill Name</string>
+    <string name="mobile_required">Please Fill Mobile Number</string>
+    <string name="email_required">Please Fill Mobile Email</string>
+    <string name="invalid_email_address">Invalid Email Address</string>
+
+    <!--  reg step 2  -->
+    <string name="otp_required">Please Fill OTP</string>
+
+    <!--  reg step 3  -->
+    <string name="address_required">Please Fill Address</string>
 
     <!--  bottom navigation  -->
     <string name="nav_home">Home</string>

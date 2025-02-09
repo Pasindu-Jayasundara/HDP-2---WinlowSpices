@@ -69,4 +69,7 @@ dependencies {
     // refresh pull down
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
+    //okhttp
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
 }
