@@ -185,7 +185,7 @@
 
     <!--  login  -->
     <string name="login_title">Login to My Account</string>
-    <string name="login_mobile_number">Mobile Number (Ex: 0740211671)</string>
+    <string name="login_mobile_number">Mobile Number (Ex: 0700000000)</string>
     <string name="login_mobile_verify">Verify</string>
     <string name="login_mobile_register">Create New Account</string>
     <!-- TODO: Remove or change this placeholder text -->

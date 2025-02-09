@@ -33,15 +33,20 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class CartOperations {
 
@@ -53,7 +58,12 @@ public class CartOperations {
 
         sharedPreferences = context.getSharedPreferences("com.example.winlowcustomer.data", Context.MODE_PRIVATE);
         String user = sharedPreferences.getString("user", null);
+
+        Log.i("CartOperations", "isLoggedIn: " + user);
+
         if (user == null) {
+
+            Log.i("CartOperations", "isLoggedIn: null");
 
             SQLiteHelper sqLiteHelper = new SQLiteHelper(context, "winlow.db", null, 1);
             sqLiteHelper.getUser(sqLiteHelper, new GetDataCallback() {
@@ -62,10 +72,13 @@ public class CartOperations {
                     if (cursor.getCount() == 1) {
                         hasLoggedInDataFound[0] = true;
 
+                        Log.i("CartOperations", "isLoggedIn: 1");
+
+
                         cursor.moveToFirst();
 
-                        String name = cursor.getString(0);
-                        String id = cursor.getString(1);
+                        String name = cursor.getString(1);
+                        String id = cursor.getString(0);
                         String mobile = cursor.getString(2);
                         String email = cursor.getString(3);
 
@@ -82,35 +95,35 @@ public class CartOperations {
                         });
 
                         List<String> orderHistoryList = new ArrayList<>();
-                        sqLiteHelper.getAddress(sqLiteHelper, new GetDataCallback() {
-                            @Override
-                            public void onGetData(Cursor cursor) {
-
-                                while (cursor.moveToNext()) {
-                                    orderHistoryList.add(cursor.getString(1));
-                                }
-
-                            }
-                        });
+//                        sqLiteHelper.getAddress(sqLiteHelper, new GetDataCallback() {
+//                            @Override
+//                            public void onGetData(Cursor cursor) {
+//
+//                                while (cursor.moveToNext()) {
+//                                    orderHistoryList.add(cursor.getString(1));
+//                                }
+//
+//                            }
+//                        });
 
                         List<PaymentCardDTO> paymentCardDTOList = new ArrayList<>();
-                        sqLiteHelper.getAddress(sqLiteHelper, new GetDataCallback() {
-                            @SuppressLint("NewApi")
-                            @Override
-                            public void onGetData(Cursor cursor) {
-
-                                while (cursor.moveToNext()) {
-
-                                    PaymentCardDTO paymentCardDTO = new PaymentCardDTO();
-                                    paymentCardDTO.setCvv(cursor.getString(3));
-                                    paymentCardDTO.setNumber(cursor.getString(2));
-                                    paymentCardDTO.setExpiryDate(LocalDate.parse(cursor.getString(1)));
-
-                                    paymentCardDTOList.add(paymentCardDTO);
-                                }
-
-                            }
-                        });
+//                        sqLiteHelper.getPaymentCard(sqLiteHelper, new GetDataCallback() {
+//                            @SuppressLint("NewApi")
+//                            @Override
+//                            public void onGetData(Cursor cursor) {
+//
+//                                while (cursor.moveToNext()) {
+//
+//                                    PaymentCardDTO paymentCardDTO = new PaymentCardDTO();
+//                                    paymentCardDTO.setCvv(cursor.getString(3));
+//                                    paymentCardDTO.setNumber(cursor.getString(2));
+//                                    paymentCardDTO.setExpiryDate(LocalDate.parse(cursor.getString(1)));
+//
+//                                    paymentCardDTOList.add(paymentCardDTO);
+//                                }
+//
+//                            }
+//                        });
 
                         UserDTO userDTO = new UserDTO();
 //                        userDTO.setCart(null);
@@ -128,15 +141,21 @@ public class CartOperations {
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString("user", json);
                         editor.apply();
+
+                        Log.i("CartOperations", "isLoggedIn: 2"+ gson.toJson(userDTO));
+
                     }
                 }
             });
 
         } else {
             hasLoggedInDataFound[0] = true;
+            Log.i("CartOperations", "isLoggedIn: 4"+hasLoggedInDataFound[0]);
+
             return hasLoggedInDataFound[0];
         }
 
+        Log.i("CartOperations", "isLoggedIn: 3"+hasLoggedInDataFound[0]);
         return hasLoggedInDataFound[0];
     }
 
@@ -161,129 +180,197 @@ public class CartOperations {
                             @Override
                             public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-                                // get cart data
-                                List<CartDTO> cartDTOList = new ArrayList<>();
-                                List<Map<String, Object>> cartData = (List<Map<String, Object>>) documentSnapshot.get("cart");
+//                                    cart[
+//                                          {
+//                                              ref_path:"dwednwjndwdnwoid",
+//                                              weight_category:[
+//                                                                  {
+//                                                                      weight: 50,
+//                                                                      qty:2
+//                                                                  }
+//                                                              ],
+//                                          }
+//                                        ]
 
 
                                 // updated new cart list
-                                List<CartWeightCategoryDTO> newCartWeightCategoryDTOList = new ArrayList<>();
+
+                                // get cart data
+                                List<Map<String, Object>> cartData = (List<Map<String, Object>>) documentSnapshot.get("cart");
+                                List<Map<String, Object>> sendCartData = new ArrayList<>();
+
+                                Log.i("cart", "onSuccess: " + gson.toJson(weightHashMap));
 
                                 if (cartData != null) {
+                                    boolean isProductUpdated = false;
 
+                                    // Loop through existing cart items
                                     for (Map<String, Object> cartItem : cartData) {
-
                                         String referencePath = (String) cartItem.get("ref_path");
+                                        Log.i("cart", "onSuccess: 2 " + gson.toJson(weightHashMap));
 
                                         if (referencePath.equals(productDTO.getReferencePath())) {
-                                            // same product
+                                            // Same product, update the weight categories
 
-                                            // get weight category list
-                                            List<CartWeightCategoryDTO> cartWeightCategoryDTOList = (List<CartWeightCategoryDTO>) cartItem.get("weight_category");
-                                            for (CartWeightCategoryDTO cartWeightCategoryDTO : cartWeightCategoryDTOList) {
 
-                                                if (weightHashMap.containsKey(cartWeightCategoryDTO.getWeight())) {
-                                                    // same weight as user selected
+                                            // Get the existing weight categories
+                                            List<Map<String,Object>> cartWeightCategoryDTOList = (List<Map<String,Object>>) cartItem.get("weight_category");
 
-                                                    int qty = weightHashMap.get(cartWeightCategoryDTO.getWeight());
-                                                    cartWeightCategoryDTO.setQty(qty);
+                                            for(Map<String,Object> cartWeightCategoryDTO : cartWeightCategoryDTOList){
 
-                                                    // after getting qty value remove weight and qty from map
-                                                    weightHashMap.remove(cartWeightCategoryDTO.getWeight());
+                                                double weight = Double.parseDouble(String.valueOf(cartWeightCategoryDTO.get("weight")));
+                                                int qty1 = Integer.parseInt(String.valueOf(cartWeightCategoryDTO.get("qty")));
 
-                                                    newCartWeightCategoryDTOList.add(cartWeightCategoryDTO);
-                                                } else {
-                                                    newCartWeightCategoryDTOList.add(cartWeightCategoryDTO);
+                                                if (weightHashMap.containsKey(weight)) {
+                                                    int qty = weightHashMap.get(weight);
+
+                                                    // Update the weight category
+                                                    CartWeightCategoryDTO cartWeightCategoryDTO1 = new CartWeightCategoryDTO();
+                                                    cartWeightCategoryDTO1.setWeight(weight);
+                                                    cartWeightCategoryDTO1.setQty(qty);
+
+                                                    List<CartWeightCategoryDTO> ncd = new ArrayList<>();
+                                                    ncd.add(cartWeightCategoryDTO1);
+
+                                                    Map<String, Object> newCartEntry = new HashMap<>();
+                                                    newCartEntry.put("ref_path", productDTO.getReferencePath());
+                                                    newCartEntry.put("weight_category", ncd);
+
+                                                    sendCartData.add(newCartEntry);
+                                                    weightHashMap.remove(weight); // Remove from map after updating
+                                                }else{
+
+                                                    CartWeightCategoryDTO cartWeightCategoryDTO1 = new CartWeightCategoryDTO();
+                                                    cartWeightCategoryDTO1.setWeight(weight);
+                                                    cartWeightCategoryDTO1.setQty(qty1);
+
+                                                    List<CartWeightCategoryDTO> ncd = new ArrayList<>();
+                                                    ncd.add(cartWeightCategoryDTO1);
+
+                                                    Map<String, Object> newCartEntry = new HashMap<>();
+                                                    newCartEntry.put("ref_path", productDTO.getReferencePath());
+                                                    newCartEntry.put("weight_category", ncd);
+
+                                                    sendCartData.add(newCartEntry);
                                                 }
 
                                             }
 
-                                            // still has weight in map
-                                            if (!weightHashMap.isEmpty()) {
-                                                // add new weight category
-
-                                                for (double weight : weightHashMap.keySet()) {
-
-                                                    CartWeightCategoryDTO cartWeightCategoryDTO = new CartWeightCategoryDTO();
-                                                    cartWeightCategoryDTO.setWeight(weight);
-                                                    cartWeightCategoryDTO.setQty(weightHashMap.get(weight));
-
-                                                    newCartWeightCategoryDTOList.add(cartWeightCategoryDTO);
-
-                                                    weightHashMap.remove(weight);
-                                                }
-
-                                            }
-
+                                            isProductUpdated = true;
                                             break;
+                                        } else{
+                                            sendCartData.add(cartItem);
                                         }
                                     }
 
-                                    // add updated cart list to firebase
+                                    // If no product matched, add new cart entry
+                                    if (!isProductUpdated) {
 
-//                                    Map<String, Object> updates = new HashMap<>();
-//                                    updates.put("cart", newCartWeightCategoryDTOList);
+                                        List<CartWeightCategoryDTO> newCartWeightCategoryDTOList = new ArrayList<>();
 
-                                    firestore.collection("user")
-                                            .document(userDTO.getId())
-                                            .update("cart", newCartWeightCategoryDTOList)
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void unused) {
+//                                        Set<Double> doubles = weightHashMap.keySet();
+//                                        for (double weight : doubles) {
+//                                            CartWeightCategoryDTO cartWeightCategoryDTO = new CartWeightCategoryDTO();
+//                                            cartWeightCategoryDTO.setWeight(weight);
+//                                            cartWeightCategoryDTO.setQty(weightHashMap.get(weight));
+//
+//                                            newCartWeightCategoryDTOList.add(cartWeightCategoryDTO);
+//                                        }
 
-                                                    Toast.makeText(activity, R.string.add_to_cart_success, Toast.LENGTH_SHORT).show();
+                                        for (Map.Entry<Double, Integer> entry : weightHashMap.entrySet()) {
+                                            CartWeightCategoryDTO cartWeightCategoryDTO = new CartWeightCategoryDTO();
+                                            cartWeightCategoryDTO.setWeight(entry.getKey());
 
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
+                                            Integer qty = entry.getValue();
+                                            cartWeightCategoryDTO.setQty(qty != null ? qty : 0); // Avoid NPE
 
-                                                    Toast.makeText(activity, R.string.add_to_cart_failed, Toast.LENGTH_SHORT).show();
+                                            newCartWeightCategoryDTOList.add(cartWeightCategoryDTO);
+                                        }
 
-                                                }
-                                            });
+                                        Map<String, Object> newCartEntry = new HashMap<>();
+                                        newCartEntry.put("ref_path", productDTO.getReferencePath());
+                                        newCartEntry.put("weight_category", newCartWeightCategoryDTOList);
+
+                                        cartData.add(newCartEntry);
+
+                                        // Update the Firestore
+                                        firestore.collection("user")
+                                                .document(userDTO.getId())
+                                                .update("cart", cartData)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void unused) {
+                                                        Toast.makeText(activity, R.string.add_to_cart_success, Toast.LENGTH_SHORT).show();
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Toast.makeText(activity, R.string.add_to_cart_failed, Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                    }else{
+
+                                        // Update the Firestore
+                                        firestore.collection("user")
+                                                .document(userDTO.getId())
+                                                .update("cart", sendCartData)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void unused) {
+                                                        Toast.makeText(activity, R.string.add_to_cart_success, Toast.LENGTH_SHORT).show();
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Toast.makeText(activity, R.string.add_to_cart_failed, Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+
+                                    }
 
                                 } else {
-                                    // add new cart list to firebase
+                                    // If no cart exists, create a new entry
+
+                                    List<CartWeightCategoryDTO> newCartWeightCategoryDTOList = new ArrayList<>();
 
                                     if (!weightHashMap.isEmpty()) {
-                                        // add new weight category
 
-                                        for (double weight : weightHashMap.keySet()) {
+                                        Set<Double> doubles = weightHashMap.keySet();
 
+                                        for (double weight : doubles) {
                                             CartWeightCategoryDTO cartWeightCategoryDTO = new CartWeightCategoryDTO();
                                             cartWeightCategoryDTO.setWeight(weight);
                                             cartWeightCategoryDTO.setQty(weightHashMap.get(weight));
 
                                             newCartWeightCategoryDTOList.add(cartWeightCategoryDTO);
-
-                                            weightHashMap.remove(weight);
                                         }
-
                                     }
-//
-//                                    Map<String, Object> cart = new HashMap<>();
-//                                    cart.put("ref_path", productDTO.getReferencePath());
-//                                    cart.put("weight_category", newCartWeightCategoryDTOList);
-//
+
+                                    // Create the new cart data
+
+                                    Map<String, Object> newCartEntry = new HashMap<>();
+                                    newCartEntry.put("ref_path", productDTO.getReferencePath());
+                                    newCartEntry.put("weight_category", newCartWeightCategoryDTOList);
+
+                                    List<Map<String, Object>> newCartData = new ArrayList<>();
+                                    newCartData.add(newCartEntry);
+
+                                    // Update the Firestore document with the new cart data
                                     firestore.collection("user")
                                             .document(userDTO.getId())
-                                            .update("cart", newCartWeightCategoryDTOList)
+                                            .set(Collections.singletonMap("cart", newCartData),SetOptions.merge())
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void unused) {
-
                                                     Toast.makeText(activity, R.string.add_to_cart_success, Toast.LENGTH_SHORT).show();
-
                                                 }
                                             })
                                             .addOnFailureListener(new OnFailureListener() {
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
-
                                                     Toast.makeText(activity, R.string.add_to_cart_failed, Toast.LENGTH_SHORT).show();
-
                                                 }
                                             });
 

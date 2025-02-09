@@ -102,8 +102,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                 contentValues.put("mobile",mobile);
                 contentValues.put("email",email);
 
-                long insertedId = db.insert("user", null, contentValues);
-                db.close();
+                long insertedId = db.insertWithOnConflict("user", null, contentValues, SQLiteDatabase.CONFLICT_REPLACE);
+//                db.close();
 
                 if(singleInsertCallback !=null){
                     singleInsertCallback.onUserInserted(insertedId);
@@ -130,7 +130,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                 contentValues.put("address",address);
 
                 long insertedId = db.insert("address", null, contentValues);
-                db.close();
+//                db.close();
 
                 if(singleInsertCallback != null){
                     singleInsertCallback.onUserInserted(insertedId);
@@ -157,7 +157,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                 contentValues.put("reference_path",referencePath);
 
                 long insertedId = db.insert("order_history", null, contentValues);
-                db.close();
+//                db.close();
 
                 if(singleInsertCallback != null) {
                     singleInsertCallback.onUserInserted(insertedId);
@@ -185,7 +185,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                 contentValues.put("cvv",cvv);
 
                 long insertedId = db.insert("payment_card", null, contentValues);
-                db.close();
+//                db.close();
 
                 if(singleInsertCallback != null) {
                     singleInsertCallback.onUserInserted(insertedId);
@@ -214,7 +214,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                     db.insert("order_history", null, contentValues);
                 }
 
-                db.close();
+//                db.close();
 
             }
         }).start();
@@ -245,7 +245,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                 contentValues.put("image_path",imagePath);
 
                 long inserted = db.insert("recently_viewed_product", null, contentValues);
-                db.close();
+//                db.close();
                 
                 if(singleInsertCallback != null){
                     singleInsertCallback.onUserInserted(inserted);
@@ -281,8 +281,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                     getDataCallback.onGetData(cursor);
                 }
 
-                cursor.close();
-                db.close();
+//                cursor.close();
+//                db.close();
 
             }
         }).start();
@@ -313,8 +313,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                     getDataCallback.onGetData(cursor);
                 }
 
-                cursor.close();
-                db.close();
+//                cursor.close();
+//                db.close();
             }
         }).start();
 
@@ -344,8 +344,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                     getDataCallback.onGetData(cursor);
                 }
 
-                cursor.close();
-                db.close();
+//                cursor.close();
+//                db.close();
 
             }
         }).start();
@@ -376,8 +376,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                     getDataCallback.onGetData(cursor);
                 }
 
-                cursor.close();
-                db.close();
+//                cursor.close();
+//                db.close();
             }
         }).start();
 
@@ -407,11 +407,26 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                     getDataCallback.onGetData(cursor);
                 }
                 
-                cursor.close();
-                db.close();
+//                cursor.close();
+//                db.close();
                 
             }
         }).start();
         
+    }
+
+    public void removeUser(SQLiteHelper sqLiteHelper, String docId) {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                SQLiteDatabase db = sqLiteHelper.getWritableDatabase();
+                db.delete("user","id=?",new String[]{docId});
+//                db.close();
+
+            }
+        }).start();
+
     }
 }

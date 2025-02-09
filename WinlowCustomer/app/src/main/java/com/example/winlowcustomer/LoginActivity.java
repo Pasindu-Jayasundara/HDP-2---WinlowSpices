@@ -3,7 +3,9 @@ package com.example.winlowcustomer;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +27,8 @@ import com.example.winlowcustomer.modal.CartOperations;
 import com.example.winlowcustomer.modal.SQLiteHelper;
 import com.example.winlowcustomer.modal.SendOtp;
 import com.example.winlowcustomer.modal.Verify;
+import com.example.winlowcustomer.modal.callback.GetDataCallback;
+import com.example.winlowcustomer.modal.callback.IsNewUserCallback;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
@@ -90,7 +94,8 @@ public class LoginActivity extends AppCompatActivity {
 
         if (Verify.verifyMobileNumber(stringMobileNumber, getApplicationContext())) {
 
-            String otp = SendOtp.send(stringMobileNumber);
+//            String otp = SendOtp.send(stringMobileNumber);
+            String otp = "123";
 
             // show dialog popup to enter otp
             LayoutInflater layoutInflater = getLayoutInflater();
@@ -129,39 +134,45 @@ public class LoginActivity extends AppCompatActivity {
     private void otpMatched(String stringMobileNumber) {
         Log.i("otpMatched", "aaaaaaaaaaaa");
 
-        if (!isNewUser(stringMobileNumber)) {
-            Log.i("otpMatched", "bbbbbbbbbbbbbbbbbbb");
+        isNewUser(stringMobileNumber, new IsNewUserCallback() {
+            @Override
+            public void onResult(boolean isNew) {
 
-            Toast.makeText(getApplicationContext(), R.string.login_success, Toast.LENGTH_LONG).show();
+                if (!isNew) {
+                    Log.i("otpMatched", "bbbbbbbbbbbbbbbbbbb");
 
-            Intent receivedIntent = getIntent();
-            String fromCart = receivedIntent.getStringExtra("fromCart");
-            String productDTO = receivedIntent.getStringExtra("productDTO");
+                    Toast.makeText(getApplicationContext(), R.string.login_success, Toast.LENGTH_LONG).show();
 
-            Gson gson = new Gson();
-            if (gson.fromJson(fromCart, Boolean.class)) {
+                    Intent receivedIntent = getIntent();
+                    String fromCart = receivedIntent.getStringExtra("fromCart");
+                    String productDTO = receivedIntent.getStringExtra("productDTO");
 
-                ProductDTO productDTO1 = gson.fromJson(productDTO, ProductDTO.class);
-                if (productDTO1 != null) {
+                    Gson gson = new Gson();
+                    if (gson.fromJson(fromCart, Boolean.class)) {
 
-                    CartOperations cartOperations = new CartOperations();
-                    cartOperations.addToCart(productDTO1, LoginActivity.this);
+                        ProductDTO productDTO1 = gson.fromJson(productDTO, ProductDTO.class);
+                        if (productDTO1 != null) {
 
+                            CartOperations cartOperations = new CartOperations();
+                            cartOperations.addToCart(productDTO1, LoginActivity.this);
+
+                        }
+
+                        Intent intent = new Intent(LoginActivity.this, ProductViewActivity.class);
+                        startActivity(intent);
+                    }
+
+                }else{
+                    Toast.makeText(LoginActivity.this, R.string.user_not_found, Toast.LENGTH_SHORT).show();
                 }
 
-                Intent intent = new Intent(LoginActivity.this, ProductViewActivity.class);
-                startActivity(intent);
             }
-
-        }else{
-            Toast.makeText(LoginActivity.this, R.string.user_not_found, Toast.LENGTH_SHORT).show();
-        }
+        });
 
     }
 
-    private boolean isNewUser(String mobile) {
-
-        final boolean[] isNew = {true};
+    private void isNewUser(String mobile, IsNewUserCallback isNewUserCallback) {
+        Log.i("otpMatched", "xxxxxxxxx");
 
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         firestore.collection("user")
@@ -170,31 +181,35 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
+                        Log.i("otpMatched", "zzzzzzzzzzz");
+                        boolean isNew = true;
                         if (task.isSuccessful() && !task.getResult().getDocuments().isEmpty()) {
-                            isNew[0] = false;
+                            isNew = false;
+                            Log.i("otpMatched", "mmmmmmmmmmmmmm");
 
                             List<DocumentSnapshot> documents = task.getResult().getDocuments();
-                            @SuppressLint({"NewApi", "LocalSuppress"})
-                            DocumentSnapshot documentsFirst = documents.getFirst();
 
-                            String id = documentsFirst.getId();
-                            String name = documentsFirst.getString("name");
-                            String mobile = documentsFirst.getString("mobile");
-                            String email = documentsFirst.getString("email");
+                            for (DocumentSnapshot documentSnapshot : documents){
+                                String id = documentSnapshot.getId();
+                                String name = documentSnapshot.getString("name");
+                                String mobile = documentSnapshot.getString("mobile");
+                                String email = documentSnapshot.getString("email");
 
-                            // store user in sqlite
-                            SQLiteHelper sqLiteHelper = new SQLiteHelper(getApplicationContext(), "winlow.db", null, 1);
-                            sqLiteHelper.insertSingleUser(sqLiteHelper, id, name, mobile, email);
+                                // store user in sqlite
+                                SQLiteHelper sqLiteHelper = new SQLiteHelper(getApplicationContext(), "winlow.db", null, 1);
+                                sqLiteHelper.insertSingleUser(sqLiteHelper, id, name, mobile, email);
 
-                            // store user in shared preferences
-                            CartOperations.isLoggedIn(getApplicationContext());
+                                // store user in shared preferences
+                                CartOperations.isLoggedIn(getApplicationContext());
+                            }
+
+//                            isNew[1] = false;
 
                         }
+
+                        isNewUserCallback.onResult(isNew);
                     }
                 });
-
-        return isNew[0];
 
     }
 }

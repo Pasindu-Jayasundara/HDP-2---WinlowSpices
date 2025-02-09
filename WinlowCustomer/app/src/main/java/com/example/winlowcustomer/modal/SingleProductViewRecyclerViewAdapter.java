@@ -70,11 +70,6 @@ public class SingleProductViewRecyclerViewAdapter extends RecyclerView.Adapter<S
         String unitPrice = "Rs. " + String.valueOf(weightCategoryDTO.getUnitPrice());
         holder.weightUnitPrice.setText(unitPrice);
 
-//        if(weightHashMap != null && weightHashMap.containsKey(weightCategoryDTO.getWeight())){
-//            holder.selectedQty.setText(String.valueOf(weightHashMap.get(weightCategoryDTO.getWeight())));
-//        }
-
-//        holder.selectedQty.setText("0");
 
         holder.weightMinus.setOnClickListener(new View.OnClickListener() {
             @Override
