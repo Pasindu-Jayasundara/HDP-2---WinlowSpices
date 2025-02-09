@@ -41,6 +41,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
@@ -207,24 +208,29 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void changeProductOrder(List<Integer> checkedIds) {
-
         Chip chip = findViewById(checkedIds.get(0));
         String chipTxt = chip.getText().toString();
 
-        if (chipTxt.equals("All")){
-            productDTOArrayList = productDTOArrayListOriginal;
-        }else{
-            for(ProductDTO productDTO : productDTOArrayList){
-                if(productDTO.getCategory().equals(chipTxt)){
-                    productDTOArrayList.remove(productDTO);
-                    productDTOArrayList.add(0, productDTO);
+        if (chipTxt.equals("All")) {
+            productDTOArrayList = new ArrayList<>(productDTOArrayListOriginal);
+        } else {
+            List<ProductDTO> reorderedList = new ArrayList<>();
+            Iterator<ProductDTO> iterator = productDTOArrayList.iterator();
+
+            while (iterator.hasNext()) {
+                ProductDTO productDTO = iterator.next();
+                if (productDTO.getCategory().equals(chipTxt)) {
+                    reorderedList.add(productDTO);
+                    iterator.remove(); // Safe removal using iterator
                 }
             }
+            productDTOArrayList.addAll(0, reorderedList); // Add at the beginning
         }
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView2);
-        recyclerView.getAdapter().notifyDataSetChanged();
-
+        if (recyclerView.getAdapter() != null) {
+            recyclerView.getAdapter().notifyDataSetChanged();
+        }
     }
 
     private void loadBanner(){
