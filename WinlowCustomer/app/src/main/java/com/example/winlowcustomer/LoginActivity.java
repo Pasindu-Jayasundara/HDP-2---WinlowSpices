@@ -94,8 +94,8 @@ public class LoginActivity extends AppCompatActivity {
 
         if (Verify.verifyMobileNumber(stringMobileNumber, getApplicationContext())) {
 
-//            String otp = SendOtp.send(stringMobileNumber);
-            String otp = "123";
+            String otp = SendOtp.send(stringMobileNumber);
+//            String otp = "123";
 
             // show dialog popup to enter otp
             LayoutInflater layoutInflater = getLayoutInflater();

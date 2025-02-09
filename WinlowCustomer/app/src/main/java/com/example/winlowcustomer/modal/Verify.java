@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 public class Verify {
 
-    private static final String MOBILE_NUMBER_REGEX = "^(07|\\+947)([1245678]\\d{7})$";
+    private static final String MOBILE_NUMBER_REGEX = "^(07|\\+947)([01245678]\\d{7})$";
 
     public static boolean verifyMobileNumber(String mobile) {
         return Pattern.compile(MOBILE_NUMBER_REGEX).matcher(mobile).matches();
