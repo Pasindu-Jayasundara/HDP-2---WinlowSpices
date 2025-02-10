@@ -1,7 +1,10 @@
 package com.example.winlowcustomer;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -81,7 +84,14 @@ public class BottomNavigationFragment extends Fragment {
             cartImg.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    gotoActivity(CartActivity.class);
+
+                    SharedPreferences sharedPreferences = view.getContext().getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
+                    String userJson = sharedPreferences.getString("user",null);
+                    if(userJson == null) {
+                        gotoActivity(LoginActivity.class);
+                    }else{
+                        gotoActivity(CartActivity.class);
+                    }
                 }
             });
         }
@@ -92,7 +102,15 @@ public class BottomNavigationFragment extends Fragment {
             cartTxt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    gotoActivity(CartActivity.class);
+
+                    SharedPreferences sharedPreferences = view.getContext().getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
+                    String userJson = sharedPreferences.getString("user",null);
+                    if(userJson == null) {
+                        gotoActivity(LoginActivity.class);
+                    }else{
+                        gotoActivity(CartActivity.class);
+                    }
+
                 }
             });
         }
