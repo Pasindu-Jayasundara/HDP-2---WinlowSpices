@@ -98,7 +98,13 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                changeActivity(AccountActivity.class);
+                SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
+                String userJson = sharedPreferences.getString("user",null);
+                if(userJson == null){
+                    changeActivity(LoginActivity.class);
+                }else{
+                    changeActivity(AccountActivity.class);
+                }
 
             }
         });

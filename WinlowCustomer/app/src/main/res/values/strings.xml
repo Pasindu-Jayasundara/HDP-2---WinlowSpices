@@ -39,6 +39,8 @@
     <string name="user_already_exist">User Already Exists</string>
     <string name="user_registration_success">User Registration Success</string>
     <string name="user_registration_failed">User Registration Failed</string>
+    <string name="please_wait">Verifying …</string>
+    <string name="tryAgain">Registration Failed Please Try Again !</string>
 
     <!--  reg step 1  -->
     <string name="name_required">Please Fill Name</string>

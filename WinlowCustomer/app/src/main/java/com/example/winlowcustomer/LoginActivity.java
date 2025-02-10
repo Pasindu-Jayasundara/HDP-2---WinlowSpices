@@ -150,12 +150,20 @@ public class LoginActivity extends AppCompatActivity {
                     Gson gson = new Gson();
                     if (gson.fromJson(fromCart, Boolean.class)) {
 
+                        receivedIntent.removeExtra("fromCart");
+
                         ProductDTO productDTO1 = gson.fromJson(productDTO, ProductDTO.class);
                         if (productDTO1 != null) {
+
+                            receivedIntent.removeExtra("productDTO");
 
                             CartOperations cartOperations = new CartOperations();
                             cartOperations.addToCart(productDTO1, LoginActivity.this);
 
+                        }
+
+                        if(receivedIntent.hasExtra("productDTO")){
+                            receivedIntent.removeExtra("productDTO");
                         }
 
                         Intent intent = new Intent(LoginActivity.this, ProductViewActivity.class);
