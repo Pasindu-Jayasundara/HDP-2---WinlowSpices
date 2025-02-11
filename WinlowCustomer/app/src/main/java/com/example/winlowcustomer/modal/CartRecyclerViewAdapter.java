@@ -3,14 +3,18 @@ package com.example.winlowcustomer.modal;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.winlowcustomer.CartActivity;
 import com.example.winlowcustomer.R;
 import com.example.winlowcustomer.dto.CartDTO;
+import com.example.winlowcustomer.dto.ProductDTO;
 import com.example.winlowcustomer.dto.UserDTO;
 import com.example.winlowcustomer.modal.callback.GetDataRemovedNotified;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -24,18 +28,19 @@ import java.util.Map;
 
 public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerViewAdapter.CartRecyclerViewHolder>{
 
+    public static List<CartDTO> checkoutProductList = new ArrayList<>();
     List<CartDTO> cartDTOList;
     UserDTO userDto;
 
     public class CartRecyclerViewHolder extends RecyclerView.ViewHolder{
 
-        TextView productName;
+        CheckBox productName;
         TextView remove;
 
         public CartRecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            productName = itemView.findViewById(R.id.textView74);
+            productName = itemView.findViewById(R.id.checkBox);
             remove = itemView.findViewById(R.id.textView75);
         }
     }
@@ -66,6 +71,28 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
         CartDTO cartDTO = cartDTOList.get(position);
 
         holder.productName.setText(cartDTO.getName());
+        holder.productName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                holder.productName.setChecked(!holder.productName.isChecked());
+
+                if(holder.productName.isChecked()){
+                    checkoutProductList.add(cartDTO);
+                }else{
+                    checkoutProductList.remove(cartDTO);
+                }
+
+                TableLayout tableLayout = v.getRootView().findViewById(R.id.tableLayout);
+                if(checkoutProductList.isEmpty()){
+                    CartActivity.hideCheckout(tableLayout);
+                }else{
+                    CartActivity.showChekout(tableLayout);
+                }
+
+            }
+        });
+
         holder.remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

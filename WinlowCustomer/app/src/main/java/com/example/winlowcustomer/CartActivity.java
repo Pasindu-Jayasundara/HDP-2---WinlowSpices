@@ -1,9 +1,11 @@
 package com.example.winlowcustomer;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.Toast;
 
@@ -60,10 +62,24 @@ public class CartActivity extends AppCompatActivity {
         UserDTO userDTO = gson.fromJson(userJson, UserDTO.class);
 
         // hide checkout part
-        hideCheckout();
+        TableLayout tableLayout = findViewById(R.id.tableLayout);
+        hideCheckout(tableLayout);
 
         // load cart list
         loadCartList(userDTO);
+
+        // checkout
+        Button checkoutButton = findViewById(R.id.button4);
+        checkoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(CartActivity.this, CheckoutActivity.class);
+                startActivity(intent);
+
+            }
+        });
+
     }
 
     private void loadCartList(UserDTO userDTO) {
@@ -123,6 +139,7 @@ public class CartActivity extends AppCompatActivity {
                             // Set adapter
                             CartRecyclerViewAdapter cartRecyclerViewAdapter = new CartRecyclerViewAdapter(cartDTOList,userDTO);
                             recyclerView.setAdapter(cartRecyclerViewAdapter);
+
                         } else {
                             Toast.makeText(CartActivity.this, R.string.cart_empty, Toast.LENGTH_SHORT).show();
                         }
@@ -193,13 +210,11 @@ public class CartActivity extends AppCompatActivity {
 
     }
 
-    private void hideCheckout() {
-        TableLayout tableLayout = findViewById(R.id.tableLayout);
+    public static void hideCheckout(TableLayout tableLayout) {
         tableLayout.setVisibility(View.GONE);
     }
 
-    private void showChekout() {
-        TableLayout tableLayout = findViewById(R.id.tableLayout);
+    public static void showChekout(TableLayout tableLayout) {
         tableLayout.setVisibility(View.VISIBLE);
     }
 
