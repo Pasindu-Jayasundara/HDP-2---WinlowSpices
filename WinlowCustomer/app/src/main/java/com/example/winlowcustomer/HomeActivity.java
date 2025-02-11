@@ -49,7 +49,7 @@ import java.util.List;
 public class HomeActivity extends AppCompatActivity {
 
     ArrayList<ProductDTO> productDTOArrayList;
-    ArrayList<ProductDTO> productDTOArrayListOriginal;
+    public static ArrayList<ProductDTO> productDTOArrayListOriginal;
     ArrayList<BannerDTO> bannerArrayList;
     HashSet<String> categoryHashSet;
 

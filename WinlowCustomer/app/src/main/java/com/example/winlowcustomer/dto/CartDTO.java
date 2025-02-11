@@ -7,7 +7,10 @@ import java.util.Map;
 public class CartDTO implements Serializable {
 
     private String referencePath; //
-    private String name;
+
+    private ProductDTO product;
+
+//    private String name;
     private List<CartWeightCategoryDTO> CartWeightCategoryDTOList;
 
     private Map<String, Object> cartDTOMap;
@@ -15,11 +18,12 @@ public class CartDTO implements Serializable {
     public CartDTO() {
     }
 
-    public CartDTO(String referencePath,Map<String, Object> cartDTOMap, String name, List<CartWeightCategoryDTO> CartWeightCategoryDTOList) {
+    public CartDTO(String referencePath,Map<String, Object> cartDTOMap, ProductDTO productDTO, List<CartWeightCategoryDTO> CartWeightCategoryDTOList) {
         this.referencePath = referencePath;
 //        this.fieldPath = fieldPath;
+        this.product = productDTO;
         this.cartDTOMap = cartDTOMap;
-        this.name = name;
+//        this.name = name;
         this.CartWeightCategoryDTOList = CartWeightCategoryDTOList;
     }
 
@@ -39,13 +43,21 @@ public class CartDTO implements Serializable {
         this.cartDTOMap = cartDTOMap;
     }
 
-    public String getName() {
-        return name;
+    public ProductDTO getProduct() {
+        return product;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setProduct(ProductDTO product) {
+        this.product = product;
     }
+
+//    public String getName() {
+//        return name;
+//    }
+//
+//    public void setName(String name) {
+//        this.name = name;
+//    }
 
     public String getReferencePath() {
         return referencePath;

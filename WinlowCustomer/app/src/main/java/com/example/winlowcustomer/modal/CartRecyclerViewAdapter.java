@@ -70,7 +70,7 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
 
         CartDTO cartDTO = cartDTOList.get(position);
 
-        holder.productName.setText(cartDTO.getName());
+        holder.productName.setText(cartDTO.getProduct().getName());
         holder.productName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

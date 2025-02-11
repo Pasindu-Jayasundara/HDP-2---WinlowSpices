@@ -1,5 +1,7 @@
 package com.example.winlowcustomer;
 
+import static com.example.winlowcustomer.HomeActivity.productDTOArrayListOriginal;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -20,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.winlowcustomer.dto.CartDTO;
 import com.example.winlowcustomer.dto.CartWeightCategoryDTO;
+import com.example.winlowcustomer.dto.ProductDTO;
 import com.example.winlowcustomer.dto.UserDTO;
 import com.example.winlowcustomer.modal.CartOperations;
 import com.example.winlowcustomer.modal.CartRecyclerViewAdapter;
@@ -126,7 +129,13 @@ public class CartActivity extends AppCompatActivity {
 
                                     CartDTO cartDTO = new CartDTO();
                                     cartDTO.setReferencePath(String.valueOf(cartDataMap.get("ref_path")));
-                                    cartDTO.setName(String.valueOf(cartDataMap.get("name")));
+
+                                    for(ProductDTO productDTO : productDTOArrayListOriginal){
+                                        if(productDTO.getReferencePath().equals(cartDTO.getReferencePath())){
+                                            cartDTO.setProduct(productDTO);
+                                        }
+                                    }
+
                                     cartDTO.setCartWeightCategoryDTOList(cartWeightCategoryDTOList);
 
                                     // 🔥 Set the field path dynamically: "cart/0", "cart/1", ...

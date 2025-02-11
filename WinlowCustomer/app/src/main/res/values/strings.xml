@@ -121,6 +121,9 @@
     <string name="cart_removed">Removed </string>
     <string name="cart_removed_success">Product Successfully Removed</string>
     <string name="cart_removed_failed">Product Removing Failed</string>
+    <string name="cart_inner_zero">0</string>
+    <string name="cart_inner_plus">+</string>
+    <string name="cart_inner_minus">-</string>
 
     <!--  Account  -->
     <string name="account_title">Account</string>
