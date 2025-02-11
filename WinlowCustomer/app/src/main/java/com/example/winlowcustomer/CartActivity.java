@@ -114,7 +114,7 @@ public class CartActivity extends AppCompatActivity {
                                     cartDTO.setCartWeightCategoryDTOList(cartWeightCategoryDTOList);
 
                                     // 🔥 Set the field path dynamically: "cart/0", "cart/1", ...
-                                    cartDTO.setFieldPath("cart/" + i);
+                                    cartDTO.setCartDTOMap(cartDataMap);
 
                                     cartDTOList.add(cartDTO);
                                 }

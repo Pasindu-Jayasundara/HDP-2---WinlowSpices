@@ -292,6 +292,7 @@ public class CartOperations {
 
                                         Map<String, Object> newCartEntry = new HashMap<>();
                                         newCartEntry.put("ref_path", productDTO.getReferencePath());
+                                        newCartEntry.put("name", productDTO.getName());
                                         newCartEntry.put("weight_category", newCartWeightCategoryDTOList);
 
                                         cartData.add(newCartEntry);

@@ -2,6 +2,7 @@ package com.example.winlowcustomer.dto;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 public class CartDTO implements Serializable {
 
@@ -9,24 +10,33 @@ public class CartDTO implements Serializable {
     private String name;
     private List<CartWeightCategoryDTO> CartWeightCategoryDTOList;
 
-    private String fieldPath;
+    private Map<String, Object> cartDTOMap;
 
     public CartDTO() {
     }
 
-    public CartDTO(String referencePath,String fieldPath, String name, List<CartWeightCategoryDTO> CartWeightCategoryDTOList) {
+    public CartDTO(String referencePath,Map<String, Object> cartDTOMap, String name, List<CartWeightCategoryDTO> CartWeightCategoryDTOList) {
         this.referencePath = referencePath;
-        this.fieldPath = fieldPath;
+//        this.fieldPath = fieldPath;
+        this.cartDTOMap = cartDTOMap;
         this.name = name;
         this.CartWeightCategoryDTOList = CartWeightCategoryDTOList;
     }
 
-    public String getFieldPath() {
-        return fieldPath;
+//    public String getFieldPath() {
+//        return fieldPath;
+//    }
+//
+//    public void setFieldPath(String fieldPath) {
+//        this.fieldPath = fieldPath;
+//    }
+
+    public Map<String, Object> getCartDTOMap() {
+        return cartDTOMap;
     }
 
-    public void setFieldPath(String fieldPath) {
-        this.fieldPath = fieldPath;
+    public void setCartDTOMap(Map<String, Object> cartDTOMap) {
+        this.cartDTOMap = cartDTOMap;
     }
 
     public String getName() {

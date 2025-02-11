@@ -20,6 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerViewAdapter.CartRecyclerViewHolder>{
 
@@ -73,8 +74,9 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
                 holder.remove.setEnabled(false);
                 holder.remove.setClickable(false);
 
+
                 // remove from firebase
-                removeCartItemFromFirebase(cartDTO.getFieldPath(), new GetDataRemovedNotified() {
+                removeCartItemFromFirebase(cartDTO.getCartDTOMap(), new GetDataRemovedNotified() {
                     @Override
                     public void onDataRemoved(Boolean removed) {
 
@@ -111,11 +113,11 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
     }
 
 
-    private void removeCartItemFromFirebase(String fieldPath, GetDataRemovedNotified getDataRemovedNotified) {
+    private void removeCartItemFromFirebase(Map<String,Object> cartDTOMap, GetDataRemovedNotified getDataRemovedNotified) {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("user").document(userDto.getId())
-                .update(fieldPath, FieldValue.delete())
+                .update("cart", FieldValue.arrayRemove(cartDTOMap))
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
