@@ -24,6 +24,7 @@ import com.example.winlowcustomer.dto.ProductDTO;
 import com.example.winlowcustomer.dto.UserDTO;
 import com.example.winlowcustomer.dto.WeightCategoryDTO;
 import com.example.winlowcustomer.modal.callback.GetDataCallback;
+import com.example.winlowcustomer.modal.callback.GetFirebaseDocumentSnapshot;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -199,7 +200,7 @@ public class CartOperations {
                                 List<Map<String, Object>> cartData = (List<Map<String, Object>>) documentSnapshot.get("cart");
                                 List<Map<String, Object>> sendCartData = new ArrayList<>();
 
-                                Log.i("cart", "onSuccess: " + gson.toJson(weightHashMap));
+//                                Log.i("cart", "onSuccess: " + gson.toJson(weightHashMap));
 
                                 if (cartData != null) {
                                     boolean isProductUpdated = false;
@@ -234,6 +235,7 @@ public class CartOperations {
 
                                                     Map<String, Object> newCartEntry = new HashMap<>();
                                                     newCartEntry.put("ref_path", productDTO.getReferencePath());
+                                                    newCartEntry.put("name", productDTO.getName());
                                                     newCartEntry.put("weight_category", ncd);
 
                                                     sendCartData.add(newCartEntry);
@@ -249,6 +251,7 @@ public class CartOperations {
 
                                                     Map<String, Object> newCartEntry = new HashMap<>();
                                                     newCartEntry.put("ref_path", productDTO.getReferencePath());
+                                                    newCartEntry.put("name", productDTO.getName());
                                                     newCartEntry.put("weight_category", ncd);
 
                                                     sendCartData.add(newCartEntry);
@@ -352,6 +355,7 @@ public class CartOperations {
 
                                     Map<String, Object> newCartEntry = new HashMap<>();
                                     newCartEntry.put("ref_path", productDTO.getReferencePath());
+                                    newCartEntry.put("name", productDTO.getName());
                                     newCartEntry.put("weight_category", newCartWeightCategoryDTOList);
 
                                     List<Map<String, Object>> newCartData = new ArrayList<>();
@@ -399,6 +403,44 @@ public class CartOperations {
                             Intent intent = new Intent(activity, LoginActivity.class);
                             intent.putExtra("fromCart", gson.toJson(true));
                             intent.putExtra("productDTO", gson.toJson(productDTO));
+                            activity.startActivity(intent);
+
+                        }
+                    })
+                    .show();
+        }
+
+    }
+
+    public void loadCart(GetFirebaseDocumentSnapshot getFirebaseDocumentSnapshot, Activity activity, UserDTO userDTO){
+
+        boolean loggedIn = CartOperations.isLoggedIn(activity.getApplicationContext());
+        if (loggedIn) {
+
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("user").document(userDTO.getId()).get()
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                            getFirebaseDocumentSnapshot.onGetDocumentSnapshot(documentSnapshot);
+
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            getFirebaseDocumentSnapshot.onGetDocumentSnapshot(null);
+                        }
+                    });
+
+        } else {
+            Snackbar.make(activity.findViewById(R.id.coordinatorLayout), R.string.not_logged_in, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.not_logged_in_btn, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            Intent intent = new Intent(activity, LoginActivity.class);
                             activity.startActivity(intent);
 
                         }

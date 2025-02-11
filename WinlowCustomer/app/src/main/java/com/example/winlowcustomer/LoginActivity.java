@@ -94,8 +94,8 @@ public class LoginActivity extends AppCompatActivity {
 
         if (Verify.verifyMobileNumber(stringMobileNumber, getApplicationContext())) {
 
-            String otp = SendOtp.send(stringMobileNumber);
-//            String otp = "123";
+//            String otp = SendOtp.send(stringMobileNumber);
+            String otp = "123";
 
             // show dialog popup to enter otp
             LayoutInflater layoutInflater = getLayoutInflater();
@@ -145,28 +145,34 @@ public class LoginActivity extends AppCompatActivity {
 
                     Intent receivedIntent = getIntent();
                     String fromCart = receivedIntent.getStringExtra("fromCart");
-                    String productDTO = receivedIntent.getStringExtra("productDTO");
+                    if(fromCart != null){
+                        String productDTO = receivedIntent.getStringExtra("productDTO");
 
-                    Gson gson = new Gson();
-                    if (gson.fromJson(fromCart, Boolean.class)) {
+                        Gson gson = new Gson();
+                        Boolean b = gson.fromJson(fromCart, Boolean.class);
+                        if (b) {
 
-                        receivedIntent.removeExtra("fromCart");
+                            receivedIntent.removeExtra("fromCart");
 
-                        ProductDTO productDTO1 = gson.fromJson(productDTO, ProductDTO.class);
-                        if (productDTO1 != null) {
+                            ProductDTO productDTO1 = gson.fromJson(productDTO, ProductDTO.class);
+                            if (productDTO1 != null) {
 
-                            receivedIntent.removeExtra("productDTO");
+                                receivedIntent.removeExtra("productDTO");
 
-                            CartOperations cartOperations = new CartOperations();
-                            cartOperations.addToCart(productDTO1, LoginActivity.this);
+                                CartOperations cartOperations = new CartOperations();
+                                cartOperations.addToCart(productDTO1, LoginActivity.this);
 
+                            }
+
+                            if(receivedIntent.hasExtra("productDTO")){
+                                receivedIntent.removeExtra("productDTO");
+                            }
+
+                            Intent intent = new Intent(LoginActivity.this, ProductViewActivity.class);
+                            startActivity(intent);
                         }
-
-                        if(receivedIntent.hasExtra("productDTO")){
-                            receivedIntent.removeExtra("productDTO");
-                        }
-
-                        Intent intent = new Intent(LoginActivity.this, ProductViewActivity.class);
+                    }else{
+                        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                         startActivity(intent);
                     }
 

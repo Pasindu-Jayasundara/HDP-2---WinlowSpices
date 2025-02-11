@@ -5,15 +5,36 @@ import java.util.List;
 
 public class CartDTO implements Serializable {
 
-    private String referencePath;
+    private String referencePath; //
+    private String name;
     private List<CartWeightCategoryDTO> CartWeightCategoryDTOList;
+
+    private String fieldPath;
 
     public CartDTO() {
     }
 
-    public CartDTO(String referencePath, List<CartWeightCategoryDTO> CartWeightCategoryDTOList) {
+    public CartDTO(String referencePath,String fieldPath, String name, List<CartWeightCategoryDTO> CartWeightCategoryDTOList) {
         this.referencePath = referencePath;
+        this.fieldPath = fieldPath;
+        this.name = name;
         this.CartWeightCategoryDTOList = CartWeightCategoryDTOList;
+    }
+
+    public String getFieldPath() {
+        return fieldPath;
+    }
+
+    public void setFieldPath(String fieldPath) {
+        this.fieldPath = fieldPath;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getReferencePath() {

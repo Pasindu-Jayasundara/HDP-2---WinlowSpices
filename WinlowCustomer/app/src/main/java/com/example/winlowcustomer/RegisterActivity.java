@@ -106,19 +106,15 @@ public class RegisterActivity extends AppCompatActivity {
         ImageButton stepPointTwo = findViewById(R.id.imageButton18);
         ImageButton stepPointThree = findViewById(R.id.imageButton19);
 
-        if(upTo == 0){
+        if (upTo == 0) {
             progress = 0;
-        }
-        else if(upTo == 1){
-            progress = getStepOneProgress(progressBar,stepPointOne);
-        }
-        else if(upTo == 2){
-            progress = getStepTwoProgress(progressBar,stepPointTwo);
-        }
-        else if(upTo == 3) {
+        } else if (upTo == 1) {
+            progress = getStepOneProgress(progressBar, stepPointOne);
+        } else if (upTo == 2) {
+            progress = getStepTwoProgress(progressBar, stepPointTwo);
+        } else if (upTo == 3) {
             progress = getStepThreeProgress(progressBar, stepPointThree);
-        }
-        else if(upTo == 4){
+        } else if (upTo == 4) {
             progress = 100;
         }
 
@@ -232,7 +228,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void addUserToFirebase() {
 
-        if(userDTO.getName().isBlank() || userDTO.getMobile().isBlank() || userDTO.getEmail().isBlank() || userDTO.getAddress().isEmpty()){
+        if (userDTO.getName().isBlank() || userDTO.getMobile().isBlank() || userDTO.getEmail().isBlank() || userDTO.getAddress().isEmpty()) {
             Toast.makeText(RegisterActivity.this, R.string.step_1_not_complete, Toast.LENGTH_SHORT).show();
 
             Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
@@ -242,17 +238,22 @@ public class RegisterActivity extends AppCompatActivity {
 
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
+        String docId = firestore.collection("user").document().getId(); // Generate unique ID
+        userDTO.setId(docId);
+
         firestore.collection("user")
-                .add(userDTO)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                .document(docId)
+                .set(userDTO)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onSuccess(DocumentReference documentReference) {
+                    public void onSuccess(Void unused) {
+
 
                         Toast.makeText(RegisterActivity.this, R.string.user_registration_success, Toast.LENGTH_SHORT).show();
 
                         // store user in sqlite
                         SQLiteHelper sqLiteHelper = new SQLiteHelper(RegisterActivity.this, "winlow.db", null, 1);
-                        sqLiteHelper.insertSingleUser(sqLiteHelper,documentReference.getId(), userDTO.getName(), userDTO.getMobile(), userDTO.getEmail());
+                        sqLiteHelper.insertSingleUser(sqLiteHelper, docId, userDTO.getName(), userDTO.getMobile(), userDTO.getEmail());
 
                         // store user in shared preferences
                         CartOperations.isLoggedIn(getApplicationContext());

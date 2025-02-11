@@ -1,14 +1,43 @@
 package com.example.winlowcustomer;
 
+import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TableLayout;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.winlowcustomer.dto.CartDTO;
+import com.example.winlowcustomer.dto.CartWeightCategoryDTO;
+import com.example.winlowcustomer.dto.UserDTO;
+import com.example.winlowcustomer.modal.CartOperations;
+import com.example.winlowcustomer.modal.CartRecyclerViewAdapter;
+import com.example.winlowcustomer.modal.callback.GetDataCallback;
+import com.example.winlowcustomer.modal.callback.GetFirebaseDocumentSnapshot;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Filter;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.auth.User;
+import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class CartActivity extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,5 +49,158 @@ public class CartActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+
+        //get user
+        SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
+        String userJson = sharedPreferences.getString("user", null);
+
+        Gson gson = new Gson();
+        UserDTO userDTO = gson.fromJson(userJson, UserDTO.class);
+
+        // hide checkout part
+        hideCheckout();
+
+        // load cart list
+        loadCartList(userDTO);
     }
+
+    private void loadCartList(UserDTO userDTO) {
+
+        CartOperations cartOperations = new CartOperations();
+        cartOperations.loadCart(new GetFirebaseDocumentSnapshot() {
+            @Override
+            public void onGetDocumentSnapshot(DocumentSnapshot documentSnapshot) {
+
+                if (documentSnapshot != null && documentSnapshot.exists()) {
+                    Map<String, Object> documentSnapshotData = documentSnapshot.getData();
+
+                    if (documentSnapshotData != null && documentSnapshotData.containsKey("cart")) {
+                        List<Map<String, Object>> cartDataMapList = (List<Map<String, Object>>) documentSnapshotData.get("cart");
+
+                        if (cartDataMapList != null && !cartDataMapList.isEmpty()) {
+                            RecyclerView recyclerView = findViewById(R.id.cartRecyclerView);
+                            recyclerView.setLayoutManager(new LinearLayoutManager(CartActivity.this));
+
+                            List<CartDTO> cartDTOList = new ArrayList<>();
+
+                            for (int i = 0; i < cartDataMapList.size(); i++) {
+                                Map<String, Object> cartDataMap = cartDataMapList.get(i);
+                                if (cartDataMap != null && cartDataMap.containsKey("weight_category")) {
+                                    List<Map<String, Object>> weightCategoryListMap = (List<Map<String, Object>>) cartDataMap.get("weight_category");
+
+                                    List<CartWeightCategoryDTO> cartWeightCategoryDTOList = new ArrayList<>();
+                                    if (weightCategoryListMap != null) {
+                                        for (Map<String, Object> weightCategoryMap : weightCategoryListMap) {
+                                            if (weightCategoryMap != null) {
+                                                CartWeightCategoryDTO cartWeightCategoryDTO = new CartWeightCategoryDTO();
+
+                                                // Safe parsing
+                                                Number weightNumber = (Number) weightCategoryMap.get("weight");
+                                                Number qtyNumber = (Number) weightCategoryMap.get("qty");
+
+                                                cartWeightCategoryDTO.setWeight(weightNumber != null ? weightNumber.doubleValue() : 0.0);
+                                                cartWeightCategoryDTO.setQty(qtyNumber != null ? qtyNumber.intValue() : 0);
+
+                                                cartWeightCategoryDTOList.add(cartWeightCategoryDTO);
+                                            }
+                                        }
+                                    }
+
+                                    CartDTO cartDTO = new CartDTO();
+                                    cartDTO.setReferencePath(String.valueOf(cartDataMap.get("ref_path")));
+                                    cartDTO.setName(String.valueOf(cartDataMap.get("name")));
+                                    cartDTO.setCartWeightCategoryDTOList(cartWeightCategoryDTOList);
+
+                                    // 🔥 Set the field path dynamically: "cart/0", "cart/1", ...
+                                    cartDTO.setFieldPath("cart/" + i);
+
+                                    cartDTOList.add(cartDTO);
+                                }
+                            }
+
+                            // Set adapter
+                            CartRecyclerViewAdapter cartRecyclerViewAdapter = new CartRecyclerViewAdapter(cartDTOList,userDTO);
+                            recyclerView.setAdapter(cartRecyclerViewAdapter);
+                        } else {
+                            Toast.makeText(CartActivity.this, R.string.cart_empty, Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(CartActivity.this, R.string.cart_empty, Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(CartActivity.this, R.string.cart_empty, Toast.LENGTH_SHORT).show();
+                }
+
+//                if(documentSnapshot != null && documentSnapshot.exists()){
+//
+//                    Map<String, Object> documentSnapshotData = documentSnapshot.getData();
+//                    List<Map<String,Object>> cartDataMapList = (List<Map<String, Object>>) documentSnapshotData.get("cart");
+//
+//                    if(cartDataMapList != null && !cartDataMapList.isEmpty()){
+//
+//                        // recycler view
+//                        RecyclerView recyclerView = findViewById(R.id.cartRecyclerView);
+//                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(CartActivity.this,LinearLayoutManager.VERTICAL,false);
+//                        recyclerView.setLayoutManager(linearLayoutManager);
+//
+//                        // data from cart
+//                        List<CartDTO> cartDTOList = new ArrayList<>();
+//
+//                        for(Map<String,Object> cartDataMap : cartDataMapList){
+//
+//                            List<CartWeightCategoryDTO> cartWeightCategoryDTOList = new ArrayList<>();
+//
+//                            List<Map<String,Object>> weightCategoryListMap = (List<Map<String, Object>>) cartDataMap.get("weight_category");
+//                            for(Map<String,Object> weightCategoryMap : weightCategoryListMap){
+//
+//                                CartWeightCategoryDTO cartWeightCategoryDTO = new CartWeightCategoryDTO();
+//
+//                                double weight = Double.parseDouble(String.valueOf(weightCategoryMap.get("weight")));
+//                                int qty = Integer.parseInt(String.valueOf(weightCategoryMap.get("qty")));
+//
+//                                cartWeightCategoryDTO.setQty(qty);
+//                                cartWeightCategoryDTO.setWeight(weight);
+//
+//                                cartWeightCategoryDTOList.add(cartWeightCategoryDTO);
+//
+//                            }
+//
+//                            CartDTO cartDTO = new CartDTO();
+//                            cartDTO.setReferencePath(cartDataMap.get("ref_path").toString());
+//                            cartDTO.setCartWeightCategoryDTOList(cartWeightCategoryDTOList);
+//                            cartDTO.setName(cartDataMap.get("ref_path").toString());
+//                            cartDTO.setFieldPath();
+//
+//
+//                            cartDTOList.add(cartDTO);
+//
+//                        }
+//
+//                        // set data and adapter to recycler view
+//                        CartRecyclerViewAdapter cartRecyclerViewAdapter = new CartRecyclerViewAdapter(cartDTOList);
+//                        recyclerView.setAdapter(cartRecyclerViewAdapter);
+//
+//                    }
+//
+//                }else{
+//                    Toast.makeText(CartActivity.this, R.string.cart_empty, Toast.LENGTH_SHORT).show();
+//                }
+
+            }
+        }, CartActivity.this, userDTO);
+
+    }
+
+    private void hideCheckout() {
+        TableLayout tableLayout = findViewById(R.id.tableLayout);
+        tableLayout.setVisibility(View.GONE);
+    }
+
+    private void showChekout() {
+        TableLayout tableLayout = findViewById(R.id.tableLayout);
+        tableLayout.setVisibility(View.VISIBLE);
+    }
+
 }
