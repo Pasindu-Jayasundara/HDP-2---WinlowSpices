@@ -215,6 +215,26 @@ public class LoginActivity extends AppCompatActivity {
 
                                 // store user in shared preferences
                                 CartOperations.isLoggedIn(getApplicationContext());
+
+                                // store order list
+                                SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
+                                String userJson = sharedPreferences.getString("user",null);
+                                if(userJson!=null){
+
+                                    UserDTO userDTO = new Gson().fromJson(userJson, UserDTO.class);
+                                    List<String> orderHistoryList = userDTO.getOrderHistory();
+
+                                    // order history
+                                    List<String> orderHistory = (List<String>) documentSnapshot.get("order_history");
+                                    orderHistoryList.addAll(orderHistory);
+
+                                    userDTO.setOrderHistory(orderHistoryList);
+
+                                    sharedPreferences.edit().putString("user",new Gson().toJson(userDTO)).apply();
+
+                                }
+
+
                             }
 
 //                            isNew[1] = false;

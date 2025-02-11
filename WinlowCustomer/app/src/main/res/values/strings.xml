@@ -177,10 +177,27 @@
 
     <!--  checkout  -->
     <string name="checkout_title">Checkout</string>
-    <string name="checkout_address">Delivery To</string>
+    <string name="checkout_address">Delivery Address</string>
     <string name="checkout_payment_method">Payment Method</string>
     <string name="checkout_payment_method_1">Pay Online</string>
     <string name="checkout_payment_method_2">Cash On Delivery</string>
+    <string name="checkout_change_address">Change Address</string>
+    <string name="checkout_name">Deliver Name</string>
+    <string name="checkout_select_address">Select Address</string>
+    <string name="checkout_mobile">Delivery Mobile</string>
+    <string name="checkout_add_address">Add New Address</string>
+
+    <string name="checkout_need_name">Please Fill Name</string>
+    <string name="checkout_need_mobile">Please Fill Mobile</string>
+    <string name="checkout_need_address">Please Select Address</string>
+    <string name="checkout_need_product">Please Select Product to Purchase</string>
+
+    <string name="payment_success">Payment Success</string>
+    <string name="payment_failed">Payment Failed</string>
+    <string name="payment_cancelled">Payment Cancelled</string>
+
+    <string name="order_placed_failed">Order Placed Failed</string>
+    <string name="order_placed_success">Order Placed Success</string>
 
     <!--  order history  -->
     <string name="order_history_title">Order History</string>

@@ -75,6 +75,8 @@ public class CartActivity extends AppCompatActivity {
         // load cart list
         loadCartList(userDTO);
 
+        totalPriceView = findViewById(R.id.textView12);
+
         // checkout
         Button checkoutButton = findViewById(R.id.button4);
         checkoutButton.setOnClickListener(new View.OnClickListener() {
@@ -82,12 +84,12 @@ public class CartActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Intent intent = new Intent(CartActivity.this, CheckoutActivity.class);
+                intent.putExtra("total_price", totalPriceView.getText().toString());
                 startActivity(intent);
 
             }
         });
 
-        totalPriceView = findViewById(R.id.textView12);
     }
 
     private void loadCartList(UserDTO userDTO) {
@@ -268,7 +270,7 @@ public class CartActivity extends AppCompatActivity {
         TextView totalPriceView = cartActivity.findViewById(R.id.textView12);
 
         String totalPriceString = String.format("%.2f", totalPrice);
-        totalPriceView.setText(totalPriceString);
+        totalPriceView.setText("Rs. "+totalPriceString);
 
 
     }

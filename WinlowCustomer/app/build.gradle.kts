@@ -72,4 +72,7 @@ dependencies {
     //okhttp
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
+    // payhere
+    implementation("com.github.PayHereDevs:payhere-android-sdk:v3.0.17")
+
 }
