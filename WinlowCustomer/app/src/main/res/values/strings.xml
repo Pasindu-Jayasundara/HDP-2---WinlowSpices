@@ -110,9 +110,9 @@
     <!--  cart  -->
     <string name="cart_title">Cart</string>
     <string name="cart_btn_txt">Go to Checkout</string>
-    <string name="total_items">Total</string>
-    <string name="delivery_fee">Delivery Fee</string>
-    <string name="sub_total">Sub Total</string>
+    <string name="total_items">Total Price</string>
+<!--    <string name="delivery_fee">Delivery Fee</string>-->
+<!--    <string name="sub_total">Sub Total</string>-->
     <string name="initial_zero">0.00</string>
     <string name="cart_empty">Cart is Empty</string>
     <string name="cart_qty">00 g</string>

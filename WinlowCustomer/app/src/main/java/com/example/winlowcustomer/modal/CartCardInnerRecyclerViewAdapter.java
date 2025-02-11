@@ -3,6 +3,7 @@ package com.example.winlowcustomer.modal;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -57,6 +58,43 @@ public class CartCardInnerRecyclerViewAdapter extends RecyclerView.Adapter<CartC
         holder.weightTxt.setText(String.valueOf(weight+" g"));
         holder.selectedQtyTxt.setText(String.valueOf(qty));
 
+        holder.plusBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                int selectedQty = Integer.parseInt(holder.selectedQtyTxt.getText().toString());
+                selectedQty++;
+                holder.selectedQtyTxt.setText(String.valueOf(selectedQty));
+
+                for (CartWeightCategoryDTO cartWeightCategoryDTO : cartDTO.getCartWeightCategoryDTOList()) {
+                    if(cartWeightCategoryDTO.getWeight() == weight){
+                        cartWeightCategoryDTO.setQty(selectedQty);
+                        break;
+                    }
+                }
+
+            }
+        });
+
+        holder.minusBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                int selectedQty = Integer.parseInt(holder.selectedQtyTxt.getText().toString());
+                if(selectedQty > 1){
+                    selectedQty--;
+                    holder.selectedQtyTxt.setText(String.valueOf(selectedQty));
+                }
+
+                for (CartWeightCategoryDTO cartWeightCategoryDTO : cartDTO.getCartWeightCategoryDTOList()) {
+                    if (cartWeightCategoryDTO.getWeight() == weight) {
+                        cartWeightCategoryDTO.setQty(selectedQty);
+                        break;
+                    }
+                }
+            }
+        });
+
     }
 
     @Override
@@ -69,6 +107,8 @@ public class CartCardInnerRecyclerViewAdapter extends RecyclerView.Adapter<CartC
         TextView weightTxt;
         TextView unitPriceTxt;
         TextView selectedQtyTxt;
+        Button plusBtn;
+        Button minusBtn;
 
         public CartCardInnerRecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -76,6 +116,8 @@ public class CartCardInnerRecyclerViewAdapter extends RecyclerView.Adapter<CartC
             weightTxt = itemView.findViewById(R.id.textView74);
             unitPriceTxt = itemView.findViewById(R.id.textView76);
             selectedQtyTxt = itemView.findViewById(R.id.textView80);
+            plusBtn = itemView.findViewById(R.id.button17);
+            minusBtn = itemView.findViewById(R.id.button18);
         }
     }
 }

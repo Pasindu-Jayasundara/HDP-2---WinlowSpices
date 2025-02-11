@@ -1,6 +1,7 @@
 package com.example.winlowcustomer;
 
 import static com.example.winlowcustomer.HomeActivity.productDTOArrayListOriginal;
+import static com.example.winlowcustomer.modal.CartRecyclerViewAdapter.checkoutProductList;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -24,6 +26,7 @@ import com.example.winlowcustomer.dto.CartDTO;
 import com.example.winlowcustomer.dto.CartWeightCategoryDTO;
 import com.example.winlowcustomer.dto.ProductDTO;
 import com.example.winlowcustomer.dto.UserDTO;
+import com.example.winlowcustomer.dto.WeightCategoryDTO;
 import com.example.winlowcustomer.modal.CartOperations;
 import com.example.winlowcustomer.modal.CartRecyclerViewAdapter;
 import com.example.winlowcustomer.modal.callback.GetDataCallback;
@@ -43,6 +46,7 @@ import java.util.Map;
 
 public class CartActivity extends AppCompatActivity {
 
+    TextView totalPriceView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +87,7 @@ public class CartActivity extends AppCompatActivity {
             }
         });
 
+        totalPriceView = findViewById(R.id.textView12);
     }
 
     private void loadCartList(UserDTO userDTO) {
@@ -225,6 +230,47 @@ public class CartActivity extends AppCompatActivity {
 
     public static void showChekout(TableLayout tableLayout) {
         tableLayout.setVisibility(View.VISIBLE);
+
+        calculatePriceData();
+    }
+
+    private static void calculatePriceData(){
+
+        double totalPrice = 0.0;
+
+        for(CartDTO cartDTO : checkoutProductList) {
+
+            double totalWeightPrice = 0.0;
+
+            List<CartWeightCategoryDTO> cartWeightCategoryDTOList = cartDTO.getCartWeightCategoryDTOList();
+            for(CartWeightCategoryDTO cartWeightCategoryDTO : cartWeightCategoryDTOList) {
+
+                double weight = cartWeightCategoryDTO.getWeight();
+                double qty = cartWeightCategoryDTO.getQty();
+
+                ProductDTO product = cartDTO.getProduct();
+
+                List<WeightCategoryDTO> weightCategoryDTOList = product.getWeightCategoryDTOList();
+                for (WeightCategoryDTO weightCategoryDTO : weightCategoryDTOList) {
+                    if (weightCategoryDTO.getWeight() == weight) {
+                        totalWeightPrice += weightCategoryDTO.getUnitPrice() * qty;
+                        break;
+                    }
+                }
+
+                totalPrice += totalWeightPrice;
+
+            }
+
+        }
+
+        CartActivity cartActivity = new CartActivity();
+        TextView totalPriceView = cartActivity.findViewById(R.id.textView12);
+
+        String totalPriceString = String.format("%.2f", totalPrice);
+        totalPriceView.setText(totalPriceString);
+
+
     }
 
 }
