@@ -36,12 +36,14 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
 
         CheckBox productName;
         TextView remove;
+        RecyclerView recyclerView;
 
         public CartRecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
 
             productName = itemView.findViewById(R.id.checkBox);
             remove = itemView.findViewById(R.id.textView75);
+            recyclerView = itemView.findViewById(R.id.recyclerView4);
         }
     }
 
@@ -131,6 +133,10 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
 
             }
         });
+
+        // weight recycler view
+        CartCardInnerRecyclerViewAdapter cartCardInnerRecyclerViewAdapter = new CartCardInnerRecyclerViewAdapter(cartDTOList);
+        holder.recyclerView.setAdapter(cartCardInnerRecyclerViewAdapter);
 
     }
 
