@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -141,7 +142,13 @@ public class CheckoutActivity extends AppCompatActivity {
                     return;
                 }
 
-                purchase();
+                RadioGroup radioGroup = findViewById(R.id.radioGroup);
+                boolean payOnline = false;
+                if(radioGroup.getCheckedRadioButtonId() == R.id.radioButton6){ // online
+                    payOnline = true;
+                }
+
+                purchase(payOnline);
 
 
             }
@@ -266,7 +273,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
     }
 
-    private void purchase(){
+    private void purchase(boolean payOnline){
 
         // price
         totalPrice = getIntent().getStringExtra("total_price");
@@ -334,7 +341,17 @@ public class CheckoutActivity extends AppCompatActivity {
         paymentData.put("activity",CheckoutActivity.this);
         paymentData.put("requestId",22620);
 
-        Payhere.pay(paymentData);
+        if(payOnline){
+            Payhere.pay(paymentData);
+        }else{
+
+            addToFirebase(checkoutProductList);
+
+            Intent intent = new Intent(CheckoutActivity.this, OrderSuccessActivity.class);
+            startActivity(intent);
+            finish();
+
+        }
 
     }
 
