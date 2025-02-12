@@ -1,14 +1,60 @@
 package com.example.winlowcustomer;
 
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.FragmentManager;
+
+import com.example.winlowcustomer.modal.AddressHandling;
+import com.example.winlowcustomer.modal.callback.GetAddressCallback;
+import com.example.winlowcustomer.modal.callback.GetCoordinationCallback;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
+import org.bouncycastle.its.asn1.Latitude;
+import org.bouncycastle.its.asn1.Longitude;
+
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class AddNewAddressActivity extends AppCompatActivity {
+
+    List<String> addressList = new ArrayList<>();
+    boolean isFromMap;
+    Marker marker;
+    GoogleMap loadedGoogleMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,5 +66,251 @@ public class AddNewAddressActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+
+        // enter address
+        // select address on map
+
+        TextInputLayout textInputLayout = findViewById(R.id.textInputLayout4);
+        Spinner spinner = findViewById(R.id.spinner);
+
+        FrameLayout frameLayout = findViewById(R.id.frameLayout);
+        frameLayout.bringChildToFront(textInputLayout);
+
+        RadioGroup radioGroup = findViewById(R.id.radioGroup2);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                if (checkedId == R.id.radioButton3) { // type
+                    frameLayout.bringChildToFront(textInputLayout);
+                    isFromMap = false;
+                } else if (checkedId == R.id.radioButton4) { // select
+                    frameLayout.bringChildToFront(spinner);
+                    isFromMap = true;
+                }
+            }
+        });
+
+        // select address
+        addressList.add(getString(R.string.select));
+
+        ArrayAdapter arrayAdapter = new ArrayAdapter(
+                AddNewAddressActivity.this,
+                android.R.layout.simple_spinner_dropdown_item,
+                addressList
+        );
+        spinner.setAdapter(arrayAdapter);
+
+        // type address
+        TextInputEditText typeAddress = findViewById(R.id.typeAddress);
+        typeAddress.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+
+                if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
+
+                    String typeText = typeAddress.getText().toString();
+                    loadLocationFromAddress(typeText, new GetCoordinationCallback() {
+                        @Override
+                        public void onCoordinationReceived(double latitude, double longitude) {
+
+                            if (marker != null) {
+                                marker.remove();
+                            }
+
+                            LatLng latLng = new LatLng(latitude, longitude);
+
+                            MarkerOptions markerOprion = new MarkerOptions()
+                                    .position(latLng)
+                                    .title(getString(R.string.title))
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.location_new));
+
+                            marker = loadedGoogleMap.addMarker(markerOprion);
+                            marker.showInfoWindow();
+
+                        }
+                    });
+
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
+        // map
+        SupportMapFragment supportMapFragment = new SupportMapFragment();
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.mapFrameLayout, supportMapFragment).commit();
+
+        supportMapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(@NonNull GoogleMap googleMap) {
+
+                loadedGoogleMap = googleMap;
+
+                googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                googleMap.setMyLocationEnabled(true);
+                googleMap.getUiSettings().setZoomControlsEnabled(true);
+                googleMap.getUiSettings().setZoomGesturesEnabled(true);
+                googleMap.getUiSettings().setScrollGesturesEnabledDuringRotateOrZoom(true);
+                googleMap.getUiSettings().setCompassEnabled(true);
+                googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+
+                googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                    @Override
+                    public void onMapClick(@NonNull LatLng latLng) {
+
+                        if (isFromMap) {
+
+                            if (marker != null) {
+                                marker.remove();
+                            }
+                            MarkerOptions markerOprion = new MarkerOptions()
+                                    .position(latLng)
+                                    .title(getString(R.string.title))
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.location_new));
+
+                            marker = googleMap.addMarker(markerOprion);
+                            marker.showInfoWindow();
+
+                            loadLocationFromCoordination(latLng, new GetAddressCallback() {
+                                @Override
+                                public void onAddressLoaded(ArrayList<String> addressList) {
+
+//                                    runOnUiThread(new Runnable() {
+//                                        @Override
+//                                        public void run() {
+
+                                            addressList.clear();
+                                            addressList.add(getString(R.string.select));
+                                            addressList.addAll(addressList);
+                                            arrayAdapter.notifyDataSetChanged();
+
+//                                        }
+//                                    });
+
+                                }
+                            });
+                        }
+
+                    }
+                });
+
+            }
+        });
+
+        // save address
+        Button saveButton = findViewById(R.id.button10);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (isFromMap) {
+
+                   if(spinner.getSelectedItemId()==0){
+                       Toast.makeText(AddNewAddressActivity.this, R.string.select_address, Toast.LENGTH_SHORT).show();
+                       return;
+                   }
+
+                    String typeText = addressList.get(spinner.getSelectedItemPosition()-1);
+                    AddressHandling.saveAddress(typeText,getApplicationContext());
+
+                }else{
+
+                    String typeText = typeAddress.getText().toString();
+                    AddressHandling.saveAddress(typeText,getApplicationContext());
+                }
+
+            }
+        });
+
+    }
+
+    private void loadLocationFromAddress(String typeText, GetCoordinationCallback getCoordinationCallback) {
+
+            try {
+                String encodedAddress = URLEncoder.encode(typeText, "UTF-8");
+                String url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + encodedAddress + "&key=AIzaSyBcrR9pIzvt62aNLuposODjNdOPclrZpsw";
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        OkHttpClient client = new OkHttpClient();
+                        Request request = new Request.Builder().url(url).build();
+
+                        try {
+                            Response response = client.newCall(request).execute();
+                            Gson gson = new Gson();
+                            JsonObject jsonObject = gson.fromJson(response.body().string(), JsonObject.class);
+
+                            JsonArray results = jsonObject.getAsJsonArray("results");
+                            if (results != null && results.size() > 0) {
+
+                                JsonObject geometry = results.get(0).getAsJsonObject().getAsJsonObject("geometry");
+                                JsonObject location = geometry.getAsJsonObject("location");
+
+                                double latitude = location.get("lat").getAsDouble();
+                                double longitude = location.get("lng").getAsDouble();
+
+                                // Send the result back to the UI
+                                getCoordinationCallback.onCoordinationReceived(latitude, longitude);
+                            }
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+    }
+
+
+    private void loadLocationFromCoordination(LatLng latLng, GetAddressCallback getAddressCallback) {
+
+        String url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + latLng.latitude + "," + latLng.longitude + "&key=AIzaSyBcrR9pIzvt62aNLuposODjNdOPclrZpsw";
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                OkHttpClient client = new OkHttpClient();
+                Request request = new Request.Builder().url(url).build();
+                try {
+                    Response response = client.newCall(request).execute();
+                    if (response.body() == null) {
+                        return;
+                    }
+
+                    Gson gson = new Gson();
+                    JsonObject jsonObject = gson.fromJson(response.body().string(), JsonObject.class);
+
+                    ArrayList<String> formattedAddresses = new ArrayList<>();
+
+                    JsonArray resultsArray = jsonObject.getAsJsonArray("results");
+                    if (resultsArray != null) {
+                        for (int i = 0; i < resultsArray.size(); i++) {
+                            JsonObject result = resultsArray.get(i).getAsJsonObject();
+                            String formattedAddress = result.get("formatted_address").getAsString();
+                            formattedAddresses.add(formattedAddress);
+                        }
+                    }
+
+                    getAddressCallback.onAddressLoaded(formattedAddresses);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }).start();
+
     }
 }

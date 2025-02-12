@@ -78,4 +78,8 @@ dependencies {
     //pdf
     implementation("com.itextpdf:itext7-core:7.1.15")
 
+    // map
+    implementation("com.google.android.gms:play-services-maps:19.0.0")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+
 }

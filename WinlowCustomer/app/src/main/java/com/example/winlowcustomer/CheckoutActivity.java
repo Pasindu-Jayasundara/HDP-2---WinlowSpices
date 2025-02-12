@@ -27,6 +27,7 @@ import com.example.winlowcustomer.dto.UserDTO;
 import com.example.winlowcustomer.dto.WeightCategoryDTO;
 import com.example.winlowcustomer.modal.CartRecyclerViewAdapter;
 import com.example.winlowcustomer.modal.Payhere;
+import com.example.winlowcustomer.modal.callback.GetAddressCallback;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
@@ -83,21 +84,27 @@ public class CheckoutActivity extends AppCompatActivity {
         Spinner spinner = findViewById(R.id.spinner2);
         Button addAddressBtn = findViewById(R.id.button19);
 
-        List<String> addressList = loadAddress(getApplicationContext());
-        if(addressList.size() == 1){
-            addAddressBtn.setVisibility(View.VISIBLE);
-        }else{
-            addAddressBtn.setVisibility(View.GONE);
+        loadAddress(getApplicationContext(), new GetAddressCallback() {
+            @Override
+            public void onAddressLoaded(List<String> addressList) {
 
-            // load spinner
-            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
-                    getApplicationContext(),
-                    R.layout.selected_address_layout,
-                    addressList
-            );
-            arrayAdapter.setDropDownViewResource(R.layout.address_dropdown_layout);
-            spinner.setAdapter(arrayAdapter);
-        }
+                if(addressList.size() == 1){
+                    addAddressBtn.setVisibility(View.VISIBLE);
+                }else{
+                    addAddressBtn.setVisibility(View.GONE);
+
+                    // load spinner
+                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
+                            getApplicationContext(),
+                            R.layout.selected_address_layout,
+                            addressList
+                    );
+                    arrayAdapter.setDropDownViewResource(R.layout.address_dropdown_layout);
+                    spinner.setAdapter(arrayAdapter);
+                }
+
+            }
+        });
 
         // name
         TextInputEditText deliveryNameView = findViewById(R.id.checkoutName);
