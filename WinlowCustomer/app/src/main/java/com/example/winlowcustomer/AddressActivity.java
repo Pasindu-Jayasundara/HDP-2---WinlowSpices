@@ -1,7 +1,10 @@
 package com.example.winlowcustomer;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,11 +46,37 @@ public class AddressActivity extends AppCompatActivity {
             @Override
             public void onAddressLoaded(List<String> addressList) {
 
-                AddressLoadingRecyclerViewAdapter addressRecyclerViewAdapter = new AddressLoadingRecyclerViewAdapter(addressList,getApplicationContext());
-                addressRecyclerView.setAdapter(addressRecyclerViewAdapter);
+                if(!addressList.isEmpty()){
+                    addressList.remove(0);
+                    AddressLoadingRecyclerViewAdapter addressRecyclerViewAdapter = new AddressLoadingRecyclerViewAdapter(addressList,getApplicationContext());
+                    addressRecyclerView.setAdapter(addressRecyclerViewAdapter);
+                }
+
 
             }
         });
 
+        // add new address
+        Button btn = findViewById(R.id.button9);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(AddressActivity.this, AddNewAddressActivity.class);
+                startActivity(intent);
+
+            }
+        });
+
+        // go back
+        ImageButton backBtn = findViewById(R.id.imageButton15);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                getOnBackPressedDispatcher().onBackPressed();
+
+            }
+        });
     }
 }
