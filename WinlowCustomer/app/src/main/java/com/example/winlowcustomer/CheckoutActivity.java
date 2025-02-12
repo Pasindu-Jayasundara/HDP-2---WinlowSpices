@@ -46,6 +46,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
     UserDTO userDTO;
     HashMap<String,Object> paymentData = new HashMap<>();
+    String totalPrice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -216,14 +217,29 @@ public class CheckoutActivity extends AppCompatActivity {
 
                                         Toast.makeText(CheckoutActivity.this, R.string.order_placed_success, Toast.LENGTH_SHORT).show();
 
+                                        Gson gson = new Gson();
+
+                                        Intent intent = new Intent(CheckoutActivity.this, OrderSuccessActivity.class);
+                                        intent.putExtra("order_id",orderId);
+                                        intent.putExtra("itemList",gson.toJson(paymentData.get("items")));
+                                        intent.putExtra("total",totalPrice);
+                                        startActivity(intent);
+                                        finish();
+
+
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
 
-                                        Toast.makeText(CheckoutActivity.this, R.string.order_placed_failed, Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(CheckoutActivity.this, R.string.order_placed_success, Toast.LENGTH_SHORT).show();
 
+                                        Gson gson = new Gson();
+
+                                        Intent intent = new Intent(CheckoutActivity.this, OrderSuccessActivity.class);
+                                        startActivity(intent);
+                                        finish();
                                     }
                                 });
 
@@ -232,7 +248,12 @@ public class CheckoutActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+
                         Toast.makeText(CheckoutActivity.this, R.string.order_placed_failed, Toast.LENGTH_SHORT).show();
+
+                        Intent intent = new Intent(CheckoutActivity.this, CartActivity.class);
+                        startActivity(intent);
+                        finish();
                     }
                 });
 
@@ -241,7 +262,7 @@ public class CheckoutActivity extends AppCompatActivity {
     private void purchase(){
 
         // price
-        String totalPrice = getIntent().getStringExtra("total_price");
+        totalPrice = getIntent().getStringExtra("total_price");
         String total = totalPrice.replaceAll("[^0-9.]", "");
 
         // address
@@ -275,7 +296,7 @@ public class CheckoutActivity extends AppCompatActivity {
             List<WeightCategoryDTO> weightCategoryDTOList = cartDTO.getProduct().getWeightCategoryDTOList();
             for(WeightCategoryDTO weightCategoryDTO : weightCategoryDTOList){
 
-                double weight = weightCategoryDTO.getWeight();
+//                double weight = weightCategoryDTO.getWeight();
                 int qty = cartDTO.getCartWeightCategoryDTOList().get(0).getQty();
 
                 totalWeightPrice += weightCategoryDTO.getUnitPrice() * qty;

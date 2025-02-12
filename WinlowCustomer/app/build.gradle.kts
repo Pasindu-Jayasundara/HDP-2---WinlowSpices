@@ -75,4 +75,7 @@ dependencies {
     // payhere
     implementation("com.github.PayHereDevs:payhere-android-sdk:v3.0.17")
 
+    //pdf
+    implementation("com.itextpdf:itext7-core:7.1.15")
+
 }
