@@ -25,9 +25,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.winlowcustomer.dto.BannerDTO;
 import com.example.winlowcustomer.dto.ProductDTO;
+import com.example.winlowcustomer.modal.AddressHandling;
 import com.example.winlowcustomer.modal.MainLoadData;
 import com.example.winlowcustomer.modal.NetworkConnection;
 import com.example.winlowcustomer.modal.HomeRecyclerViewAdapter;
+import com.example.winlowcustomer.modal.callback.GetAddressCallback;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.search.SearchBar;
@@ -111,11 +113,19 @@ public class HomeActivity extends AppCompatActivity {
 
         // click location
         TextView selectLocation = findViewById(R.id.textView4);
+        AddressHandling.loadAddress(getApplicationContext(), new GetAddressCallback() {
+            @Override
+            public void onAddressLoaded(List<String> addressList) {
+
+                selectLocation.setText(addressList.get(0));
+
+            }
+        });
         selectLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                changeActivity(SelectLocationActivity.class);
+                changeActivity(AddressActivity.class);
             }
         });
 
