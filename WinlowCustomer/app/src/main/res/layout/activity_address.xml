@@ -31,6 +31,7 @@
         app:srcCompat="@drawable/back_arrow" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/addressRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="24dp"

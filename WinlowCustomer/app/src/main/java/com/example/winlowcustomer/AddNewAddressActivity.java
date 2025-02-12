@@ -179,19 +179,12 @@ public class AddNewAddressActivity extends AppCompatActivity {
 
                             loadLocationFromCoordination(latLng, new GetAddressCallback() {
                                 @Override
-                                public void onAddressLoaded(ArrayList<String> addressList) {
+                                public void onAddressLoaded(List<String> addressList) {
 
-//                                    runOnUiThread(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-
-                                            addressList.clear();
-                                            addressList.add(getString(R.string.select));
-                                            addressList.addAll(addressList);
-                                            arrayAdapter.notifyDataSetChanged();
-
-//                                        }
-//                                    });
+                                    addressList.clear();
+                                    addressList.add(getString(R.string.select));
+                                    addressList.addAll(addressList);
+                                    arrayAdapter.notifyDataSetChanged();
 
                                 }
                             });

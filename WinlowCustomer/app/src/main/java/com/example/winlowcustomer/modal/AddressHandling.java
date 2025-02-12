@@ -191,4 +191,8 @@ public class AddressHandling {
         });
 
     }
+
+    public static void deleteAddress(String address, Context context, GetAddressCallback getAddressCallback) {
+
+    }
 }

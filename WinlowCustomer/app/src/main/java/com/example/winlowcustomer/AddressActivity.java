@@ -8,6 +8,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.winlowcustomer.modal.AddressHandling;
+import com.example.winlowcustomer.modal.AddressLoadingRecyclerViewAdapter;
+import com.example.winlowcustomer.modal.callback.GetAddressCallback;
+
+import java.util.List;
 
 public class AddressActivity extends AppCompatActivity {
 
@@ -23,6 +31,23 @@ public class AddressActivity extends AppCompatActivity {
         });
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+
+        // load address
+
+        RecyclerView addressRecyclerView = findViewById(R.id.addressRecyclerView);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL,false);
+        addressRecyclerView.setLayoutManager(linearLayoutManager);
+
+        AddressHandling.loadAddress(getApplicationContext(), new GetAddressCallback() {
+            @Override
+            public void onAddressLoaded(List<String> addressList) {
+
+                AddressLoadingRecyclerViewAdapter addressRecyclerViewAdapter = new AddressLoadingRecyclerViewAdapter(addressList,getApplicationContext());
+                addressRecyclerView.setAdapter(addressRecyclerViewAdapter);
+
+            }
+        });
 
     }
 }
