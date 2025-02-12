@@ -5,5 +5,5 @@ import org.bouncycastle.its.asn1.Longitude;
 
 public interface GetCoordinationCallback {
 
-    void onCoordinationReceived(double latitude, double longitude);
+    void onCoordinationReceived(double latitude, double longitude, String typedAddress);
 }
