@@ -19,3 +19,6 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+#Proguard rule to keep payhere sdk model classes and constrants
+-keep class lk.payhere.androidsdk.** { *; }

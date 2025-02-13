@@ -24,20 +24,27 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.winlowcustomer.dto.CartDTO;
+import com.example.winlowcustomer.dto.CartWeightCategoryDTO;
+import com.example.winlowcustomer.dto.ProductDTO;
 import com.example.winlowcustomer.dto.UserDTO;
 import com.example.winlowcustomer.dto.WeightCategoryDTO;
+import com.example.winlowcustomer.modal.CartOperations;
 import com.example.winlowcustomer.modal.CartRecyclerViewAdapter;
 import com.example.winlowcustomer.modal.Payhere;
 import com.example.winlowcustomer.modal.callback.GetAddressCallback;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.google.gson.Gson;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lk.payhere.androidsdk.PHConstants;
 import lk.payhere.androidsdk.PHResponse;
@@ -89,7 +96,13 @@ public class CheckoutActivity extends AppCompatActivity {
             @Override
             public void onAddressLoaded(List<String> addressList) {
 
-                if(addressList.size() == 1){
+                if(addressList.contains(getString(R.string.checkout_select_address))){
+                    List<String> list = new ArrayList<>();
+                    list.add(getString(R.string.checkout_select_address));
+                    list.add(getString(R.string.select_address));
+                    addressList.removeAll(list);
+                }
+                if(addressList.isEmpty()){
                     addAddressBtn.setVisibility(View.VISIBLE);
                 }else{
                     addAddressBtn.setVisibility(View.GONE);
@@ -100,7 +113,7 @@ public class CheckoutActivity extends AppCompatActivity {
                             R.layout.checkout_selected_address_layout,
                             addressList
                     );
-                    arrayAdapter.setDropDownViewResource(R.layout.address_dropdown_layout);
+                    arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     spinner.setAdapter(arrayAdapter);
                 }
 
@@ -131,7 +144,8 @@ public class CheckoutActivity extends AppCompatActivity {
                     return;
                 }
 
-                if(spinner.getSelectedItemId() == 0){
+                if(spinner.getSelectedItem().toString().equals(getString(R.string.select_address)) ||
+                        spinner.getSelectedItem().toString().equals(getString(R.string.checkout_select_address))){
                     Toast.makeText(CheckoutActivity.this, R.string.checkout_need_address, Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -176,7 +190,8 @@ public class CheckoutActivity extends AppCompatActivity {
                         Log.d("paymentpayhere", msg);
 
                         Toast.makeText(CheckoutActivity.this, R.string.payment_success, Toast.LENGTH_SHORT).show();
-                        addToFirebase(checkoutProductList);
+                        Map<String, Object> map = convertToFirebase("Online");
+                        addToFirebase(map);
 
                     }else{
                         msg = "Failed:" + response.getData().toString();
@@ -205,41 +220,98 @@ public class CheckoutActivity extends AppCompatActivity {
         }
     }
 
-    private void addToFirebase(List<CartDTO> checkoutProductList){
+    private Map<String, Object> convertToFirebase(String paymentMethod) {
+
+        Map<String,Object> map = new HashMap<>();
+
+        boolean loggedIn = CartOperations.isLoggedIn(getApplicationContext());
+
+        if (loggedIn) {
+
+            // if not in cart add to order
+            // if in cart add to cart increase qty
+
+            SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data",MODE_PRIVATE);
+            String userTxt = sharedPreferences.getString("user", null);
+            if (userTxt != null) {
+
+                Gson gson = new Gson();
+                UserDTO userDTO = gson.fromJson(userTxt, UserDTO.class);
+
+                map.put("user_id",userDTO.getId());
+                map.put("order_list",paymentData.get("items"));
+                map.put("payment_method",paymentMethod);
+                map.put("date_time",System.currentTimeMillis());
+
+
+            }
+
+        } else {
+            Toast.makeText(getApplicationContext(), R.string.not_logged_in, Toast.LENGTH_SHORT).show();
+        }
+
+        return map;
+
+    }
+
+    private void addToFirebase(Map<String, Object> map){
 
         String orderId = (String) paymentData.get("orderId");
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("order")
                 .document(orderId)
-                .set(checkoutProductList)
+                .set(map)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
 
 
-                        List<String> orderHistory = userDTO.getOrderHistory();
-                        orderHistory.add(orderId);
-                        userDTO.setOrderHistory(orderHistory);
-
-                        db.collection("user")
-                                .document(userDTO.getId())
-                                .update("order_history",userDTO.getOrderHistory())
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        db.collection("user").document(userDTO.getId()).get()
+                                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                     @Override
-                                    public void onSuccess(Void unused) {
+                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-                                        Toast.makeText(CheckoutActivity.this, R.string.order_placed_success, Toast.LENGTH_SHORT).show();
+                                        Map<String,Object> ohMap = new HashMap<>();
 
-                                        Gson gson = new Gson();
+                                        List<String> orderHistoryList = (List<String>) documentSnapshot.get("order_history");
+                                        orderHistoryList.add(orderId);
+                                        ohMap.put("order_history",orderHistoryList);
 
-                                        Intent intent = new Intent(CheckoutActivity.this, OrderSuccessActivity.class);
-                                        intent.putExtra("order_id",orderId);
-                                        intent.putExtra("itemList",gson.toJson(paymentData.get("items")));
-                                        intent.putExtra("total",totalPrice);
-                                        startActivity(intent);
-                                        finish();
+                                        db.collection("user")
+                                                .document(userDTO.getId())
+                                                .set(ohMap,SetOptions.mergeFields("order_history"))
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void unused) {
 
+                                                        Toast.makeText(CheckoutActivity.this, R.string.order_placed_success, Toast.LENGTH_SHORT).show();
+
+                                                        Gson gson = new Gson();
+
+                                                        Intent intent = new Intent(CheckoutActivity.this, OrderSuccessActivity.class);
+                                                        intent.putExtra("order_id",orderId);
+                                                        intent.putExtra("itemList",gson.toJson(paymentData.get("items")));
+                                                        intent.putExtra("total",totalPrice);
+                                                        startActivity(intent);
+                                                        finish();
+
+
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+
+                                                        Toast.makeText(CheckoutActivity.this, R.string.order_placed_failed, Toast.LENGTH_SHORT).show();
+
+//                                        Gson gson = new Gson();
+
+                                                        Intent intent = new Intent(CheckoutActivity.this, OrderSuccessActivity.class);
+                                                        startActivity(intent);
+                                                        finish();
+                                                    }
+                                                });
 
                                     }
                                 })
@@ -247,15 +319,18 @@ public class CheckoutActivity extends AppCompatActivity {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
 
-                                        Toast.makeText(CheckoutActivity.this, R.string.order_placed_success, Toast.LENGTH_SHORT).show();
-
-                                        Gson gson = new Gson();
+                                        Toast.makeText(CheckoutActivity.this, R.string.order_placed_failed, Toast.LENGTH_SHORT).show();
 
                                         Intent intent = new Intent(CheckoutActivity.this, OrderSuccessActivity.class);
                                         startActivity(intent);
                                         finish();
                                     }
                                 });
+//                        List<String> orderHistory = userDTO.getOrderHistory();
+//                        orderHistory.add(orderId);
+//                        userDTO.setOrderHistory(orderHistory);
+
+
 
                     }
                 })
@@ -303,27 +378,31 @@ public class CheckoutActivity extends AppCompatActivity {
 
         // items
         List<Item> items = new ArrayList<>();
-        for(CartDTO cartDTO : checkoutProductList){
 
-            double totalWeightPrice = 0.0;
+        for(CartDTO cartDTO : checkoutProductList) {
 
-            List<WeightCategoryDTO> weightCategoryDTOList = cartDTO.getProduct().getWeightCategoryDTOList();
-            for(WeightCategoryDTO weightCategoryDTO : weightCategoryDTOList){
+            double totalPrice2 = 0.0;
 
-//                double weight = weightCategoryDTO.getWeight();
-                int qty = cartDTO.getCartWeightCategoryDTOList().get(0).getQty();
+            List<CartWeightCategoryDTO> cartWeightCategoryDTOList = cartDTO.getCartWeightCategoryDTOList();
+            for(CartWeightCategoryDTO cartWeightCategoryDTO : cartWeightCategoryDTOList) {
 
-                totalWeightPrice += weightCategoryDTO.getUnitPrice() * qty;
+                double weight = cartWeightCategoryDTO.getWeight();
+                double qty = cartWeightCategoryDTO.getQty();
 
-                items.add(new Item(cartDTO.getProduct().getId(), cartDTO.getProduct().getName(), qty, totalWeightPrice));
+                ProductDTO product = cartDTO.getProduct();
+
+                List<WeightCategoryDTO> weightCategoryDTOList = product.getWeightCategoryDTOList();
+                for (WeightCategoryDTO weightCategoryDTO : weightCategoryDTOList) {
+                    if (weightCategoryDTO.getWeight() == weight) {
+                        totalPrice2 += weightCategoryDTO.getUnitPrice() * qty;
+                        break;
+                    }
+                }
+                items.add(new Item(product.getId(),product.getName(), (int) qty, totalPrice2));
 
             }
 
         }
-
-//        items.add(new Item("1", "Door  ", 1, 1000.0));
-//        items.add(new Item("2", "Door bell ", 1, 1000.0));
-//        items.add(new Item("3", "Door bell wireless", 1, 1000.0));
 
         // order id
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -342,10 +421,11 @@ public class CheckoutActivity extends AppCompatActivity {
         paymentData.put("requestId",22620);
 
         if(payOnline){
-            Payhere.pay(paymentData);
+            Payhere.pay(paymentData,CheckoutActivity.this);
         }else{
 
-            addToFirebase(checkoutProductList);
+            Map<String, Object> map = convertToFirebase("Cash On Delivery");
+            addToFirebase(map);
 
             Intent intent = new Intent(CheckoutActivity.this, OrderSuccessActivity.class);
             startActivity(intent);

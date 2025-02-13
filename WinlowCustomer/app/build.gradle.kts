@@ -73,8 +73,10 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
     // payhere
+//    implementation("com.github.PayHereDevs:payhere-android-sdk:v3.0.17")
     implementation("com.github.PayHereDevs:payhere-android-sdk:v3.0.17")
-
+    implementation("androidx.appcompat:appcompat:1.6.0") // ignore if you have already added
+    implementation("com.google.code.gson:gson:2.8.0") // ignore if you have already added
     //pdf
     implementation("com.itextpdf:itext7-core:7.1.15")
 

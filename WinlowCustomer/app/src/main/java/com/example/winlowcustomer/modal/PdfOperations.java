@@ -5,6 +5,7 @@ import static androidx.core.content.ContextCompat.startActivity;
 
 import static com.example.winlowcustomer.modal.CartRecyclerViewAdapter.checkoutProductList;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -52,14 +53,14 @@ import lk.payhere.androidsdk.model.Item;
 
 public class PdfOperations {
 
-    public static void printReceipt(Context context, String htmlContent) {
+    public static void printReceipt(String htmlContent,Activity activity) {
 
-        WebView webView = new WebView(context);
+        WebView webView = new WebView(activity);
         webView.loadDataWithBaseURL(null, htmlContent, "text/HTML", "UTF-8", null);
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
-                PrintManager printManager = (PrintManager) context.getSystemService(Context.PRINT_SERVICE);
+                PrintManager printManager = (PrintManager) activity.getSystemService(Context.PRINT_SERVICE);
                 PrintDocumentAdapter adapter = webView.createPrintDocumentAdapter("Receipt");
                 printManager.print("Receipt", adapter, new PrintAttributes.Builder().build());
             }
@@ -143,20 +144,22 @@ public class PdfOperations {
         return html.toString();
     }
 
-    public static void emailReceipt(Context context, String htmlReceipt,String subject,String[] email) {
+    public static void emailReceipt(Context context, String htmlReceipt,String subject,String[] email, Activity activity) {
 
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
         emailIntent.setType("message/rfc822");
         emailIntent.putExtra(Intent.EXTRA_EMAIL, email);
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
         emailIntent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(htmlReceipt, Html.FROM_HTML_MODE_COMPACT));
+//        emailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        Intent sendEmail = Intent.createChooser(emailIntent, "Send Email");
-        startActivity(context, sendEmail, null);
+//        Intent sendEmail = ;
+        activity.startActivity(Intent.createChooser(emailIntent, context.getString(R.string.send_email)));
+//        activity.startActivity(Intent.createChooser(intent, context.getString(R.string.share)));
 
     }
 
-    public static void shareReceipt(Context context, File receiptFile) {
+    public static void shareReceipt(Context context, File receiptFile, Activity activity) {
         if (receiptFile == null || !receiptFile.exists()) {
             return; // File not found
         }
@@ -167,8 +170,9 @@ public class PdfOperations {
         intent.setType("application/pdf");
         intent.putExtra(Intent.EXTRA_STREAM, pdfUri);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        context.startActivity(Intent.createChooser(intent, context.getString(R.string.share)));
+        activity.startActivity(Intent.createChooser(intent, context.getString(R.string.share)));
     }
     public static File generateReceiptPDF(Context context, String customerName, String orderId, String total) {
         File receiptFile = null;

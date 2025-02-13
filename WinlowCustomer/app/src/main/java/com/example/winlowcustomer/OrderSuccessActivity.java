@@ -74,7 +74,7 @@ public class OrderSuccessActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                PdfOperations.printReceipt(getApplicationContext(),htmlReceipt);
+                PdfOperations.printReceipt(htmlReceipt,OrderSuccessActivity.this);
 
             }
         });
@@ -85,7 +85,7 @@ public class OrderSuccessActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                PdfOperations.emailReceipt(getApplicationContext(),htmlReceipt,getString(R.string.receipt),new String[]{userDTO.getEmail()});
+                PdfOperations.emailReceipt(getApplicationContext(),htmlReceipt,getString(R.string.receipt),new String[]{userDTO.getEmail()},OrderSuccessActivity.this);
             }
         });
 
@@ -98,7 +98,7 @@ public class OrderSuccessActivity extends AppCompatActivity {
                 File receiptFile = generateReceiptPDF(getApplicationContext(), userDTO.getName(), orderId, total);
 
                 // Call the method to share the generated PDF file
-                shareReceipt(getApplicationContext(), receiptFile);
+                shareReceipt(getApplicationContext(), receiptFile, OrderSuccessActivity.this);
 
 
             }

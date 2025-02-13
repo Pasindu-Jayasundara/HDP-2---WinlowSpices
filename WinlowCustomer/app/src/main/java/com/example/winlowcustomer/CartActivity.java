@@ -99,6 +99,24 @@ public class CartActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //get user
+        SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
+        String userJson = sharedPreferences.getString("user", null);
+
+        Gson gson = new Gson();
+        UserDTO userDTO = gson.fromJson(userJson, UserDTO.class);
+
+        // hide checkout part
+        TableLayout tableLayout = findViewById(R.id.tableLayout);
+        hideCheckout(tableLayout);
+
+        // load cart list
+        loadCartList(userDTO);
+    }
+
     private void loadCartList(UserDTO userDTO) {
 
         CartOperations cartOperations = new CartOperations();
@@ -257,7 +275,7 @@ public class CartActivity extends AppCompatActivity {
 //        Log.i("cpl","checkoutProductList: "+new Gson().toJson(checkoutProductList));
         for(CartDTO cartDTO : checkoutProductList) {
 
-            double totalWeightPrice = 0.0;
+//            double totalWeightPrice = 0.0;
 
             List<CartWeightCategoryDTO> cartWeightCategoryDTOList = cartDTO.getCartWeightCategoryDTOList();
             for(CartWeightCategoryDTO cartWeightCategoryDTO : cartWeightCategoryDTOList) {
