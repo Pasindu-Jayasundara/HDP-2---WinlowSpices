@@ -242,7 +242,8 @@ public class CheckoutActivity extends AppCompatActivity {
                 map.put("order_list",paymentData.get("items"));
                 map.put("payment_method",paymentMethod);
                 map.put("date_time",System.currentTimeMillis());
-
+                map.put("order_status","Pending");
+                map.put("order_id",paymentData.get("orderId"));
 
             }
 
