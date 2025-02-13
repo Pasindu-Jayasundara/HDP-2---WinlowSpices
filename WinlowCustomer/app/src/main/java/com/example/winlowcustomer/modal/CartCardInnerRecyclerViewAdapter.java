@@ -1,5 +1,7 @@
 package com.example.winlowcustomer.modal;
 
+import static com.example.winlowcustomer.modal.CartRecyclerViewAdapter.checkoutProductList;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
@@ -7,11 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.winlowcustomer.CartActivity;
 import com.example.winlowcustomer.R;
 import com.example.winlowcustomer.dto.CartDTO;
 import com.example.winlowcustomer.dto.CartWeightCategoryDTO;
@@ -29,12 +33,13 @@ public class CartCardInnerRecyclerViewAdapter extends RecyclerView.Adapter<CartC
     List<Map<String,Object>> cartDTOMapWeightCategoryList;
     CartDTO cartDTO;
     ArrayList<ProductDTO> productDTOArrayList;
+    TableLayout tableLayout;
 //    Context context;
 
 //    public CartCardInnerRecyclerViewAdapter(List<CartDTO> dataList){
 //        this.cartDataList = dataList;
 //    }
-    public CartCardInnerRecyclerViewAdapter(CartDTO cartDTO, Context context){
+    public CartCardInnerRecyclerViewAdapter(CartDTO cartDTO, Context context, TableLayout tableLayout){
         Log.i("sendingIn","cartDto: "+new Gson().toJson(cartDTO));
 
         this.cartDTOMapWeightCategoryList = (List<Map<String, Object>>) cartDTO.getCartDTOMap().get("weight_category");
@@ -46,8 +51,8 @@ public class CartCardInnerRecyclerViewAdapter extends RecyclerView.Adapter<CartC
         String productJson = sharedPreferences.getString("product", null);
         Log.i("sendingIn","wl 5: "+productJson);
         Gson gson = new Gson();
-        productDTOArrayList = gson.fromJson(productJson, new com.google.gson.reflect.TypeToken<ArrayList<ProductDTO>>() {}.getType());
-
+        this.productDTOArrayList = gson.fromJson(productJson, new com.google.gson.reflect.TypeToken<ArrayList<ProductDTO>>() {}.getType());
+        this.tableLayout = tableLayout;
     }
 
     @NonNull
@@ -63,19 +68,15 @@ public class CartCardInnerRecyclerViewAdapter extends RecyclerView.Adapter<CartC
     @Override
     public void onBindViewHolder(@NonNull CartCardInnerRecyclerViewHolder holder, int position) {
 
-//        CartDTO cartDTO = cartDataList.get(position);
         Map<String, Object> map = cartDTOMapWeightCategoryList.get(position);
 
-//        double weight = cartDTO.getCartWeightCategoryDTOList().get(position).getWeight();
         double weight = Double.parseDouble(String.valueOf(map.get("weight")));
-//        double qty = cartDTO.getCartWeightCategoryDTOList().get(position).getQty();
         double qty = Double.parseDouble(String.valueOf(map.get("qty")));
 
 
         for(ProductDTO productDTO : productDTOArrayList){
             if(productDTO.getReferencePath().equals(cartDTO.getProduct().getReferencePath())){
                 cartDTO.setProduct(productDTO);
-                Log.i("sendingIn","unitPrice 2:"+new Gson().toJson(productDTO));
                 Log.i("sendingIn","unitPrice 3:"+new Gson().toJson(productDTOArrayList));
 
                 break;
@@ -113,11 +114,24 @@ public class CartCardInnerRecyclerViewAdapter extends RecyclerView.Adapter<CartC
                 holder.selectedQtyTxt.setText(String.valueOf(selectedQty));
                 holder.unitPriceTxt.setText("Rs. "+String.valueOf(selectedQty* finalUnitPrice));
 
+//                if(selectedQty > 0){
+//                    if(!checkoutProductList.contains(cartDTO)){
+//                        checkoutProductList.add(cartDTO);
+//                    }
+//                }
+
                 for (CartWeightCategoryDTO cartWeightCategoryDTO : cartDTO.getCartWeightCategoryDTOList()) {
                     if(cartWeightCategoryDTO.getWeight() == weight){
                         cartWeightCategoryDTO.setQty(selectedQty);
                         break;
                     }
+                }
+
+                if(cartDTO.isChecked()){
+                    checkoutProductList.remove(cartDTO);
+                    checkoutProductList.add(cartDTO);
+
+                    CartActivity.calculatePriceData(tableLayout);
                 }
 
             }
@@ -128,10 +142,14 @@ public class CartCardInnerRecyclerViewAdapter extends RecyclerView.Adapter<CartC
             public void onClick(View v) {
 
                 int selectedQty = Integer.parseInt(holder.selectedQtyTxt.getText().toString());
-                if(selectedQty > 1){
+                if(selectedQty > 0){
                     selectedQty--;
                     holder.selectedQtyTxt.setText(String.valueOf(selectedQty));
                     holder.unitPriceTxt.setText("Rs. "+String.valueOf(selectedQty* finalUnitPrice));
+
+//                    if(checkoutProductList.contains())
+//                    if(selectedQty == 0){
+
                 }
 
                 for (CartWeightCategoryDTO cartWeightCategoryDTO : cartDTO.getCartWeightCategoryDTOList()) {
@@ -140,6 +158,13 @@ public class CartCardInnerRecyclerViewAdapter extends RecyclerView.Adapter<CartC
                         break;
                     }
                 }
+
+                if(cartDTO.isChecked()){
+                    checkoutProductList.remove(cartDTO);
+                    checkoutProductList.add(cartDTO);
+                    CartActivity.calculatePriceData(tableLayout);
+                }
+
             }
         });
 

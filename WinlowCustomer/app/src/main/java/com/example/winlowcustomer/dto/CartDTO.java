@@ -9,6 +9,7 @@ public class CartDTO implements Serializable {
     private String referencePath; //
 
     private ProductDTO product;
+    boolean isChecked;
 
 //    private String name;
     private List<CartWeightCategoryDTO> CartWeightCategoryDTOList;
@@ -18,7 +19,15 @@ public class CartDTO implements Serializable {
     public CartDTO() {
     }
 
-    public CartDTO(String referencePath,Map<String, Object> cartDTOMap, ProductDTO productDTO, List<CartWeightCategoryDTO> CartWeightCategoryDTOList) {
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
+
+    public CartDTO(String referencePath, Map<String, Object> cartDTOMap, ProductDTO productDTO, List<CartWeightCategoryDTO> CartWeightCategoryDTOList) {
         this.referencePath = referencePath;
 //        this.fieldPath = fieldPath;
         this.product = productDTO;

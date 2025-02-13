@@ -3,6 +3,7 @@ package com.example.winlowcustomer;
 import static com.example.winlowcustomer.HomeActivity.productDTOArrayListOriginal;
 import static com.example.winlowcustomer.modal.CartRecyclerViewAdapter.checkoutProductList;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -84,6 +85,11 @@ public class CartActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                if(checkoutProductList.isEmpty()){
+                    Toast.makeText(CartActivity.this, R.string.checkout_need_product, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 Intent intent = new Intent(CartActivity.this, CheckoutActivity.class);
                 intent.putExtra("total_price", totalPriceView.getText().toString());
                 startActivity(intent);
@@ -156,7 +162,8 @@ public class CartActivity extends AppCompatActivity {
                             Log.i("cartDTOList",gson.toJson(cartDTOList));
                             // Set adapter
 
-                            CartRecyclerViewAdapter cartRecyclerViewAdapter = new CartRecyclerViewAdapter(cartDTOList,userDTO,getApplicationContext());
+                            TableLayout tableLayout = findViewById(R.id.tableLayout);
+                            CartRecyclerViewAdapter cartRecyclerViewAdapter = new CartRecyclerViewAdapter(cartDTOList,userDTO,getApplicationContext(),tableLayout);
                             recyclerView.setAdapter(cartRecyclerViewAdapter);
 
                         } else {
@@ -230,19 +237,24 @@ public class CartActivity extends AppCompatActivity {
     }
 
     public static void hideCheckout(TableLayout tableLayout) {
-        tableLayout.setVisibility(View.GONE);
+        if (tableLayout != null) {
+            tableLayout.setVisibility(View.GONE);
+        }
     }
 
     public static void showChekout(TableLayout tableLayout) {
-        tableLayout.setVisibility(View.VISIBLE);
+        if (tableLayout != null) {
+            tableLayout.setVisibility(View.VISIBLE);
+            calculatePriceData(tableLayout);
 
-        calculatePriceData();
+        }
     }
 
-    private static void calculatePriceData(){
+    public static void calculatePriceData(TableLayout tableLayout){
 
         double totalPrice = 0.0;
 
+//        Log.i("cpl","checkoutProductList: "+new Gson().toJson(checkoutProductList));
         for(CartDTO cartDTO : checkoutProductList) {
 
             double totalWeightPrice = 0.0;
@@ -253,24 +265,26 @@ public class CartActivity extends AppCompatActivity {
                 double weight = cartWeightCategoryDTO.getWeight();
                 double qty = cartWeightCategoryDTO.getQty();
 
+                Log.i("cpl","weight: "+weight);
+                Log.i("cpl","qty: "+qty);
+
                 ProductDTO product = cartDTO.getProduct();
 
                 List<WeightCategoryDTO> weightCategoryDTOList = product.getWeightCategoryDTOList();
                 for (WeightCategoryDTO weightCategoryDTO : weightCategoryDTOList) {
                     if (weightCategoryDTO.getWeight() == weight) {
-                        totalWeightPrice += weightCategoryDTO.getUnitPrice() * qty;
+                        totalPrice += weightCategoryDTO.getUnitPrice() * qty;
                         break;
                     }
                 }
 
-                totalPrice += totalWeightPrice;
+//                totalPrice += totalWeightPrice;
 
             }
 
         }
 
-        CartActivity cartActivity = new CartActivity();
-        TextView totalPriceView = cartActivity.findViewById(R.id.textView12);
+        TextView totalPriceView = tableLayout.findViewById(R.id.textView12);
 
         String totalPriceString = String.format("%.2f", totalPrice);
         totalPriceView.setText("Rs. "+totalPriceString);

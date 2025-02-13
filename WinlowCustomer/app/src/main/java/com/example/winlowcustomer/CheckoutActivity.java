@@ -97,7 +97,7 @@ public class CheckoutActivity extends AppCompatActivity {
                     // load spinner
                     ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
                             getApplicationContext(),
-                            R.layout.selected_address_layout,
+                            R.layout.checkout_selected_address_layout,
                             addressList
                     );
                     arrayAdapter.setDropDownViewResource(R.layout.address_dropdown_layout);

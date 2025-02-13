@@ -36,12 +36,14 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
     List<CartDTO> cartDTOList;
     UserDTO userDto;
     Context context;
+    TableLayout tableLayout;
 
     public class CartRecyclerViewHolder extends RecyclerView.ViewHolder{
 
         CheckBox productName;
         TextView remove;
         RecyclerView recyclerView;
+//        TableLayout tableLayout;
 
         public CartRecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -49,13 +51,15 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
             productName = itemView.findViewById(R.id.checkBox);
             remove = itemView.findViewById(R.id.textView75);
             recyclerView = itemView.findViewById(R.id.recyclerView4);
+//            tableLayout = itemView.findViewById(R.id.tableLayout);
         }
     }
 
-    public CartRecyclerViewAdapter(List<CartDTO> cartDTOList, UserDTO userDTO, Context context) {
+    public CartRecyclerViewAdapter(List<CartDTO> cartDTOList, UserDTO userDTO, Context context,TableLayout tableLayout) {
         this.cartDTOList = cartDTOList;
         this.userDto = userDTO;
         this.context = context;
+        this.tableLayout = tableLayout;
     }
 
     @NonNull
@@ -79,23 +83,32 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
         CartDTO cartDTO = cartDTOList.get(position);
 
         holder.productName.setText(cartDTO.getProduct().getName());
+        holder.productName.setChecked(cartDTO.isChecked());
         holder.productName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                holder.productName.setChecked(!holder.productName.isChecked());
+                boolean newState = !cartDTO.isChecked();
+                cartDTO.setChecked(newState);
+                holder.productName.setChecked(newState);
 
-                if(holder.productName.isChecked()){
+                if(newState){
                     checkoutProductList.add(cartDTO);
+                    Log.i("cpl","checkoutProductList 1: "+new Gson().toJson(checkoutProductList));
+
                 }else{
                     checkoutProductList.remove(cartDTO);
+                    Log.i("cpl","checkoutProductList 2: "+new Gson().toJson(checkoutProductList));
+
                 }
 
-                TableLayout tableLayout = v.getRootView().findViewById(R.id.tableLayout);
-                if(checkoutProductList.isEmpty()){
-                    CartActivity.hideCheckout(tableLayout);
-                }else{
-                    CartActivity.showChekout(tableLayout);
+                CartActivity cartActivity = (CartActivity) holder.itemView.getContext();
+                TableLayout tableLayout = cartActivity.findViewById(R.id.tableLayout);
+
+                if (checkoutProductList.isEmpty()) {
+                    CartActivity.hideCheckout(tableLayout);  // Hide if empty
+                } else {
+                    CartActivity.showChekout(tableLayout);  // Show if there are items
                 }
 
             }
@@ -146,7 +159,7 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
         holder.recyclerView.setLayoutManager(linearLayoutManager);
 
         Log.i("sendingIn",new Gson().toJson(cartDTO));
-        CartCardInnerRecyclerViewAdapter cartCardInnerRecyclerViewAdapter = new CartCardInnerRecyclerViewAdapter(cartDTO,context);
+        CartCardInnerRecyclerViewAdapter cartCardInnerRecyclerViewAdapter = new CartCardInnerRecyclerViewAdapter(cartDTO,context,tableLayout);
         holder.recyclerView.setAdapter(cartCardInnerRecyclerViewAdapter);
 
     }
