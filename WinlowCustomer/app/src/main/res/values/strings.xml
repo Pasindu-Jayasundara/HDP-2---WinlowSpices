@@ -12,6 +12,8 @@
     <string name="file_create_failed">Address File Create Failed</string>
     <string name="select_address">Select Address</string>
 
+    <string name="permission_granted">Permission Granted</string>
+    <string name="permission_not_granted">Permission Not Granted</string>
     <!--  deleted address  -->
     <string name="delete_address_message">Are you sure you want to delete this address?</string>
     <string name="delete_address">Delete Address</string>

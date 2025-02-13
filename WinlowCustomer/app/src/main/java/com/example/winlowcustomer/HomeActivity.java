@@ -117,6 +117,17 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onAddressLoaded(List<String> addressList) {
 
+                if(addressList.contains(getString(R.string.checkout_select_address))){
+                    List<String> list = new ArrayList<>();
+                    list.add(getString(R.string.checkout_select_address));
+                    list.add(getString(R.string.select_address));
+                    addressList.removeAll(list);
+                }
+                if(addressList.isEmpty()){
+                    selectLocation.setText(getString(R.string.checkout_select_address));
+                    return;
+                }
+
                 selectLocation.setText(addressList.get(0));
 
             }

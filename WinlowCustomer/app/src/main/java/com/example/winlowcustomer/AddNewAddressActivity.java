@@ -254,10 +254,15 @@ public class AddNewAddressActivity extends AppCompatActivity {
                     String typeText = addressList.get(spinner.getSelectedItemPosition()-1);
                     AddressHandling.saveAddress(typeText,getApplicationContext());
 
+                    getOnBackPressedDispatcher().onBackPressed();
+
                 }else{
 
                     String typeText = typeAddress.getText().toString();
                     AddressHandling.saveAddress(typeText,getApplicationContext());
+
+                    getOnBackPressedDispatcher().onBackPressed();
+
                 }
 
             }

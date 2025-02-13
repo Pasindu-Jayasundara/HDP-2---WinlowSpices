@@ -30,7 +30,7 @@ public class NetworkConnection {
                 }
 
                 hasConnection = true;
-                Toast.makeText(context, R.string.connection_available,Toast.LENGTH_LONG).show();
+//                Toast.makeText(context, R.string.connection_available,Toast.LENGTH_LONG).show();
 
             }
 
