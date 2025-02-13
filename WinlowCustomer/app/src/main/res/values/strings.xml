@@ -244,6 +244,9 @@
     <string name="login_mobile_register">Create New Account</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="login_first">Please Login First</string>
+    <string name="something_wrong">Something Went Wrong!</string>
+    <string name="no_data_found">Could not Find Data</string>
 
     <string name="send_email">Send Email</string>
 </resources>

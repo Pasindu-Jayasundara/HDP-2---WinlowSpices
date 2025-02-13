@@ -1,84 +1,63 @@
 package com.example.winlowcustomer.dto;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 
 public class OrderDTO implements Serializable {
 
-    private double cost;
-    private LocalDate dateTime;
-    private String orderStatus;
-    private String paymentMethod;
-    private String productId;
-    private int qty;
-    private String user;
+    private double amount;
+    private String id; //product
+    private int quantity;
+    private String name;
+    private double weight;
 
     public OrderDTO() {
     }
 
-    public OrderDTO(double cost, LocalDate dateTime, String orderStatus, String paymentMethod, String productId, int qty, String user) {
-        this.cost = cost;
-        this.dateTime = dateTime;
-        this.orderStatus = orderStatus;
-        this.paymentMethod = paymentMethod;
-        this.productId = productId;
-        this.qty = qty;
-        this.user = user;
+    public double getWeight() {
+        return weight;
     }
 
-    public double getCost() {
-        return cost;
+    public void setWeight(double weight) {
+        this.weight = weight;
     }
 
-    public void setCost(double cost) {
-        this.cost = cost;
+    public OrderDTO(double amount, String id, int quantity, String name, double weight) {
+        this.amount = amount;
+        this.id = id;
+        this.quantity = quantity;
+        this.name = name;
+        this.weight = weight;
     }
 
-    public LocalDate getDateTime() {
-        return dateTime;
+    public double getAmount() {
+        return amount;
     }
 
-    public void setDateTime(LocalDate dateTime) {
-        this.dateTime = dateTime;
+    public void setAmount(double amount) {
+        this.amount = amount;
     }
 
-    public String getOrderStatus() {
-        return orderStatus;
+    public String getId() {
+        return id;
     }
 
-    public void setOrderStatus(String orderStatus) {
-        this.orderStatus = orderStatus;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getPaymentMethod() {
-        return paymentMethod;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
-    public String getProductId() {
-        return productId;
+    public String getName() {
+        return name;
     }
 
-    public void setProductId(String productId) {
-        this.productId = productId;
-    }
-
-    public int getQty() {
-        return qty;
-    }
-
-    public void setQty(int qty) {
-        this.qty = qty;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
+    public void setName(String name) {
+        this.name = name;
     }
 }
