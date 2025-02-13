@@ -187,6 +187,7 @@ public class HomeActivity extends AppCompatActivity {
 
             loadCategories(categoryHashSet,chipGroup,this);
         }
+        Log.i("bcd",product);
 
         if(product != null){
             Type listType = new TypeToken<ArrayList<ProductDTO>>() {}.getType();

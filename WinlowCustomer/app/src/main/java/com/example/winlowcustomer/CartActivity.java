@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
@@ -107,7 +108,7 @@ public class CartActivity extends AppCompatActivity {
 
                         if (cartDataMapList != null && !cartDataMapList.isEmpty()) {
                             RecyclerView recyclerView = findViewById(R.id.cartRecyclerView);
-                            recyclerView.setLayoutManager(new LinearLayoutManager(CartActivity.this));
+                            recyclerView.setLayoutManager(new LinearLayoutManager(CartActivity.this,LinearLayoutManager.VERTICAL,false));
 
                             List<CartDTO> cartDTOList = new ArrayList<>();
 
@@ -145,15 +146,17 @@ public class CartActivity extends AppCompatActivity {
 
                                     cartDTO.setCartWeightCategoryDTOList(cartWeightCategoryDTOList);
 
-                                    // 🔥 Set the field path dynamically: "cart/0", "cart/1", ...
                                     cartDTO.setCartDTOMap(cartDataMap);
 
                                     cartDTOList.add(cartDTO);
                                 }
                             }
 
+                            Gson gson = new Gson();
+                            Log.i("cartDTOList",gson.toJson(cartDTOList));
                             // Set adapter
-                            CartRecyclerViewAdapter cartRecyclerViewAdapter = new CartRecyclerViewAdapter(cartDTOList,userDTO);
+
+                            CartRecyclerViewAdapter cartRecyclerViewAdapter = new CartRecyclerViewAdapter(cartDTOList,userDTO,getApplicationContext());
                             recyclerView.setAdapter(cartRecyclerViewAdapter);
 
                         } else {

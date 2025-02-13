@@ -1,5 +1,7 @@
 package com.example.winlowcustomer.modal;
 
+import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.winlowcustomer.CartActivity;
@@ -21,6 +24,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +35,7 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
     public static List<CartDTO> checkoutProductList = new ArrayList<>();
     List<CartDTO> cartDTOList;
     UserDTO userDto;
+    Context context;
 
     public class CartRecyclerViewHolder extends RecyclerView.ViewHolder{
 
@@ -47,9 +52,10 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
         }
     }
 
-    public CartRecyclerViewAdapter(List<CartDTO> cartDTOList, UserDTO userDTO) {
+    public CartRecyclerViewAdapter(List<CartDTO> cartDTOList, UserDTO userDTO, Context context) {
         this.cartDTOList = cartDTOList;
         this.userDto = userDTO;
+        this.context = context;
     }
 
     @NonNull
@@ -135,7 +141,12 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
         });
 
         // weight recycler view
-        CartCardInnerRecyclerViewAdapter cartCardInnerRecyclerViewAdapter = new CartCardInnerRecyclerViewAdapter(cartDTOList);
+//        CartCardInnerRecyclerViewAdapter cartCardInnerRecyclerViewAdapter = new CartCardInnerRecyclerViewAdapter(cartDTOList);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(holder.recyclerView.getContext(),RecyclerView.VERTICAL,false);
+        holder.recyclerView.setLayoutManager(linearLayoutManager);
+
+        Log.i("sendingIn",new Gson().toJson(cartDTO));
+        CartCardInnerRecyclerViewAdapter cartCardInnerRecyclerViewAdapter = new CartCardInnerRecyclerViewAdapter(cartDTO,context);
         holder.recyclerView.setAdapter(cartCardInnerRecyclerViewAdapter);
 
     }

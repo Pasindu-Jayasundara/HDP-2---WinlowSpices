@@ -1,5 +1,8 @@
 package com.example.winlowcustomer.modal;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,15 +17,37 @@ import com.example.winlowcustomer.dto.CartDTO;
 import com.example.winlowcustomer.dto.CartWeightCategoryDTO;
 import com.example.winlowcustomer.dto.ProductDTO;
 import com.example.winlowcustomer.dto.WeightCategoryDTO;
+import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class CartCardInnerRecyclerViewAdapter extends RecyclerView.Adapter<CartCardInnerRecyclerViewAdapter.CartCardInnerRecyclerViewHolder>{
 
-    List<CartDTO> cartDataList;
+//    List<CartDTO> cartDataList;
+    List<Map<String,Object>> cartDTOMapWeightCategoryList;
+    CartDTO cartDTO;
+    ArrayList<ProductDTO> productDTOArrayList;
+//    Context context;
 
-    public CartCardInnerRecyclerViewAdapter(List<CartDTO> dataList){
-        this.cartDataList = dataList;
+//    public CartCardInnerRecyclerViewAdapter(List<CartDTO> dataList){
+//        this.cartDataList = dataList;
+//    }
+    public CartCardInnerRecyclerViewAdapter(CartDTO cartDTO, Context context){
+        Log.i("sendingIn","cartDto: "+new Gson().toJson(cartDTO));
+
+        this.cartDTOMapWeightCategoryList = (List<Map<String, Object>>) cartDTO.getCartDTOMap().get("weight_category");
+        this.cartDTO = cartDTO;
+        Log.i("sendingIn","wl 1: "+new Gson().toJson(cartDTO.getCartDTOMap()));
+        Log.i("sendingIn","wl 2: "+new Gson().toJson(cartDTO.getCartDTOMap().get("weight_category")));
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences("com.example.winlowcustomer.data", Context.MODE_PRIVATE);
+        String productJson = sharedPreferences.getString("product", null);
+        Log.i("sendingIn","wl 5: "+productJson);
+        Gson gson = new Gson();
+        productDTOArrayList = gson.fromJson(productJson, new com.google.gson.reflect.TypeToken<ArrayList<ProductDTO>>() {}.getType());
+
     }
 
     @NonNull
@@ -38,26 +63,47 @@ public class CartCardInnerRecyclerViewAdapter extends RecyclerView.Adapter<CartC
     @Override
     public void onBindViewHolder(@NonNull CartCardInnerRecyclerViewHolder holder, int position) {
 
-        CartDTO cartDTO = cartDataList.get(position);
+//        CartDTO cartDTO = cartDataList.get(position);
+        Map<String, Object> map = cartDTOMapWeightCategoryList.get(position);
 
-        double weight = cartDTO.getCartWeightCategoryDTOList().get(position).getWeight();
-        double qty = cartDTO.getCartWeightCategoryDTOList().get(position).getQty();
+//        double weight = cartDTO.getCartWeightCategoryDTOList().get(position).getWeight();
+        double weight = Double.parseDouble(String.valueOf(map.get("weight")));
+//        double qty = cartDTO.getCartWeightCategoryDTOList().get(position).getQty();
+        double qty = Double.parseDouble(String.valueOf(map.get("qty")));
 
+
+        for(ProductDTO productDTO : productDTOArrayList){
+            if(productDTO.getReferencePath().equals(cartDTO.getProduct().getReferencePath())){
+                cartDTO.setProduct(productDTO);
+                Log.i("sendingIn","unitPrice 2:"+new Gson().toJson(productDTO));
+                Log.i("sendingIn","unitPrice 3:"+new Gson().toJson(productDTOArrayList));
+
+                break;
+            }
+        }
         ProductDTO product = cartDTO.getProduct();
 
+        double unitPrice=0.0;
         List<WeightCategoryDTO> weightCategoryDTOList = product.getWeightCategoryDTOList();
         for (WeightCategoryDTO weightCategoryDTO : weightCategoryDTOList) {
+            Log.i("sendingIn","unitPrice 1:"+new Gson().toJson(weightCategoryDTO));
 
             if(weightCategoryDTO.getWeight() == weight){
-                holder.unitPriceTxt.setText(String.valueOf("Rs. "+weightCategoryDTO.getUnitPrice()));
+
+                holder.unitPriceTxt.setText("Rs. "+String.valueOf(qty* weightCategoryDTO.getUnitPrice()));
+
+                holder.unitPrice.setText(String.valueOf("Rs. "+weightCategoryDTO.getUnitPrice()));
+                unitPrice = weightCategoryDTO.getUnitPrice();
+                Log.i("sendingIn","unitPrice:"+weightCategoryDTO.getUnitPrice());
                 break;
             }
 
         }
 
         holder.weightTxt.setText(String.valueOf(weight+" g"));
-        holder.selectedQtyTxt.setText(String.valueOf(qty));
+        holder.selectedQtyTxt.setText(String.valueOf((int) qty));
 
+        double finalUnitPrice = unitPrice;
         holder.plusBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,6 +111,7 @@ public class CartCardInnerRecyclerViewAdapter extends RecyclerView.Adapter<CartC
                 int selectedQty = Integer.parseInt(holder.selectedQtyTxt.getText().toString());
                 selectedQty++;
                 holder.selectedQtyTxt.setText(String.valueOf(selectedQty));
+                holder.unitPriceTxt.setText("Rs. "+String.valueOf(selectedQty* finalUnitPrice));
 
                 for (CartWeightCategoryDTO cartWeightCategoryDTO : cartDTO.getCartWeightCategoryDTOList()) {
                     if(cartWeightCategoryDTO.getWeight() == weight){
@@ -84,6 +131,7 @@ public class CartCardInnerRecyclerViewAdapter extends RecyclerView.Adapter<CartC
                 if(selectedQty > 1){
                     selectedQty--;
                     holder.selectedQtyTxt.setText(String.valueOf(selectedQty));
+                    holder.unitPriceTxt.setText("Rs. "+String.valueOf(selectedQty* finalUnitPrice));
                 }
 
                 for (CartWeightCategoryDTO cartWeightCategoryDTO : cartDTO.getCartWeightCategoryDTOList()) {
@@ -99,12 +147,14 @@ public class CartCardInnerRecyclerViewAdapter extends RecyclerView.Adapter<CartC
 
     @Override
     public int getItemCount() {
-        return cartDataList.size();
+//        return cartDataList.size();
+        return cartDTOMapWeightCategoryList.size();
     }
 
     public class CartCardInnerRecyclerViewHolder extends RecyclerView.ViewHolder{
 
         TextView weightTxt;
+        TextView unitPrice;
         TextView unitPriceTxt;
         TextView selectedQtyTxt;
         Button plusBtn;
@@ -118,6 +168,7 @@ public class CartCardInnerRecyclerViewAdapter extends RecyclerView.Adapter<CartC
             selectedQtyTxt = itemView.findViewById(R.id.textView80);
             plusBtn = itemView.findViewById(R.id.button17);
             minusBtn = itemView.findViewById(R.id.button18);
+            unitPrice = itemView.findViewById(R.id.textView30);
         }
     }
 }

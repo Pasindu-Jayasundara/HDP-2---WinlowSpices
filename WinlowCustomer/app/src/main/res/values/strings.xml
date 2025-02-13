@@ -201,6 +201,7 @@
     <string name="checkout_select_address">Select Address</string>
     <string name="checkout_mobile">Delivery Mobile</string>
     <string name="checkout_add_address">Add New Address</string>
+    <string name="unit_price">Unit Price :</string>
 
     <string name="checkout_need_name">Please Fill Name</string>
     <string name="checkout_need_mobile">Please Fill Mobile</string>

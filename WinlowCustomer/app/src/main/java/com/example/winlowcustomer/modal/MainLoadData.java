@@ -53,12 +53,18 @@ public class MainLoadData {
                             List<DocumentSnapshot> documents = task.getResult().getDocuments();
                             for (DocumentSnapshot document : documents) {
 
-                                List<Object> weightCategoryRawList = (List<Object>) document.get("weightCategory");
+                                List<Object> weightCategoryRawList = (List<Object>) document.get("weight_category");
                                 String weightCategoryJson = gson.toJson(weightCategoryRawList);
+
+                                Log.i("xyz", weightCategoryJson);
 
                                 Type listType = new TypeToken<List<WeightCategoryDTO>>() {
                                 }.getType();
                                 List<WeightCategoryDTO> weightCategoryDTOList = gson.fromJson(weightCategoryJson, listType);
+                                for(WeightCategoryDTO weightCategoryDTO : weightCategoryDTOList){
+                                    Log.i("xyz","2: "+ gson.toJson(weightCategoryDTO));
+
+                                }
 
                                 if(isFirstTime){
                                     categoryHashSet.add("All");
@@ -85,6 +91,7 @@ public class MainLoadData {
 
                             String categoryJson = gson.toJson(categoryHashSet);
                             String productJson = gson.toJson(productDTOArrayList);
+                            Log.i("xyz", productJson);
 
                             editor.putString("category", categoryJson);
                             editor.putString("product", productJson);
