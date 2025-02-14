@@ -33,15 +33,8 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"/>
         </provider>
-
-        <activity
-            android:name=".OrderFailedActivity"
-            android:exported="false" />
         <activity
             android:name=".OrderSuccessActivity"
-            android:exported="false" />
-        <activity
-            android:name=".SelectLocationActivity"
             android:exported="false" />
         <activity
             android:name=".TrackOrderActivity"
@@ -65,13 +58,7 @@
             android:name=".AddNewAddressActivity"
             android:exported="false" />
         <activity
-            android:name=".AddNewPaymentCardActivity"
-            android:exported="false" />
-        <activity
             android:name=".AddressActivity"
-            android:exported="false" />
-        <activity
-            android:name=".PaymentCardActivity"
             android:exported="false" />
         <activity
             android:name=".LanguageActivity"

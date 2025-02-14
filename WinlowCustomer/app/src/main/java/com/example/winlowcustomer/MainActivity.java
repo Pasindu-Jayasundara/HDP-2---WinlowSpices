@@ -10,6 +10,9 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -55,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<ProductDTO> productDTOArrayList =new ArrayList<>();
     private ArrayList<BannerDTO> bannerArrayList = new ArrayList<>();
     private HashSet<String> categoryHashSet = new HashSet<>();
+    public static String language;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
+        SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", Context.MODE_PRIVATE);
+        language = sharedPreferences.getString("language", "en");
 
         TextView textView = findViewById(R.id.welcometxt);
         String animateText = getString(R.string.welcome_animation_text);
@@ -79,6 +86,9 @@ public class MainActivity extends AppCompatActivity {
 
         isDataLoadingFinished = MainLoadData.mainLoadData(productDTOArrayList, bannerArrayList, categoryHashSet, isDataLoadingFinished, this);
 
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.welcome_animation_fade_up);
+        ImageView imageView = findViewById(R.id.imageView15);
+        imageView.setAnimation(animation);
         animateEachCharacter(textView, animateText);
 
     }

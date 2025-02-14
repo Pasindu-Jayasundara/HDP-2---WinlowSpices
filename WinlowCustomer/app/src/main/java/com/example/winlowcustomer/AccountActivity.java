@@ -112,7 +112,7 @@ public class AccountActivity extends AppCompatActivity {
         profilePaymentCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gotoActivity(PaymentCardActivity.class);
+//                gotoActivity(PaymentCardActivity.class);
             }
         });
 
@@ -121,7 +121,7 @@ public class AccountActivity extends AppCompatActivity {
         profilePaymentImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gotoActivity(PaymentCardActivity.class);
+//                gotoActivity(PaymentCardActivity.class);
             }
         });
 
@@ -130,7 +130,7 @@ public class AccountActivity extends AppCompatActivity {
         profilePaymentArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gotoActivity(PaymentCardActivity.class);
+//                gotoActivity(PaymentCardActivity.class);
             }
         });
 
