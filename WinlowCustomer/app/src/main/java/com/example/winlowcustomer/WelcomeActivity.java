@@ -1,5 +1,6 @@
 package com.example.winlowcustomer;
 
+import static com.example.winlowcustomer.MainActivity.language;
 import static com.example.winlowcustomer.modal.SetUpLanguage.setAppLanguage;
 
 import android.content.Intent;
@@ -14,6 +15,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.winlowcustomer.modal.SetUpLanguage;
+
 public class WelcomeActivity extends AppCompatActivity {
 
     @Override
@@ -26,6 +29,9 @@ public class WelcomeActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
         Button englishButton = findViewById(R.id.button);
         Button sinhalaButton = findViewById(R.id.button2);

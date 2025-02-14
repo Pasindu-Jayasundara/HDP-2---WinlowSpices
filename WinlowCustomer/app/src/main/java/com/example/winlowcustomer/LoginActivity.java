@@ -1,5 +1,7 @@
 package com.example.winlowcustomer;
 
+import static com.example.winlowcustomer.MainActivity.language;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -102,6 +104,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
     }
+
 
     private void sendOTP() {
 

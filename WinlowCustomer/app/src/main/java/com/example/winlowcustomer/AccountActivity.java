@@ -1,10 +1,13 @@
 package com.example.winlowcustomer;
 
+import static com.example.winlowcustomer.MainActivity.language;
+
 import android.app.ComponentCaller;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -53,20 +56,37 @@ public class AccountActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-//        SetUpLanguage.setAppLanguage(getApplicationContext());
+
+        ImageButton back = findViewById(R.id.imageButton5);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getOnBackPressedDispatcher().onBackPressed();
+            }
+        });
+
+        SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
+//        String language = sharedPreferences.getString("language", "");
+//        SetUpLanguage.setAppLanguage(AccountActivity.this, language);
+
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragmentContainerView4, BottomNavigationFragment.class, null)
                 .setReorderingAllowed(true)
                 .commit();
 
-        SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
         String userJson = sharedPreferences.getString("user", null);
+        Log.i("vta","3 :"+userJson);
+
         if(userJson!=null){
+            Log.i("vta","2 :"+userJson);
 
             UserDTO userDTO = new Gson().fromJson(userJson, UserDTO.class);
+            Log.i("vta","4 :"+new Gson().toJson(userDTO));
 
-            TextView textView14 = findViewById(R.id.textView14);
+            TextView textView14 = findViewById(R.id.textView19);
             textView14.setText(userDTO.getName());
 
             if(userDTO.getProfile_image()!=null){
@@ -147,15 +167,19 @@ public class AccountActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data, @NonNull ComponentCaller caller) {
-        super.onActivityResult(requestCode, resultCode, data, caller);
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Log.i("vta","1 :"+new Gson().toJson(data));
 
         if (requestCode == 1000 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+
+            Log.i("vta",new Gson().toJson(data));
 
             Uri imageUri = data.getData();
 
             ImageView profileImage = findViewById(R.id.imageView4);
-            profileImage.setImageURI(imageUri); // Set the selected image to ImageView
+            profileImage.setImageURI(imageUri);
 
             imageUpload(imageUri);
         }
@@ -169,82 +193,88 @@ public class AccountActivity extends AppCompatActivity {
     }
 
     private void imageUpload(Uri imageUri) {
+        if (imageUri == null) return;
 
-        if (imageUri != null) {
+        SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
+        String userJson = sharedPreferences.getString("user", null);
 
-            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-            StorageReference firebaseStorageReference = firebaseStorage.getReference();
+        if (userJson == null) return;
 
-            StorageReference fileRef = firebaseStorageReference.child("profileImage/" + System.currentTimeMillis() + ".jpg");
-            fileRef.putFile(imageUri)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+        Gson gson = new Gson();
+        UserDTO userDTO = gson.fromJson(userJson, UserDTO.class);
 
-                            fileRef.getDownloadUrl()
-                                    .addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                        @Override
-                                        public void onSuccess(Uri uri) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                                            SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
-                                            String userJson = sharedPreferences.getString("user", null);
+        // Retrieve the current image URL from Firestore
+        db.collection("user").document(userDTO.getId()).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String existingImageUrl = documentSnapshot.getString("profile_image");
 
-                                            if(userJson!=null){
+                        if (existingImageUrl != null && !existingImageUrl.isEmpty()) {
+                            // Extract the file name from the URL
+                            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+                            StorageReference existingFileRef = firebaseStorage.getReferenceFromUrl(existingImageUrl);
 
-                                                Gson gson = new Gson();
-                                                UserDTO userDTO = gson.fromJson(userJson, UserDTO.class);
-
-                                                Map<String, Object> imgMap = new HashMap<>();
-                                                imgMap.put("profile_image", uri.toString());
-
-                                                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                                                db.collection("user").document(userDTO.getId())
-                                                        .set(imgMap, SetOptions.merge())
-                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                            @Override
-                                                            public void onSuccess(Void unused) {
-
-                                                                Toast.makeText(AccountActivity.this, R.string.upload_success, Toast.LENGTH_SHORT).show();
-
-                                                            }
-                                                        })
-                                                        .addOnFailureListener(new OnFailureListener() {
-                                                            @Override
-                                                            public void onFailure(@NonNull Exception e) {
-
-                                                                Toast.makeText(AccountActivity.this, R.string.upload_failed, Toast.LENGTH_SHORT).show();
-
-                                                            }
-                                                        });
-
-                                            }
-
-                                        }
+                            // Delete the existing file
+                            existingFileRef.delete()
+                                    .addOnSuccessListener(aVoid -> {
+                                        // Proceed with uploading the new image after successful deletion
+                                        uploadNewImage(imageUri, userDTO, sharedPreferences, gson);
                                     })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-
-                                            Toast.makeText(AccountActivity.this, R.string.upload_failed, Toast.LENGTH_SHORT).show();
-
-                                        }
+                                    .addOnFailureListener(e -> {
+                                        // Handle failure in deleting the existing image
+                                        Toast.makeText(AccountActivity.this, "Failed to delete old image", Toast.LENGTH_SHORT).show();
                                     });
-
+                        } else {
+                            // No previous image, proceed with upload
+                            uploadNewImage(imageUri, userDTO, sharedPreferences, gson);
                         }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-
-                            Toast.makeText(AccountActivity.this, R.string.upload_failed, Toast.LENGTH_SHORT).show();
-
-                            ImageView profileImage = findViewById(R.id.imageView4);
-                            profileImage.setImageResource(R.drawable.empty_profile_2);
-                        }
-                    });
-        }
-
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(AccountActivity.this, "Failed to fetch user data", Toast.LENGTH_SHORT).show();
+                });
     }
+
+    private void uploadNewImage(Uri imageUri, UserDTO userDTO, SharedPreferences sharedPreferences, Gson gson) {
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        StorageReference firebaseStorageReference = firebaseStorage.getReference();
+
+        StorageReference fileRef = firebaseStorageReference.child("profileImage/" + System.currentTimeMillis() + ".jpg");
+        fileRef.putFile(imageUri)
+                .addOnSuccessListener(taskSnapshot -> fileRef.getDownloadUrl()
+                        .addOnSuccessListener(uri -> {
+                            // Update Firestore with new image URL
+                            Map<String, Object> imgMap = new HashMap<>();
+                            imgMap.put("profile_image", uri.toString());
+
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                            db.collection("user").document(userDTO.getId())
+                                    .set(imgMap, SetOptions.merge())
+                                    .addOnSuccessListener(unused -> {
+                                        Toast.makeText(AccountActivity.this, R.string.upload_success, Toast.LENGTH_SHORT).show();
+
+                                        // Update local user data
+                                        userDTO.setProfile_image(uri.toString());
+                                        sharedPreferences.edit().putString("user", gson.toJson(userDTO)).apply();
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Toast.makeText(AccountActivity.this, R.string.upload_failed, Toast.LENGTH_SHORT).show();
+                                    });
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(AccountActivity.this, R.string.upload_failed, Toast.LENGTH_SHORT).show();
+                        })
+                )
+                .addOnFailureListener(e -> {
+                    Toast.makeText(AccountActivity.this, R.string.upload_failed, Toast.LENGTH_SHORT).show();
+
+                    ImageView profileImage = findViewById(R.id.imageView4);
+                    profileImage.setImageResource(R.drawable.empty_profile_2);
+                });
+    }
+
 
     private void gotoActivity(Class<?> activity) {
 

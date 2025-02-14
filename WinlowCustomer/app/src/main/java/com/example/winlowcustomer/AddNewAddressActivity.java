@@ -1,5 +1,7 @@
 package com.example.winlowcustomer;
 
+import static com.example.winlowcustomer.MainActivity.language;
+
 import com.example.winlowcustomer.modal.SetUpLanguage;
 import com.google.android.gms.location.FusedLocationProviderClient;
 
@@ -282,6 +284,7 @@ public class AddNewAddressActivity extends AppCompatActivity {
         });
 
     }
+
 
     private Bitmap drawableToBitmap(Drawable drawable) {
         if (drawable instanceof BitmapDrawable) {

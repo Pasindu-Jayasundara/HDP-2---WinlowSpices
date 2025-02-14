@@ -1,5 +1,7 @@
 package com.example.winlowcustomer;
 
+import static com.example.winlowcustomer.MainActivity.language;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -100,6 +102,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
     }
+
 
     private void animateProgressBar(int upTo) {
 

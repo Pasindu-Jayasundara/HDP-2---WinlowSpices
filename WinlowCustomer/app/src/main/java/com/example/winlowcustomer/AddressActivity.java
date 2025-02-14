@@ -1,5 +1,7 @@
 package com.example.winlowcustomer;
 
+import static com.example.winlowcustomer.MainActivity.language;
+
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -49,7 +51,7 @@ public class AddressActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragmentContainerView5, BottomNavigationFragment.class,null)
+                .replace(R.id.fragmentContainerView5, BottomNavigationFragment.class, null)
                 .setReorderingAllowed(true)
                 .commit();
 
@@ -95,7 +97,7 @@ public class AddressActivity extends AppCompatActivity {
                 Log.i("address", addressListNew.toString());
                 if (!addressListNew.isEmpty()) {
 
-                    if(addressListNew.contains(getString(R.string.checkout_select_address))){
+                    if (addressListNew.contains(getString(R.string.checkout_select_address))) {
                         List<String> list = new ArrayList<>();
                         list.add(getString(R.string.checkout_select_address));
                         list.add(getString(R.string.select_address));

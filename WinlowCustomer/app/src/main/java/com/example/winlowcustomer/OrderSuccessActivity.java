@@ -1,5 +1,6 @@
 package com.example.winlowcustomer;
 
+import static com.example.winlowcustomer.MainActivity.language;
 import static com.example.winlowcustomer.modal.PdfOperations.generateReceiptPDF;
 import static com.example.winlowcustomer.modal.PdfOperations.shareReceipt;
 
@@ -123,4 +124,5 @@ public class OrderSuccessActivity extends AppCompatActivity {
 
 
     }
+
 }

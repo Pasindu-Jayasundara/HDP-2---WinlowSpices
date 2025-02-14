@@ -1,5 +1,6 @@
 package com.example.winlowcustomer;
 
+import static com.example.winlowcustomer.MainActivity.language;
 import static com.example.winlowcustomer.modal.AddressHandling.loadAddress;
 import static com.example.winlowcustomer.modal.CartRecyclerViewAdapter.checkoutProductList;
 
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -91,6 +93,15 @@ public class CheckoutActivity extends AppCompatActivity {
         String totalPrice = getIntent().getStringExtra("total_price");
         TextView totalPriceView = findViewById(R.id.textView18);
         totalPriceView.setText(totalPrice);
+
+        // back
+        ImageButton back = findViewById(R.id.imageButton20);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getOnBackPressedDispatcher().onBackPressed();
+            }
+        });
 
         // load Address
         Spinner spinner = findViewById(R.id.spinner2);
@@ -173,6 +184,7 @@ public class CheckoutActivity extends AppCompatActivity {
         });
 
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

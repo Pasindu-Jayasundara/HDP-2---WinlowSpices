@@ -23,6 +23,7 @@ import com.bumptech.glide.Glide;
 import com.example.winlowcustomer.dto.ProductDTO;
 import com.example.winlowcustomer.dto.WeightCategoryDTO;
 import com.example.winlowcustomer.modal.CartOperations;
+import com.example.winlowcustomer.modal.SetUpLanguage;
 import com.example.winlowcustomer.modal.SingleProductViewRecyclerViewAdapter;
 import com.example.winlowcustomer.modal.Translate;
 import com.example.winlowcustomer.modal.callback.TranslationCallback;
@@ -240,5 +241,8 @@ public class ProductViewActivity extends AppCompatActivity {
         super.onResume();
 
         SingleProductViewRecyclerViewAdapter.weightHashMap = null;
+
+//            SetUpLanguage.setAppLanguage(ProductViewActivity.this, language);
+
     }
 }

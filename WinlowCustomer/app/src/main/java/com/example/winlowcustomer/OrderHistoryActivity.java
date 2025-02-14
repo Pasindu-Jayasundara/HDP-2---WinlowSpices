@@ -1,11 +1,13 @@
 package com.example.winlowcustomer;
 
+import static com.example.winlowcustomer.MainActivity.language;
 import static com.example.winlowcustomer.modal.SetUpLanguage.setAppLanguage;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -20,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.winlowcustomer.dto.OrderHistoryDTO;
 import com.example.winlowcustomer.dto.UserDTO;
 import com.example.winlowcustomer.modal.OrderHistoryRecyclerViewAdapter;
+import com.example.winlowcustomer.modal.SetUpLanguage;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -46,6 +49,14 @@ public class OrderHistoryActivity extends AppCompatActivity {
             return insets;
         });
 //        setAppLanguage(getApplicationContext());
+
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainerView8, BottomNavigationFragment.class,null)
+                .setReorderingAllowed(true)
+                .commit();
 
         SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
         String userJson = sharedPreferences.getString("user", null);
@@ -120,4 +131,5 @@ public class OrderHistoryActivity extends AppCompatActivity {
         }
 
     }
+
 }

@@ -4,11 +4,10 @@ import static com.example.winlowcustomer.MainActivity.language;
 import static com.example.winlowcustomer.modal.SetUpLanguage.setAppLanguage;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.ImageView;
@@ -24,12 +23,15 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.bumptech.glide.Glide;
 import com.example.winlowcustomer.dto.BannerDTO;
 import com.example.winlowcustomer.dto.ProductDTO;
+import com.example.winlowcustomer.dto.UserDTO;
 import com.example.winlowcustomer.modal.AddressHandling;
 import com.example.winlowcustomer.modal.MainLoadData;
 import com.example.winlowcustomer.modal.NetworkConnection;
 import com.example.winlowcustomer.modal.HomeRecyclerViewAdapter;
+import com.example.winlowcustomer.modal.SetUpLanguage;
 import com.example.winlowcustomer.modal.Translate;
 import com.example.winlowcustomer.modal.callback.GetAddressCallback;
 import com.example.winlowcustomer.modal.callback.TranslationCallback;
@@ -55,7 +57,7 @@ public class HomeActivity extends AppCompatActivity {
     public static ArrayList<ProductDTO> productDTOArrayListOriginal;
     ArrayList<BannerDTO> bannerArrayList;
     HashSet<String> categoryHashSet;
-//    public static String language;
+    //    public static String language;
     final boolean[] isFirstTime = {true};
     public static boolean once;
 
@@ -71,7 +73,9 @@ public class HomeActivity extends AppCompatActivity {
         });
 
 //        setAppLanguage(getApplicationContext());
-        setAppLanguage(HomeActivity.this,language);
+        if (language != null) {
+            setAppLanguage(HomeActivity.this, language);
+        }
 //        if(!once){
 //            once = true;
 //            finish();
@@ -105,13 +109,17 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
+
+        // load profile image
+        loadProfileImage(sharedPreferences);
+
         // click profile image
         ImageView profileImage = findViewById(R.id.imageView);
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
                 String userJson = sharedPreferences.getString("user", null);
                 if (userJson == null) {
                     changeActivity(LoginActivity.class);
@@ -187,6 +195,38 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
+        loadProfileImage(sharedPreferences);
+
+//            SetUpLanguage.setAppLanguage(HomeActivity.this, language);
+
+    }
+
+    private void loadProfileImage(SharedPreferences sharedPreferences) {
+
+        String userJson = sharedPreferences.getString("user", null);
+        if (userJson != null) {
+
+            UserDTO userDTO = new Gson().fromJson(userJson, UserDTO.class);
+            if (userDTO.getProfile_image() != null) {
+                ImageView img = findViewById(R.id.imageView);
+
+                Glide.with(HomeActivity.this)
+                        .load(Uri.parse(userDTO.getProfile_image()))
+                        .placeholder(R.drawable.empty_profile_2)
+                        .error(R.drawable.empty_profile_2)
+                        .into(img);
+
+            }
+
+        }
+
+    }
+
     private void loadData() {
 
         Gson gson = new Gson();
@@ -226,7 +266,7 @@ public class HomeActivity extends AppCompatActivity {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2, RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(gridLayoutManager);
 
-        HomeRecyclerViewAdapter homeRecyclerViewAdapter = new HomeRecyclerViewAdapter(productDTOArrayList,HomeActivity.this);
+        HomeRecyclerViewAdapter homeRecyclerViewAdapter = new HomeRecyclerViewAdapter(productDTOArrayList, HomeActivity.this);
         recyclerView.setAdapter(homeRecyclerViewAdapter);
 
     }

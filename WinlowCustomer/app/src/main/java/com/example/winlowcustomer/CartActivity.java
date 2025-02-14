@@ -1,6 +1,7 @@
 package com.example.winlowcustomer;
 
 import static com.example.winlowcustomer.HomeActivity.productDTOArrayListOriginal;
+import static com.example.winlowcustomer.MainActivity.language;
 import static com.example.winlowcustomer.modal.CartRecyclerViewAdapter.checkoutProductList;
 import static com.example.winlowcustomer.modal.SetUpLanguage.setAppLanguage;
 
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +34,7 @@ import com.example.winlowcustomer.dto.UserDTO;
 import com.example.winlowcustomer.dto.WeightCategoryDTO;
 import com.example.winlowcustomer.modal.CartOperations;
 import com.example.winlowcustomer.modal.CartRecyclerViewAdapter;
+import com.example.winlowcustomer.modal.SetUpLanguage;
 import com.example.winlowcustomer.modal.callback.GetDataCallback;
 import com.example.winlowcustomer.modal.callback.GetFirebaseDocumentSnapshot;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -66,6 +69,15 @@ public class CartActivity extends AppCompatActivity {
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+
+        // back
+        ImageButton back = findViewById(R.id.imageButton2);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getOnBackPressedDispatcher().onBackPressed();
+            }
+        });
 
         //get user
         SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
@@ -119,6 +131,8 @@ public class CartActivity extends AppCompatActivity {
 
         // load cart list
         loadCartList(userDTO);
+
+
     }
 
     private void loadCartList(UserDTO userDTO) {

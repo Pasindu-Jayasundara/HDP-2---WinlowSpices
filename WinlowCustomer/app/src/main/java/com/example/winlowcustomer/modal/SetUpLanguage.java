@@ -7,6 +7,9 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 
 import java.util.Locale;
+import static com.example.winlowcustomer.MainActivity.language;
+
+import com.example.winlowcustomer.modal.callback.GetCompleteCallback;
 
 public class SetUpLanguage {
 
@@ -16,6 +19,7 @@ public class SetUpLanguage {
 
 //        SharedPreferences sharedPreferences = context.getSharedPreferences("com.example.winlowcustomer.data", Context.MODE_PRIVATE);
 //        String languageCode = sharedPreferences.getString("language", "");
+        language = langCode;
 //
 //        if(!languageCode.isBlank()){
             Locale locale = new Locale(langCode);
@@ -31,6 +35,14 @@ public class SetUpLanguage {
 //            context.getResources().updateConfiguration(config,
 //                    context.getResources().getDisplayMetrics());
 //        }
+
+    }
+
+    public static void setAppLanguage(Activity activity,String langCode, GetCompleteCallback getCompleteCallback) {
+
+        setAppLanguage(activity,langCode);
+
+        getCompleteCallback.onComplete();
 
     }
 
