@@ -3,6 +3,7 @@ package com.example.winlowcustomer;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -27,6 +28,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class OrderHistoryActivity extends AppCompatActivity {
 
@@ -65,42 +67,52 @@ public class OrderHistoryActivity extends AppCompatActivity {
                             if(documentSnapshot.exists()){
 
 
-                                List<String> list = (List<String>) documentSnapshot.get("cart");
-                                db.collection("order")
-                                        .whereIn(FieldPath.documentId(),list)
-                                        .get()
-                                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                            @Override
-                                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                List<String> orderHistoryList = (List<String>) documentSnapshot.get("order_history");
+//                                List<String> documentIdList = new ArrayList<>();
 
-                                                List<OrderHistoryDTO> orderHistoryDTOList = new ArrayList<>();
+                                Log.i("cartList",new Gson().toJson(orderHistoryList));
 
-                                                List<DocumentSnapshot> documents = queryDocumentSnapshots.getDocuments();
-                                                for(DocumentSnapshot document : documents){
+//                                if (cartList != null) {
+//                                    for (Object item : cartList) {
+//                                        if (item instanceof String) {
+//                                            documentIdList.add((String) item);
+//                                        } else if (item instanceof Map) {
+////                                            // Assuming the document ID is stored in a field like "id" inside the map
+//                                            Map<String, Object> map = (Map<String, Object>) item;
+////                                            if (map.containsKey("id")) {
+////                                                documentIdList.add(map.get("id").toString());
+////                                            }
+////                                        }
+//                                    }
+//                                }
 
-                                                    OrderHistoryDTO orderHistoryDTO = document.toObject(OrderHistoryDTO.class);
-                                                    orderHistoryDTOList.add(orderHistoryDTO);
+                                if (orderHistoryList!=null && !orderHistoryList.isEmpty()) {
+                                    db.collection("order")
+                                            .whereIn(FieldPath.documentId(), orderHistoryList)
+                                            .get()
+                                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                                @Override
+                                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                                    List<OrderHistoryDTO> orderHistoryDTOList = new ArrayList<>();
+                                                    for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                                                        OrderHistoryDTO orderHistoryDTO = document.toObject(OrderHistoryDTO.class);
+                                                        orderHistoryDTOList.add(orderHistoryDTO);
+                                                    }
 
+                                                    RecyclerView recyclerView = findViewById(R.id.orderHistoryRecyclerView);
+                                                    recyclerView.setLayoutManager(new LinearLayoutManager(OrderHistoryActivity.this, RecyclerView.VERTICAL, false));
+                                                    recyclerView.setAdapter(new OrderHistoryRecyclerViewAdapter(orderHistoryDTOList));
                                                 }
-
-                                                RecyclerView recyclerView = findViewById(R.id.orderHistoryRecyclerView);
-
-                                                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(OrderHistoryActivity.this,RecyclerView.VERTICAL,false);
-                                                recyclerView.setLayoutManager(linearLayoutManager);
-
-                                                OrderHistoryRecyclerViewAdapter orderHistoryRecyclerViewAdapter = new OrderHistoryRecyclerViewAdapter(orderHistoryDTOList);
-                                                recyclerView.setAdapter(orderHistoryRecyclerViewAdapter);
-
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-
-                                                Toast.makeText(getApplicationContext(),R.string.no_data_found,Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(getApplicationContext(), R.string.no_data_found, Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                } else {
+                                    Toast.makeText(getApplicationContext(), R.string.no_data_found, Toast.LENGTH_SHORT).show();
+                                }
 
                             } else {
                                 Toast.makeText(getApplicationContext(), R.string.no_data_found, Toast.LENGTH_SHORT).show();
