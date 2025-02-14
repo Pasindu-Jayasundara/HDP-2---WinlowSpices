@@ -34,7 +34,7 @@ public class OrderHistoryInnerRecyclerViewAdapter extends RecyclerView.Adapter<O
 
         OrderDTO orderDTO = orderDTOList.get(position);
 
-        holder.weight.setText(String.valueOf(orderDTO.getName()));
+        holder.weight.setText(orderDTO.getName());
         holder.qty.setText(String.valueOf(orderDTO.getQuantity()));
         holder.amount.setText("Rs. "+String.valueOf(orderDTO.getAmount()));
 

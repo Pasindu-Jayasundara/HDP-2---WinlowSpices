@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 
@@ -68,27 +69,11 @@ public class OrderHistoryActivity extends AppCompatActivity {
 
 
                                 List<String> orderHistoryList = (List<String>) documentSnapshot.get("order_history");
-//                                List<String> documentIdList = new ArrayList<>();
-
-                                Log.i("cartList",new Gson().toJson(orderHistoryList));
-
-//                                if (cartList != null) {
-//                                    for (Object item : cartList) {
-//                                        if (item instanceof String) {
-//                                            documentIdList.add((String) item);
-//                                        } else if (item instanceof Map) {
-////                                            // Assuming the document ID is stored in a field like "id" inside the map
-//                                            Map<String, Object> map = (Map<String, Object>) item;
-////                                            if (map.containsKey("id")) {
-////                                                documentIdList.add(map.get("id").toString());
-////                                            }
-////                                        }
-//                                    }
-//                                }
 
                                 if (orderHistoryList!=null && !orderHistoryList.isEmpty()) {
                                     db.collection("order")
                                             .whereIn(FieldPath.documentId(), orderHistoryList)
+                                            .orderBy("date_time", Query.Direction.DESCENDING)
                                             .get()
                                             .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                                 @Override

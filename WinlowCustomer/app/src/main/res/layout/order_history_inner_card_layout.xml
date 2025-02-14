@@ -7,7 +7,7 @@
 
     <TextView
         android:id="@+id/textView84"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
         app:layout_constraintBottom_toBottomOf="@+id/textView85"
@@ -26,8 +26,9 @@
 
     <TextView
         android:id="@+id/textView86"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
         android:text="TextView"
         app:layout_constraintBottom_toBottomOf="@+id/textView84"
         app:layout_constraintEnd_toEndOf="parent"

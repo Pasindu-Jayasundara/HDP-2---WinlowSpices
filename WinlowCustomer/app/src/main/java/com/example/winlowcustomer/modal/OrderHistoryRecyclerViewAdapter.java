@@ -40,10 +40,9 @@ public class OrderHistoryRecyclerViewAdapter extends RecyclerView.Adapter<OrderH
 
         OrderHistoryDTO orderHistoryDTO = orderHistoryDTOList.get(position);
 
-        String id = holder.itemView.getContext().getString(R.string.order_id) + orderHistoryDTO.getOrder_id();
-        holder.orderId.setText(id);
+        holder.orderId.setText(orderHistoryDTO.getOrder_id());
 
-        String status = holder.itemView.getContext().getString(R.string.order_status) + orderHistoryDTO.getOrder_status();
+        String status = holder.itemView.getContext().getString(R.string.order_status) +" "+ orderHistoryDTO.getOrder_status();
         holder.status.setText(status);
 
         long dateTime = orderHistoryDTO.getDate_time();

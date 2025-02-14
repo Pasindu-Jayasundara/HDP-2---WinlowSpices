@@ -399,7 +399,8 @@ public class CheckoutActivity extends AppCompatActivity {
                         break;
                     }
                 }
-                items.add(new Item(product.getId(),product.getName(), (int) qty, totalPrice2));
+                String name = product.getName()+"  (" + String.valueOf(cartDTO.getWeight())+")";
+                items.add(new Item(product.getId(),name, (int) qty, totalPrice2));
 
             }
 

@@ -40,16 +40,16 @@ public class CartCardInnerRecyclerViewAdapter extends RecyclerView.Adapter<CartC
 //        this.cartDataList = dataList;
 //    }
     public CartCardInnerRecyclerViewAdapter(CartDTO cartDTO, Context context, TableLayout tableLayout){
-        Log.i("sendingIn","cartDto: "+new Gson().toJson(cartDTO));
+//        Log.i("sendingIn","cartDto: "+new Gson().toJson(cartDTO));
 
         this.cartDTOMapWeightCategoryList = (List<Map<String, Object>>) cartDTO.getCartDTOMap().get("weight_category");
         this.cartDTO = cartDTO;
-        Log.i("sendingIn","wl 1: "+new Gson().toJson(cartDTO.getCartDTOMap()));
-        Log.i("sendingIn","wl 2: "+new Gson().toJson(cartDTO.getCartDTOMap().get("weight_category")));
+//        Log.i("sendingIn","wl 1: "+new Gson().toJson(cartDTO.getCartDTOMap()));
+//        Log.i("sendingIn","wl 2: "+new Gson().toJson(cartDTO.getCartDTOMap().get("weight_category")));
 
         SharedPreferences sharedPreferences = context.getSharedPreferences("com.example.winlowcustomer.data", Context.MODE_PRIVATE);
         String productJson = sharedPreferences.getString("product", null);
-        Log.i("sendingIn","wl 5: "+productJson);
+//        Log.i("sendingIn","wl 5: "+productJson);
         Gson gson = new Gson();
         this.productDTOArrayList = gson.fromJson(productJson, new com.google.gson.reflect.TypeToken<ArrayList<ProductDTO>>() {}.getType());
         this.tableLayout = tableLayout;
@@ -77,7 +77,7 @@ public class CartCardInnerRecyclerViewAdapter extends RecyclerView.Adapter<CartC
         for(ProductDTO productDTO : productDTOArrayList){
             if(productDTO.getReferencePath().equals(cartDTO.getProduct().getReferencePath())){
                 cartDTO.setProduct(productDTO);
-                Log.i("sendingIn","unitPrice 3:"+new Gson().toJson(productDTOArrayList));
+//                Log.i("sendingIn","unitPrice 3:"+new Gson().toJson(productDTOArrayList));
 
                 break;
             }
@@ -87,7 +87,7 @@ public class CartCardInnerRecyclerViewAdapter extends RecyclerView.Adapter<CartC
         double unitPrice=0.0;
         List<WeightCategoryDTO> weightCategoryDTOList = product.getWeightCategoryDTOList();
         for (WeightCategoryDTO weightCategoryDTO : weightCategoryDTOList) {
-            Log.i("sendingIn","unitPrice 1:"+new Gson().toJson(weightCategoryDTO));
+//            Log.i("sendingIn","unitPrice 1:"+new Gson().toJson(weightCategoryDTO));
 
             if(weightCategoryDTO.getWeight() == weight){
 
@@ -95,7 +95,6 @@ public class CartCardInnerRecyclerViewAdapter extends RecyclerView.Adapter<CartC
 
                 holder.unitPrice.setText(String.valueOf("Rs. "+weightCategoryDTO.getUnitPrice()));
                 unitPrice = weightCategoryDTO.getUnitPrice();
-                Log.i("sendingIn","unitPrice:"+weightCategoryDTO.getUnitPrice());
                 break;
             }
 
@@ -103,6 +102,8 @@ public class CartCardInnerRecyclerViewAdapter extends RecyclerView.Adapter<CartC
 
         holder.weightTxt.setText(String.valueOf(weight+" g"));
         holder.selectedQtyTxt.setText(String.valueOf((int) qty));
+
+        cartDTO.setWeight(holder.weightTxt.getText().toString());
 
         double finalUnitPrice = unitPrice;
         holder.plusBtn.setOnClickListener(new View.OnClickListener() {
@@ -126,6 +127,8 @@ public class CartCardInnerRecyclerViewAdapter extends RecyclerView.Adapter<CartC
                         break;
                     }
                 }
+//                cartDTO.setWeight(holder.weightTxt.getText().toString());
+                Log.i("sendingIn","cartDTO: "+new Gson().toJson(cartDTO));
 
                 if(cartDTO.isChecked()){
                     checkoutProductList.remove(cartDTO);
@@ -158,6 +161,9 @@ public class CartCardInnerRecyclerViewAdapter extends RecyclerView.Adapter<CartC
                         break;
                     }
                 }
+
+//                cartDTO.setWeight(holder.weightTxt.getText().toString());
+                Log.i("sendingIn","cartDTO: "+new Gson().toJson(cartDTO));
 
                 if(cartDTO.isChecked()){
                     checkoutProductList.remove(cartDTO);
