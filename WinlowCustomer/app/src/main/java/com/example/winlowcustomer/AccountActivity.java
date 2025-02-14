@@ -13,6 +13,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.winlowcustomer.modal.SetUpLanguage;
+
 public class AccountActivity extends AppCompatActivity {
 
     @Override
@@ -25,6 +27,7 @@ public class AccountActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        SetUpLanguage.setAppLanguage(getApplicationContext());
 
         // profile edit card view
         CardView profileEditCardView = findViewById(R.id.cardView2);

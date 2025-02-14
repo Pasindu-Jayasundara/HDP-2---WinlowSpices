@@ -1,5 +1,8 @@
 package com.example.winlowcustomer.modal;
 
+import static com.example.winlowcustomer.MainActivity.language;
+
+import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.example.winlowcustomer.ProductViewActivity;
 import com.example.winlowcustomer.R;
 import com.example.winlowcustomer.dto.ProductDTO;
+import com.example.winlowcustomer.modal.callback.TranslationCallback;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -26,6 +30,7 @@ import java.util.Set;
 public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerViewAdapter.ProductViewHolder> {
 
     ArrayList<ProductDTO> productDTOArrayList;
+    Activity activity;
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
 
@@ -48,8 +53,9 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
         }
     }
 
-    public HomeRecyclerViewAdapter(ArrayList<ProductDTO> productDTOArrayList) {
+    public HomeRecyclerViewAdapter(ArrayList<ProductDTO> productDTOArrayList, Activity activity) {
         this.productDTOArrayList = productDTOArrayList;
+        this.activity = activity;
     }
 
     @NonNull
@@ -75,7 +81,37 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
                 .error(R.drawable.product_placeholder) // Optional: error image
                 .into(holder.productImage); // Set image into ImageView
 
-        holder.productName.setText(productDTO.getName());
+        String name = productDTO.getName();
+        if (!language.equals("en")) {
+            Translate.translateText(productDTO.getName(), language, new TranslationCallback() {
+                @Override
+                public void onSuccess(String translatedText) {
+
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            holder.productName.setText(translatedText);
+                        }
+                    });
+
+                }
+
+                @Override
+                public void onFailure(String errorMessage) {
+
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            holder.productName.setText(name);
+                        }
+                    });
+
+                }
+            });
+        }else{
+            holder.productName.setText(name);
+        }
+
         holder.productPrice.setVisibility(View.GONE);
 
         double discount = productDTO.getDiscount();

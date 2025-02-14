@@ -1,5 +1,7 @@
 package com.example.winlowcustomer;
 
+import static com.example.winlowcustomer.modal.SetUpLanguage.setAppLanguage;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -43,6 +45,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        setAppLanguage(getApplicationContext());
 
         SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
         String userJson = sharedPreferences.getString("user", null);
@@ -86,7 +89,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
 
                                                     RecyclerView recyclerView = findViewById(R.id.orderHistoryRecyclerView);
                                                     recyclerView.setLayoutManager(new LinearLayoutManager(OrderHistoryActivity.this, RecyclerView.VERTICAL, false));
-                                                    recyclerView.setAdapter(new OrderHistoryRecyclerViewAdapter(orderHistoryDTOList));
+                                                    recyclerView.setAdapter(new OrderHistoryRecyclerViewAdapter(orderHistoryDTOList,OrderHistoryActivity.this));
                                                 }
                                             })
                                             .addOnFailureListener(new OnFailureListener() {

@@ -1,5 +1,8 @@
 package com.example.winlowcustomer.modal;
 
+import static com.example.winlowcustomer.MainActivity.language;
+
+import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.winlowcustomer.R;
 import com.example.winlowcustomer.dto.OrderHistoryDTO;
+import com.example.winlowcustomer.modal.callback.TranslationCallback;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,9 +24,11 @@ import java.util.Locale;
 public class OrderHistoryRecyclerViewAdapter extends RecyclerView.Adapter<OrderHistoryRecyclerViewAdapter.OrderHistoryViewHolder>{
 
     List<OrderHistoryDTO> orderHistoryDTOList;
+    Activity activity;
 
-    public OrderHistoryRecyclerViewAdapter(List<OrderHistoryDTO> orderHistoryDTOList) {
+    public OrderHistoryRecyclerViewAdapter(List<OrderHistoryDTO> orderHistoryDTOList, Activity activity) {
         this.orderHistoryDTOList = orderHistoryDTOList;
+        this.activity = activity;
     }
 
     @NonNull
@@ -42,8 +48,31 @@ public class OrderHistoryRecyclerViewAdapter extends RecyclerView.Adapter<OrderH
 
         holder.orderId.setText(orderHistoryDTO.getOrder_id());
 
-        String status = holder.itemView.getContext().getString(R.string.order_status) +" "+ orderHistoryDTO.getOrder_status();
-        holder.status.setText(status);
+        Translate.translateText(orderHistoryDTO.getOrder_status(), language, new TranslationCallback() {
+            @Override
+            public void onSuccess(String translatedText) {
+
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String status = holder.itemView.getContext().getString(R.string.order_status) +" "+ translatedText;
+                        holder.status.setText(status);
+                    }
+                });
+
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String status = holder.itemView.getContext().getString(R.string.order_status) +" "+ orderHistoryDTO.getOrder_status();
+                        holder.status.setText(status);
+                    }
+                });
+            }
+        });
 
         long dateTime = orderHistoryDTO.getDate_time();
         Date date = new Date(dateTime);
@@ -54,7 +83,7 @@ public class OrderHistoryRecyclerViewAdapter extends RecyclerView.Adapter<OrderH
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(holder.itemView.getContext(),RecyclerView.VERTICAL,false);
         holder.recyclerView.setLayoutManager(linearLayoutManager);
-        OrderHistoryInnerRecyclerViewAdapter orderHistoryInnerRecyclerViewAdapter = new OrderHistoryInnerRecyclerViewAdapter(orderHistoryDTO.getOrder_list());
+        OrderHistoryInnerRecyclerViewAdapter orderHistoryInnerRecyclerViewAdapter = new OrderHistoryInnerRecyclerViewAdapter(orderHistoryDTO.getOrder_list(),activity);
         holder.recyclerView.setAdapter(orderHistoryInnerRecyclerViewAdapter);
 
     }

@@ -77,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", Context.MODE_PRIVATE);
         language = sharedPreferences.getString("language", "en");
 
+        setAppLanguage(getApplicationContext());
+
         TextView textView = findViewById(R.id.welcometxt);
         String animateText = getString(R.string.welcome_animation_text);
 
@@ -94,16 +96,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void navigateToNextActivity() {
-        SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", Context.MODE_PRIVATE);
-        String language = sharedPreferences.getString("language", "");
+
 
         Intent intent;
         if (language.isBlank()) {
             intent = new Intent(MainActivity.this, WelcomeActivity.class);
         } else {
             intent = new Intent(MainActivity.this, HomeActivity.class);
-
-            setAppLanguage(language, getApplicationContext());
 
         }
         startActivity(intent);

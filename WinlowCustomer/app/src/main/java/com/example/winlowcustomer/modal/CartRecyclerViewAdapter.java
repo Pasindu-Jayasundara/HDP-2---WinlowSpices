@@ -1,5 +1,8 @@
 package com.example.winlowcustomer.modal;
 
+import static com.example.winlowcustomer.MainActivity.language;
+
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +23,7 @@ import com.example.winlowcustomer.dto.CartDTO;
 import com.example.winlowcustomer.dto.ProductDTO;
 import com.example.winlowcustomer.dto.UserDTO;
 import com.example.winlowcustomer.modal.callback.GetDataRemovedNotified;
+import com.example.winlowcustomer.modal.callback.TranslationCallback;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FieldValue;
@@ -37,6 +41,7 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
     UserDTO userDto;
     Context context;
     TableLayout tableLayout;
+    Activity activity;
 
     public class CartRecyclerViewHolder extends RecyclerView.ViewHolder{
 
@@ -55,11 +60,12 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
         }
     }
 
-    public CartRecyclerViewAdapter(List<CartDTO> cartDTOList, UserDTO userDTO, Context context,TableLayout tableLayout) {
+    public CartRecyclerViewAdapter(List<CartDTO> cartDTOList, UserDTO userDTO, Context context,TableLayout tableLayout, Activity activity) {
         this.cartDTOList = cartDTOList;
         this.userDto = userDTO;
         this.context = context;
         this.tableLayout = tableLayout;
+        this.activity = activity;
     }
 
     @NonNull
@@ -82,7 +88,28 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
 
         CartDTO cartDTO = cartDTOList.get(position);
 
-        holder.productName.setText(cartDTO.getProduct().getName());
+        Translate.translateText(cartDTO.getProduct().getName(), language, new TranslationCallback() {
+            @Override
+            public void onSuccess(String translatedText) {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        holder.productName.setText(translatedText);
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        holder.productName.setText(cartDTO.getProduct().getName());
+                    }
+                });
+            }
+        });
+
         holder.productName.setChecked(cartDTO.isChecked());
         holder.productName.setOnClickListener(new View.OnClickListener() {
             @Override

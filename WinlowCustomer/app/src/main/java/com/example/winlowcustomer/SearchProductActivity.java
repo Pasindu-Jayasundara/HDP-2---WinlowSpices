@@ -1,5 +1,7 @@
 package com.example.winlowcustomer;
 
+import static com.example.winlowcustomer.modal.SetUpLanguage.setAppLanguage;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -51,6 +53,8 @@ public class SearchProductActivity extends AppCompatActivity {
         });
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+
+        setAppLanguage(getApplicationContext());
 
         // bottom navigation
         getSupportFragmentManager().beginTransaction()
@@ -125,7 +129,7 @@ public class SearchProductActivity extends AppCompatActivity {
             Log.i("searchTxt", "222222222222");
             ProductDTO productDTO = iterator.next();
 
-            if(chipTxt.equals("All") && !searchTxt.isEmpty()){
+            if(chipTxt.equals(getString(R.string.category_1)) && !searchTxt.isEmpty()){// all
 
                 Log.i("searchTxt", "3333333333333");
 
@@ -199,7 +203,7 @@ public class SearchProductActivity extends AppCompatActivity {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2, RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(gridLayoutManager);
 
-        HomeRecyclerViewAdapter homeRecyclerViewAdapter = new HomeRecyclerViewAdapter(productDTOArrayList);
+        HomeRecyclerViewAdapter homeRecyclerViewAdapter = new HomeRecyclerViewAdapter(productDTOArrayList,SearchProductActivity.this);
         recyclerView.setAdapter(homeRecyclerViewAdapter);
 
     }

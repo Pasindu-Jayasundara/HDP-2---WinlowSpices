@@ -2,6 +2,7 @@ package com.example.winlowcustomer;
 
 import static com.example.winlowcustomer.HomeActivity.productDTOArrayListOriginal;
 import static com.example.winlowcustomer.modal.CartRecyclerViewAdapter.checkoutProductList;
+import static com.example.winlowcustomer.modal.SetUpLanguage.setAppLanguage;
 
 import android.content.Context;
 import android.content.Intent;
@@ -60,6 +61,9 @@ public class CartActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        setAppLanguage(getApplicationContext());
+
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
@@ -181,7 +185,7 @@ public class CartActivity extends AppCompatActivity {
                             // Set adapter
 
                             TableLayout tableLayout = findViewById(R.id.tableLayout);
-                            CartRecyclerViewAdapter cartRecyclerViewAdapter = new CartRecyclerViewAdapter(cartDTOList,userDTO,getApplicationContext(),tableLayout);
+                            CartRecyclerViewAdapter cartRecyclerViewAdapter = new CartRecyclerViewAdapter(cartDTOList,userDTO,getApplicationContext(),tableLayout,CartActivity.this);
                             recyclerView.setAdapter(cartRecyclerViewAdapter);
 
                         } else {

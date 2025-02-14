@@ -1,5 +1,7 @@
 package com.example.winlowcustomer;
 
+import static com.example.winlowcustomer.modal.SetUpLanguage.setAppLanguage;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -24,6 +26,8 @@ public class WelcomeActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        setAppLanguage(getApplicationContext());
 
         Button englishButton = findViewById(R.id.button);
         Button sinhalaButton = findViewById(R.id.button2);

@@ -24,6 +24,8 @@ import com.example.winlowcustomer.dto.ProductDTO;
 import com.example.winlowcustomer.dto.WeightCategoryDTO;
 import com.example.winlowcustomer.modal.CartOperations;
 import com.example.winlowcustomer.modal.SingleProductViewRecyclerViewAdapter;
+import com.example.winlowcustomer.modal.Translate;
+import com.example.winlowcustomer.modal.callback.TranslationCallback;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
@@ -32,6 +34,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static com.example.winlowcustomer.MainActivity.language;
+import static com.example.winlowcustomer.modal.SetUpLanguage.setAppLanguage;
 
 public class ProductViewActivity extends AppCompatActivity {
 
@@ -47,6 +52,9 @@ public class ProductViewActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        setAppLanguage(getApplicationContext());
+
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
@@ -78,9 +86,60 @@ public class ProductViewActivity extends AppCompatActivity {
 
         }
 
-        productTitle.setText(productDTO.getName());
-        productName.setText(productDTO.getName());
-        productCategory.setText(productDTO.getCategory());
+        Translate.translateText(productDTO.getName(), language, new TranslationCallback() {
+            @Override
+            public void onSuccess(String translatedText) {
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        productTitle.setText(translatedText);
+                        productName.setText(translatedText);
+                    }
+                });
+
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        productTitle.setText(productDTO.getName());
+                        productName.setText(productDTO.getName());
+
+                    }
+                });
+
+            }
+        });
+
+        Translate.translateText(productDTO.getCategory(), language, new TranslationCallback() {
+            @Override
+            public void onSuccess(String translatedText) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        productCategory.setText(translatedText);
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        productCategory.setText(productDTO.getCategory());
+                    }
+                });
+
+            }
+        });
+
         if (productDTO.getDiscount() > 0) {
             productDiscount.setVisibility(View.VISIBLE);
             String discountTxt = String.valueOf(productDTO.getDiscount()) + "% Off";

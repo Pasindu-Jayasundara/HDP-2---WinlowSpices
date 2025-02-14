@@ -1,5 +1,6 @@
 package com.example.winlowcustomer;
 
+import com.example.winlowcustomer.modal.SetUpLanguage;
 import com.google.android.gms.location.FusedLocationProviderClient;
 
 import android.annotation.SuppressLint;
@@ -83,6 +84,9 @@ public class AddNewAddressActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        SetUpLanguage.setAppLanguage(getApplicationContext());
+
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 

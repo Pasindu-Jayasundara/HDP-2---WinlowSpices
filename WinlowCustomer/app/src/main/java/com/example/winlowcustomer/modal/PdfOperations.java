@@ -77,7 +77,6 @@ public class PdfOperations {
             List<WeightCategoryDTO> weightCategoryDTOList = cartDTO.getProduct().getWeightCategoryDTOList();
             for(WeightCategoryDTO weightCategoryDTO : weightCategoryDTOList){
 
-
                 GetReceiptItems item = new GetReceiptItems();
                 item.setId(cartDTO.getProduct().getId());
                 item.setName(cartDTO.getProduct().getName());

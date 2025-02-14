@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.winlowcustomer.modal.AddressHandling;
 import com.example.winlowcustomer.modal.AddressLoadingRecyclerViewAdapter;
+import com.example.winlowcustomer.modal.SetUpLanguage;
 import com.example.winlowcustomer.modal.callback.GetAddressCallback;
 
 import java.util.ArrayList;
@@ -41,6 +42,9 @@ public class AddressActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        SetUpLanguage.setAppLanguage(getApplicationContext());
+
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 

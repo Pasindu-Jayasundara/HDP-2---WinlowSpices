@@ -19,6 +19,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.winlowcustomer.dto.CartDTO;
 import com.example.winlowcustomer.dto.UserDTO;
 import com.example.winlowcustomer.modal.PdfOperations;
+import com.example.winlowcustomer.modal.SetUpLanguage;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -42,6 +43,9 @@ public class OrderSuccessActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        SetUpLanguage.setAppLanguage(getApplicationContext());
+
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 

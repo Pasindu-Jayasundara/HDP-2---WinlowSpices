@@ -1,5 +1,8 @@
 package com.example.winlowcustomer.modal;
 
+import static com.example.winlowcustomer.MainActivity.language;
+
+import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,15 +13,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.winlowcustomer.R;
 import com.example.winlowcustomer.dto.OrderDTO;
+import com.example.winlowcustomer.modal.callback.TranslationCallback;
 
 import java.util.List;
 
 public class OrderHistoryInnerRecyclerViewAdapter extends RecyclerView.Adapter<OrderHistoryInnerRecyclerViewAdapter.OrderHistoryInnerRecyclerViewHolder>{
 
     List<OrderDTO> orderDTOList;
+    Activity activity;
 
-    public OrderHistoryInnerRecyclerViewAdapter(List<OrderDTO> orderDTOList) {
+    public OrderHistoryInnerRecyclerViewAdapter(List<OrderDTO> orderDTOList, Activity activity) {
         this.orderDTOList = orderDTOList;
+        this.activity = activity;
     }
 
     @NonNull
@@ -34,7 +40,28 @@ public class OrderHistoryInnerRecyclerViewAdapter extends RecyclerView.Adapter<O
 
         OrderDTO orderDTO = orderDTOList.get(position);
 
-        holder.weight.setText(orderDTO.getName());
+        Translate.translateText(orderDTO.getName(), language, new TranslationCallback() {
+            @Override
+            public void onSuccess(String translatedText) {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        holder.weight.setText(translatedText);
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        holder.weight.setText(orderDTO.getName());
+                    }
+                });
+            }
+        });
+
         holder.qty.setText(String.valueOf(orderDTO.getQuantity()));
         holder.amount.setText("Rs. "+String.valueOf(orderDTO.getAmount()));
 

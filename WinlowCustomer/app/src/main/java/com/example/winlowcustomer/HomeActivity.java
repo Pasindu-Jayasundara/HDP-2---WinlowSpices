@@ -1,6 +1,7 @@
 package com.example.winlowcustomer;
 
 import static com.example.winlowcustomer.MainActivity.language;
+import static com.example.winlowcustomer.modal.SetUpLanguage.setAppLanguage;
 
 import android.app.Activity;
 import android.content.Context;
@@ -67,6 +68,9 @@ public class HomeActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        setAppLanguage(getApplicationContext());
+
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
@@ -75,10 +79,6 @@ public class HomeActivity extends AppCompatActivity {
                 .replace(R.id.fragmentContainerView, BottomNavigationFragment.class, null)
                 .setReorderingAllowed(true)
                 .commit();
-
-        // language
-//        SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", Context.MODE_PRIVATE);
-//        language = sharedPreferences.getString("language", "en");
 
         // data load
         loadData();
@@ -213,7 +213,7 @@ public class HomeActivity extends AppCompatActivity {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2, RecyclerView.VERTICAL, false);
         recyclerView.setLayoutManager(gridLayoutManager);
 
-        HomeRecyclerViewAdapter homeRecyclerViewAdapter = new HomeRecyclerViewAdapter(productDTOArrayList);
+        HomeRecyclerViewAdapter homeRecyclerViewAdapter = new HomeRecyclerViewAdapter(productDTOArrayList,HomeActivity.this);
         recyclerView.setAdapter(homeRecyclerViewAdapter);
 
     }
@@ -301,7 +301,7 @@ public class HomeActivity extends AppCompatActivity {
         Chip chip = findViewById(checkedIds.get(0));
         String chipTxt = chip.getText().toString();
 
-        if (chipTxt.equals("All")) {
+        if (chipTxt.equals(getString(R.string.category_1))) {// all
             productDTOArrayList = new ArrayList<>(productDTOArrayListOriginal);
         } else {
             List<ProductDTO> reorderedList = new ArrayList<>();
