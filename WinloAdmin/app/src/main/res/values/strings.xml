@@ -18,4 +18,20 @@
     <string name="weight">00 g</string>
     <string name="unit_price">Rs. 5000.00</string>
 
+    <!--  order  -->
+    <string name="total_order_title">Total Orders:</string>
+    <string name="total_order">00</string>
+    <string name="order_search">Search Orders</string>
+    <string name="all_orders">All Orders</string>
+    <string name="sort_by_title">Sort By</string>
+    <string name="newest">Newest First</string>
+    <string name="oldest">Oldest First</string>
+    <string name="online">Online Payment</string>
+    <string name="cash">Cash on Delivery</string>
+    <string name="order_id">Order Id</string>
+    <string name="order_weight">00g</string>
+    <string name="order_qty">10</string>
+    <string name="order_qty_title">Qty:</string>
+    <string name="order_id_title">Id:</string>
+
 </resources>
