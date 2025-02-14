@@ -34,4 +34,10 @@
     <string name="order_qty_title">Qty:</string>
     <string name="order_id_title">Id:</string>
 
+    <!--  admin  -->
+    <string name="add_admin">Add New Admin</string>
+
+    <!--  admin  -->
+    <string name="add_admin">Add New Admin</string>
+
 </resources>
