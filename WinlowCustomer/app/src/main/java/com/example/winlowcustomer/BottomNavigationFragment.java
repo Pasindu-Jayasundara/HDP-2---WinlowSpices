@@ -56,13 +56,21 @@ public class BottomNavigationFragment extends Fragment {
             });
         }
 
+        SharedPreferences sharedPreferences = view.getContext().getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
+
         // order img
         ImageView orderImg = getView().findViewById(R.id.imageView10);
         if(orderImg!=null){
             orderImg.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    gotoActivity(OrderHistoryActivity.class);
+
+                    String userJson = sharedPreferences.getString("user",null);
+                    if(userJson == null) {
+                        gotoActivity(LoginActivity.class,"order");
+                    }else{
+                        gotoActivity(OrderHistoryActivity.class);
+                    }
                 }
             });
         }
@@ -73,7 +81,12 @@ public class BottomNavigationFragment extends Fragment {
             orderTxt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    gotoActivity(OrderHistoryActivity.class);
+                    String userJson = sharedPreferences.getString("user",null);
+                    if(userJson == null) {
+                        gotoActivity(LoginActivity.class,"order");
+                    }else{
+                        gotoActivity(CartActivity.class);
+                    }
                 }
             });
         }
@@ -85,10 +98,9 @@ public class BottomNavigationFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
 
-                    SharedPreferences sharedPreferences = view.getContext().getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
                     String userJson = sharedPreferences.getString("user",null);
                     if(userJson == null) {
-                        gotoActivity(LoginActivity.class);
+                        gotoActivity(LoginActivity.class,"cart");
                     }else{
                         gotoActivity(CartActivity.class);
                     }
@@ -103,10 +115,9 @@ public class BottomNavigationFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
 
-                    SharedPreferences sharedPreferences = view.getContext().getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
                     String userJson = sharedPreferences.getString("user",null);
                     if(userJson == null) {
-                        gotoActivity(LoginActivity.class);
+                        gotoActivity(LoginActivity.class,"cart");
                     }else{
                         gotoActivity(CartActivity.class);
                     }
@@ -119,6 +130,14 @@ public class BottomNavigationFragment extends Fragment {
     private void gotoActivity(Class<?> destinationActivity) {
 
         Intent intent = new Intent(getActivity(), destinationActivity);
+        startActivity(intent);
+
+    }
+
+    private void gotoActivity(Class<?> destinationActivity, String back) {
+
+        Intent intent = new Intent(getActivity(), destinationActivity);
+        intent.putExtra("back",back);
         startActivity(intent);
 
     }

@@ -23,7 +23,7 @@ public class TrackOrderActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        SetUpLanguage.setAppLanguage(getApplicationContext());
+//        SetUpLanguage.setAppLanguage(getApplicationContext());
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);

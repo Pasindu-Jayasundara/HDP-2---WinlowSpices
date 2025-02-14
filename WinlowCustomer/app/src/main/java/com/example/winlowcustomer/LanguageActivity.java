@@ -1,7 +1,10 @@
 package com.example.winlowcustomer;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.RadioGroup;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,10 +27,55 @@ public class LanguageActivity extends AppCompatActivity {
             return insets;
         });
 
-        SetUpLanguage.setAppLanguage(getApplicationContext());
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainerView6, BottomNavigationFragment.class, null)
+                .setReorderingAllowed(true)
+                .commit();
+
+        //language
+        SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
+        String language = sharedPreferences.getString("language", "");
+
+        RadioGroup radioGroup = findViewById(R.id.langRadioGroup);
+
+        if(!language.isBlank()){
+
+            if(language.equals("en")){
+                radioGroup.check(R.id.radioButton);
+            }else if(language.equals("si")){
+                radioGroup.check(R.id.radioButton2);
+            }
+
+        }
+
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+
+        // back
+        ImageButton back = findViewById(R.id.imageButton12);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getOnBackPressedDispatcher().onBackPressed();
+            }
+        });
+
+        // language change
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                if(checkedId == R.id.radioButton){
+                    SetUpLanguage.setAppLanguage(LanguageActivity.this, "en");
+                }else if(checkedId == R.id.radioButton2){
+                    SetUpLanguage.setAppLanguage(LanguageActivity.this, "si");
+                }
+
+                recreate();
+
+            }
+        });
 
     }
 }

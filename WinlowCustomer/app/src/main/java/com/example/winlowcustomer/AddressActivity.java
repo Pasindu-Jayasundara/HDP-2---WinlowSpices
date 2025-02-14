@@ -43,10 +43,15 @@ public class AddressActivity extends AppCompatActivity {
             return insets;
         });
 
-        SetUpLanguage.setAppLanguage(getApplicationContext());
+//        SetUpLanguage.setAppLanguage(getApplicationContext());
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainerView5, BottomNavigationFragment.class,null)
+                .setReorderingAllowed(true)
+                .commit();
 
 
         // Check and request storage permissions

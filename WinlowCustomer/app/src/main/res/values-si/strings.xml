@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Winlow පාරි‌භෝගිකයා</string>
-    <string name="welcome_animation_text">WinloSpices වෙත සාදරයෙන් පිළිගන්නවා</string>
     <string name="type_location">ලිපිනය ඇතුළත් කරන්න</string>
     <string name="select_location">Map එක මත ස්ථානය සලකුණු කරන්න</string>
     <string name="title">ලිපිනය</string>
@@ -101,6 +100,7 @@
     <string name="profile_name">ඔබේ නම</string>
     <string name="profile_mobile">දුරකතන අංකය</string>
     <string name="profile_save">සුරකින්න</string>
+    <string name="upload_failed">උඩුගත කිරීම අසාර්ථකයි !</string>
     <string name="language_title">භාෂාව</string>
     <string name="language_select">භාෂාව තෝරන්න</string>
     <string name="payment_card_title">ගෙවීම</string>
@@ -170,4 +170,5 @@
     <string name="no_data_found">දත්ත සොයා ගැනීමට නොහැකි විය</string>
     <string name="order_status">ඇණවුම් තත්ත්වය:</string>
     <string name="send_email">Email එකක් යවන්න</string>
+    <string name="upload_success">උඩුගත කිරීම සාර්ථකයි !</string>
 </resources>

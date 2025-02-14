@@ -58,7 +58,7 @@ public class RegisterActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        SetUpLanguage.setAppLanguage(getApplicationContext());
+//        SetUpLanguage.setAppLanguage(getApplicationContext());
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
@@ -256,7 +256,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                         // store user in sqlite
                         SQLiteHelper sqLiteHelper = new SQLiteHelper(RegisterActivity.this, "winlow.db", null, 1);
-                        sqLiteHelper.insertSingleUser(sqLiteHelper, docId, userDTO.getName(), userDTO.getMobile(), userDTO.getEmail());
+                        sqLiteHelper.insertSingleUser(sqLiteHelper, docId, userDTO.getName(), userDTO.getMobile(), userDTO.getEmail(),null);
 
                         // store user in shared preferences
                         CartOperations.isLoggedIn(getApplicationContext());

@@ -10,6 +10,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -54,7 +55,7 @@ public class SearchProductActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
-        setAppLanguage(getApplicationContext());
+//        setAppLanguage(getApplicationContext());
 
         // bottom navigation
         getSupportFragmentManager().beginTransaction()
@@ -101,6 +102,16 @@ public class SearchProductActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 filterProducts(searchTxt.getText().toString().trim());
+
+            }
+        });
+
+        ImageView imageView = findViewById(R.id.imageView17);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                getOnBackPressedDispatcher().onBackPressed();
 
             }
         });

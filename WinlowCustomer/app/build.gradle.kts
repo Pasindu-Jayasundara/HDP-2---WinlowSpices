@@ -85,6 +85,9 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:21.3.0")
 
 
+    // firestorage
+    implementation("com.google.firebase:firebase-storage")
+
     // deepl translate
 //    implementation(libs.deepl.java)
 //    implementation("com.deepl.api:deepl-java:1.8.1")

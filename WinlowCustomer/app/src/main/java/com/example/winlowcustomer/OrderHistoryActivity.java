@@ -45,7 +45,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        setAppLanguage(getApplicationContext());
+//        setAppLanguage(getApplicationContext());
 
         SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
         String userJson = sharedPreferences.getString("user", null);

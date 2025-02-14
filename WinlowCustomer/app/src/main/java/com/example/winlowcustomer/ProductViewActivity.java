@@ -53,7 +53,7 @@ public class ProductViewActivity extends AppCompatActivity {
             return insets;
         });
 
-        setAppLanguage(getApplicationContext());
+//        setAppLanguage(getApplicationContext());
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);

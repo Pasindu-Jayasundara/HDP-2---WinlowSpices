@@ -27,8 +27,6 @@ public class WelcomeActivity extends AppCompatActivity {
             return insets;
         });
 
-        setAppLanguage(getApplicationContext());
-
         Button englishButton = findViewById(R.id.button);
         Button sinhalaButton = findViewById(R.id.button2);
 
@@ -54,6 +52,10 @@ public class WelcomeActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE).edit();
         editor.putString("language", language);
         editor.apply();
+
+        setAppLanguage(WelcomeActivity.this, language);
+//        finish();
+//        startActivity(getIntent());
 
         Intent intent = new Intent(WelcomeActivity.this, HomeActivity.class);
         startActivity(intent);

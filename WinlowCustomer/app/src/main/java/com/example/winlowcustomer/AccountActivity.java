@@ -1,19 +1,45 @@
 package com.example.winlowcustomer;
 
+import android.app.ComponentCaller;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.bumptech.glide.Glide;
+import com.example.winlowcustomer.dto.UserDTO;
 import com.example.winlowcustomer.modal.SetUpLanguage;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.Firebase;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.google.gson.Gson;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AccountActivity extends AppCompatActivity {
 
@@ -27,34 +53,33 @@ public class AccountActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        SetUpLanguage.setAppLanguage(getApplicationContext());
+//        SetUpLanguage.setAppLanguage(getApplicationContext());
 
-        // profile edit card view
-        CardView profileEditCardView = findViewById(R.id.cardView2);
-        profileEditCardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                gotoActivity(ProfileActivity.class);
-            }
-        });
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainerView4, BottomNavigationFragment.class, null)
+                .setReorderingAllowed(true)
+                .commit();
 
-        // profile edit img
-        Button profileEditImg = findViewById(R.id.imageButton6);
-        profileEditImg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                gotoActivity(ProfileActivity.class);
-            }
-        });
+        SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
+        String userJson = sharedPreferences.getString("user", null);
+        if(userJson!=null){
 
-        // profile edit arrow
-        Button profileEditArrow = findViewById(R.id.imageButton7);
-        profileEditArrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                gotoActivity(ProfileActivity.class);
+            UserDTO userDTO = new Gson().fromJson(userJson, UserDTO.class);
+
+            TextView textView14 = findViewById(R.id.textView14);
+            textView14.setText(userDTO.getName());
+
+            if(userDTO.getProfile_image()!=null){
+                ImageView img = findViewById(R.id.imageView4);
+                Glide.with(this)
+                        .load(userDTO.getProfile_image())
+                        .placeholder(R.drawable.empty_profile_2)
+                        .error(R.drawable.empty_profile_2)
+                        .into(img);
             }
-        });
+
+        }
+
 
         // profile address card view
         CardView profileAddressCardView = findViewById(R.id.cardView3);
@@ -110,38 +135,120 @@ public class AccountActivity extends AppCompatActivity {
             }
         });
 
-        // profile payment card view
-        CardView profilePaymentCardView = findViewById(R.id.cardView6);
-        profilePaymentCardView.setOnClickListener(new View.OnClickListener() {
+        // img
+        ImageView profileImage = findViewById(R.id.imageView4);
+        profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                gotoActivity(PaymentCardActivity.class);
-            }
-        });
-
-        // profile payment img
-        Button profilePaymentImg = findViewById(R.id.button5);
-        profilePaymentImg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                gotoActivity(PaymentCardActivity.class);
-            }
-        });
-
-        // profile payment arrow
-        Button profilePaymentArrow = findViewById(R.id.button7);
-        profilePaymentArrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                gotoActivity(PaymentCardActivity.class);
+                openFileChooser();
             }
         });
 
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data, @NonNull ComponentCaller caller) {
+        super.onActivityResult(requestCode, resultCode, data, caller);
+
+        if (requestCode == 1000 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+
+            Uri imageUri = data.getData();
+
+            ImageView profileImage = findViewById(R.id.imageView4);
+            profileImage.setImageURI(imageUri); // Set the selected image to ImageView
+
+            imageUpload(imageUri);
+        }
+    }
+
+    private void openFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 1000);
+    }
+
+    private void imageUpload(Uri imageUri) {
+
+        if (imageUri != null) {
+
+            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+            StorageReference firebaseStorageReference = firebaseStorage.getReference();
+
+            StorageReference fileRef = firebaseStorageReference.child("profileImage/" + System.currentTimeMillis() + ".jpg");
+            fileRef.putFile(imageUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                            fileRef.getDownloadUrl()
+                                    .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri uri) {
+
+                                            SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
+                                            String userJson = sharedPreferences.getString("user", null);
+
+                                            if(userJson!=null){
+
+                                                Gson gson = new Gson();
+                                                UserDTO userDTO = gson.fromJson(userJson, UserDTO.class);
+
+                                                Map<String, Object> imgMap = new HashMap<>();
+                                                imgMap.put("profile_image", uri.toString());
+
+                                                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                                db.collection("user").document(userDTO.getId())
+                                                        .set(imgMap, SetOptions.merge())
+                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void unused) {
+
+                                                                Toast.makeText(AccountActivity.this, R.string.upload_success, Toast.LENGTH_SHORT).show();
+
+                                                            }
+                                                        })
+                                                        .addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+
+                                                                Toast.makeText(AccountActivity.this, R.string.upload_failed, Toast.LENGTH_SHORT).show();
+
+                                                            }
+                                                        });
+
+                                            }
+
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+
+                                            Toast.makeText(AccountActivity.this, R.string.upload_failed, Toast.LENGTH_SHORT).show();
+
+                                        }
+                                    });
+
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                            Toast.makeText(AccountActivity.this, R.string.upload_failed, Toast.LENGTH_SHORT).show();
+
+                            ImageView profileImage = findViewById(R.id.imageView4);
+                            profileImage.setImageResource(R.drawable.empty_profile_2);
+                        }
+                    });
+        }
+
+    }
+
     private void gotoActivity(Class<?> activity) {
 
-        Intent intent = new Intent(AccountActivity.this,activity);
+        Intent intent = new Intent(AccountActivity.this, activity);
         startActivity(intent);
     }
 }

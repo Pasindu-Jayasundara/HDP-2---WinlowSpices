@@ -7,6 +7,18 @@
     android:layout_height="match_parent"
     tools:context=".AccountActivity">
 
+    <ImageView
+        android:id="@+id/imageView18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:src="@tools:sample/avatars"
+        app:layout_constraintBottom_toTopOf="@+id/textView19"
+        app:layout_constraintEnd_toEndOf="@+id/imageView4"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/imageView4"
+        app:srcCompat="@drawable/pen" />
+
     <ImageButton
         android:id="@+id/imageButton5"
         android:layout_width="wrap_content"
@@ -34,11 +46,10 @@
         android:id="@+id/imageView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageButton5"
-        app:srcCompat="@drawable/empty_profile_2" />
+        app:srcCompat="@drawable/empty_profile_2"
+        tools:layout_editor_absoluteY="83dp" />
 
     <TextView
         android:id="@+id/textView19"
@@ -50,52 +61,16 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView4" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView2"
+        android:id="@+id/cardView3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="24dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView19">
-
-        <Button
-            android:id="@+id/imageButton6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/transparent"
-            android:contentDescription="@string/profile_edit"
-            android:text="@string/profile_edit"
-            android:textColor="@color/black_1"
-            app:icon="@drawable/profile"
-            app:cornerRadius="5dp"
-            app:iconGravity="start"
-            app:iconTint="@color/black" />
-
-        <Button
-            android:id="@+id/imageButton7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:backgroundTint="@color/transparent"
-            app:icon="@drawable/forward_arrow"
-            app:iconGravity="end"
-            app:iconTint="#000000" />
-
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView2">
+        app:layout_constraintTop_toBottomOf="@+id/textView19">
 
         <Button
             android:id="@+id/imageButton8"
@@ -105,8 +80,8 @@
             android:contentDescription="@string/profile_address"
             android:text="@string/profile_address"
             android:textColor="@color/black_1"
-            app:icon="@drawable/location"
             app:cornerRadius="5dp"
+            app:icon="@drawable/location"
             app:iconGravity="start"
             app:iconTint="@color/black" />
 
@@ -158,40 +133,12 @@
 
     </androidx.cardview.widget.CardView>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView6"
-        android:layout_width="match_parent"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView4"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView5">
-
-        <Button
-            android:id="@+id/button5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/transparent"
-            android:text="@string/profile_payment"
-            android:textColor="@color/black_1"
-            app:cornerRadius="5dp"
-            app:icon="@drawable/card"
-            app:iconGravity="start"
-            app:iconTint="@color/black" />
-
-        <Button
-            android:id="@+id/button7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:backgroundTint="@color/transparent"
-            app:icon="@drawable/forward_arrow"
-            app:iconGravity="end"
-            app:iconTint="#000000" />
-
-    </androidx.cardview.widget.CardView>
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

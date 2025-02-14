@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,7 +54,11 @@ public class LoginActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        SetUpLanguage.setAppLanguage(getApplicationContext());
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainerView7, BottomNavigationFragment.class,null)
+                .setReorderingAllowed(true)
+                .commit();
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
@@ -85,6 +90,14 @@ public class LoginActivity extends AppCompatActivity {
 
                 sendOTP();
 
+            }
+        });
+
+        ImageButton btn = findViewById(R.id.imageButton23);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getOnBackPressedDispatcher().onBackPressed();
             }
         });
 
@@ -135,14 +148,14 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void otpMatched(String stringMobileNumber) {
-        Log.i("otpMatched", "aaaaaaaaaaaa");
+//        Log.i("otpMatched", "aaaaaaaaaaaa");
 
         isNewUser(stringMobileNumber, new IsNewUserCallback() {
             @Override
             public void onResult(boolean isNew) {
 
                 if (!isNew) {
-                    Log.i("otpMatched", "bbbbbbbbbbbbbbbbbbb");
+//                    Log.i("otpMatched", "bbbbbbbbbbbbbbbbbbb");
 
                     Toast.makeText(getApplicationContext(), R.string.login_success, Toast.LENGTH_LONG).show();
 
@@ -178,6 +191,19 @@ public class LoginActivity extends AppCompatActivity {
                         Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                         startActivity(intent);
                     }
+                    if(receivedIntent.hasExtra("back")){
+                        String back = receivedIntent.getStringExtra("back");
+                        if(back.equals("cart")){
+                            receivedIntent.removeExtra("back");
+                            Intent intent = new Intent(LoginActivity.this, CartActivity.class);
+                            startActivity(intent);
+                        }
+                        if(back.equals("order")){
+                            receivedIntent.removeExtra("back");
+                            Intent intent = new Intent(LoginActivity.this, OrderHistoryActivity.class);
+                            startActivity(intent);
+                        }
+                    }
 
                 }else{
                     Toast.makeText(LoginActivity.this, R.string.user_not_found, Toast.LENGTH_SHORT).show();
@@ -189,7 +215,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void isNewUser(String mobile, IsNewUserCallback isNewUserCallback) {
-        Log.i("otpMatched", "xxxxxxxxx");
+//        Log.i("otpMatched", "xxxxxxxxx");
 
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         firestore.collection("user")
@@ -198,11 +224,11 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        Log.i("otpMatched", "zzzzzzzzzzz");
+//                        Log.i("otpMatched", "zzzzzzzzzzz");
                         boolean isNew = true;
                         if (task.isSuccessful() && !task.getResult().getDocuments().isEmpty()) {
                             isNew = false;
-                            Log.i("otpMatched", "mmmmmmmmmmmmmm");
+//                            Log.i("otpMatched", "mmmmmmmmmmmmmm");
 
                             List<DocumentSnapshot> documents = task.getResult().getDocuments();
 
@@ -211,10 +237,11 @@ public class LoginActivity extends AppCompatActivity {
                                 String name = documentSnapshot.getString("name");
                                 String mobile = documentSnapshot.getString("mobile");
                                 String email = documentSnapshot.getString("email");
+                                String profile_image = documentSnapshot.getString("profile_image");
 
                                 // store user in sqlite
                                 SQLiteHelper sqLiteHelper = new SQLiteHelper(getApplicationContext(), "winlow.db", null, 1);
-                                sqLiteHelper.insertSingleUser(sqLiteHelper, id, name, mobile, email);
+                                sqLiteHelper.insertSingleUser(sqLiteHelper, id, name, mobile, email, profile_image);
 
                                 // store user in shared preferences
                                 CartOperations.isLoggedIn(getApplicationContext());
@@ -232,6 +259,7 @@ public class LoginActivity extends AppCompatActivity {
                                     orderHistoryList.addAll(orderHistory);
 
                                     userDTO.setOrderHistory(orderHistoryList);
+                                    userDTO.setProfile_image(profile_image);
 
                                     sharedPreferences.edit().putString("user",new Gson().toJson(userDTO)).apply();
 

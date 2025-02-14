@@ -57,6 +57,7 @@ public class HomeActivity extends AppCompatActivity {
     HashSet<String> categoryHashSet;
 //    public static String language;
     final boolean[] isFirstTime = {true};
+    public static boolean once;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +70,13 @@ public class HomeActivity extends AppCompatActivity {
             return insets;
         });
 
-        setAppLanguage(getApplicationContext());
+//        setAppLanguage(getApplicationContext());
+        setAppLanguage(HomeActivity.this,language);
+//        if(!once){
+//            once = true;
+//            finish();
+//            startActivity(getIntent());
+//        }
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
@@ -140,7 +147,13 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                changeActivity(AddressActivity.class);
+                SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
+                String userJson = sharedPreferences.getString("user", null);
+                if (userJson == null) {
+                    changeActivity(LoginActivity.class);
+                } else {
+                    changeActivity(AddressActivity.class);
+                }
             }
         });
 
@@ -192,7 +205,7 @@ public class HomeActivity extends AppCompatActivity {
 
             loadCategories(categoryHashSet, chipGroup, this);
         }
-        Log.i("bcd", product);
+//        Log.i("bcd", product);
 
         if (product != null) {
             Type listType = new TypeToken<ArrayList<ProductDTO>>() {
@@ -219,7 +232,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void loadCategories(HashSet<String> categoryHashSet, ChipGroup chipGroup, Activity activity) {
-
+        chipGroup.removeAllViews();
         if (!language.equals("en")) {
 
             for (String category : categoryHashSet) {

@@ -24,7 +24,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                 "    name   TEXT,\n" +
                 "    id     TEXT PRIMARY KEY,\n" +
                 "    mobile TEXT,\n" +
-                "    email  TEXT\n" +
+                "    email  TEXT,\n" +
+                "    profile_image  TEXT\n" +
                 ")");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS address (\n" +
@@ -68,8 +69,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
     }
 
-    public void insertSingleUser(SQLiteHelper sqLiteHelper, String id, String name, String mobile, String email) {
-        insertSingleUser(sqLiteHelper, null, id, name, mobile, email);
+    public void insertSingleUser(SQLiteHelper sqLiteHelper, String id, String name, String mobile, String email,String profile_image) {
+        insertSingleUser(sqLiteHelper, null, id, name, mobile, email,profile_image);
     }
 
     public void insertSingleAddress(SQLiteHelper sqLiteHelper, String address){
@@ -84,7 +85,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         insertSinglePaymentCard(sqLiteHelper, null, doe, number, cvv);
     }
 
-    public void insertSingleUser(SQLiteHelper sqLiteHelper, SingleInsertCallback singleInsertCallback, String id, String name, String mobile, String email){
+    public void insertSingleUser(SQLiteHelper sqLiteHelper, SingleInsertCallback singleInsertCallback, String id, String name, String mobile, String email, String profile_image){
 
         if(id == null || name == null || mobile == null || email == null){
             return;
@@ -101,6 +102,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                 contentValues.put("name",name);
                 contentValues.put("mobile",mobile);
                 contentValues.put("email",email);
+                contentValues.put("profile_image",profile_image);
 
                 long insertedId = db.insertWithOnConflict("user", null, contentValues, SQLiteDatabase.CONFLICT_REPLACE);
 //                db.close();

@@ -13,12 +13,13 @@ public class UserDTO implements Serializable {
     private String name;
     private List<String> orderHistory;
     private List<PaymentCardDTO> paymentCard;
+    private String profile_image;
 
     public UserDTO() {
     }
 
 //    List<String> cart,
-    public UserDTO(String id, List<String> address,  String email, String mobile, String name, List<String> orderHistory, List<PaymentCardDTO> paymentCard) {
+    public UserDTO(String id, List<String> address,  String email, String mobile, String name, List<String> orderHistory, List<PaymentCardDTO> paymentCard, String profile_image) {
         this.id = id;
         this.address = address;
 //        this.cart = cart;
@@ -27,6 +28,15 @@ public class UserDTO implements Serializable {
         this.name = name;
         this.orderHistory = orderHistory;
         this.paymentCard = paymentCard;
+        this.profile_image = profile_image;
+    }
+
+    public String getProfile_image() {
+        return profile_image;
+    }
+
+    public void setProfile_image(String profile_image) {
+        this.profile_image = profile_image;
     }
 
     public String getId() {

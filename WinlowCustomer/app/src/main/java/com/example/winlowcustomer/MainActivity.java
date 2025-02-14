@@ -75,9 +75,11 @@ public class MainActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
         SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", Context.MODE_PRIVATE);
-        language = sharedPreferences.getString("language", "en");
+        language = sharedPreferences.getString("language", "");
 
-        setAppLanguage(getApplicationContext());
+        if(!language.isEmpty()){
+            setAppLanguage(MainActivity.this, language);
+        }
 
         TextView textView = findViewById(R.id.welcometxt);
         String animateText = getString(R.string.welcome_animation_text);
