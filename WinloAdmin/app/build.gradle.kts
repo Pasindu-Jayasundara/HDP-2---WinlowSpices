@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -46,4 +47,15 @@ dependencies {
 
     // accordion
 //    implementation("com.github.gouravkhunger:AccoLib:1.1.2")
+
+    // firebase db
+    implementation(platform("com.google.firebase:firebase-bom:33.9.0"))
+    implementation("com.google.firebase:firebase-analytics")
+
+    // firebase storage
+    implementation("com.google.firebase:firebase-storage")
+
+    //google login
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.android.gms:play-services-auth:21.3.0")
 }
