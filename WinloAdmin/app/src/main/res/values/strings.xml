@@ -51,6 +51,7 @@
     <!--  login  -->
     <string name="login">Login with Google</string>
     <string name="not_registered">You Are Not Registered as a Admin</string>
+    <string name="login_failed">Login Failed</string>
     <string name="something_went_wrong">Something Went Wrong</string>
 
     <!--  authentication  -->

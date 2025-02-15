@@ -63,4 +63,8 @@ dependencies {
     // gson
     implementation("com.google.code.gson:gson:2.12.1")
 
+    // image load
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+
 }

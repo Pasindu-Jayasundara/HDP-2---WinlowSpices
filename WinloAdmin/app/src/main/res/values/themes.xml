@@ -3,6 +3,13 @@
     <style name="Base.Theme.WinloAdmin" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+<!--        <style name="Theme.YourApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">-->
+<!--            <item name="colorPrimary">#FFFFFF</item>-->
+<!--            <item name="colorPrimaryVariant">#FFFFFF</item>-->
+<!--            <item name="colorOnBackground">#FFFFFF</item>-->
+<!--        </style>-->
+
     </style>
 
     <style name="Theme.WinloAdmin" parent="Base.Theme.WinloAdmin" />

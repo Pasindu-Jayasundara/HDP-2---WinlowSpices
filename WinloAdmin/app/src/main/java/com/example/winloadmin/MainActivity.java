@@ -2,24 +2,39 @@ package com.example.winloadmin;
 
 import static android.view.Gravity.START;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.Toolbar;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.graphics.Insets;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+import com.example.winloadmin.dto.UserDTO;
+import com.example.winloadmin.nav.AdminFragment;
 import com.example.winloadmin.nav.DashboardFragment;
+import com.example.winloadmin.nav.OrderFragment;
 import com.example.winloadmin.nav.ProductFragment;
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.Gson;
 
 public class MainActivity extends AppCompatActivity {
+
+    public static UserDTO userDTO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,28 +46,87 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        getWindow().setStatusBarColor(getResources().getColor(android.R.color.transparent));
+
+
+        // menu
+        DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
 
         NavigationView navigationView = findViewById(R.id.navigationView);
         navigationView.inflateMenu(R.menu.navigation_menu);
 
+        // intent
+        Intent intent = getIntent();
+        if(intent.hasExtra("user")){
+            userDTO = new Gson().fromJson(intent.getStringExtra("user"), UserDTO.class);
+        }
+
+        // toolbar
+        ImageView menu = findViewById(R.id.imageView7);
+        ImageView profileImg = findViewById(R.id.imageView6);
+        Glide.with(this)
+                .load(Uri.parse(userDTO.getPhoto_url()))
+                .placeholder(AppCompatResources.getDrawable(this,R.drawable.user))
+                .circleCrop()
+                .error(AppCompatResources.getDrawable(this,R.drawable.user))
+                .into(profileImg);
+
+        menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(Gravity.RIGHT);
+            }
+        });
+
+        // default select menu - dashboard
         navigationView.getMenu().getItem(0).setChecked(true);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frameLayout, new DashboardFragment())
                 .setReorderingAllowed(true)
                 .commit();
 
+        // change fragment
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-                DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
+
+                Fragment fragment = null;
+                int index = 0;
 
                 if (item.getItemId() == R.id.productFragment) {
+
+                    fragment = new ProductFragment();
+                    index = 1;
+
+                }
+                if(item.getItemId() == R.id.dashboardFragment){
+
+                    fragment = new DashboardFragment();
+                    index = 0;
+
+                }
+                if(item.getItemId() == R.id.orderFragment){
+
+                    fragment = new OrderFragment();
+                    index = 2;
+
+                }
+                if(item.getItemId() == R.id.adminFragment) {
+
+                    fragment = new AdminFragment();
+                    index = 3;
+                }
+
+
+                if(fragment!=null){
+
                     item.setChecked(true);
-                    navigationView.getMenu().getItem(1).setChecked(true);
+                    navigationView.getMenu().getItem(index).setChecked(true);
 
                     getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.frameLayout, new ProductFragment())
+                            .replace(R.id.frameLayout, fragment)
                             .setReorderingAllowed(true)
                             .commit();
                 }
@@ -62,9 +136,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-
-
 
     }
 }

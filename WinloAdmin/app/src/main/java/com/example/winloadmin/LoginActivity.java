@@ -1,20 +1,26 @@
 package com.example.winloadmin;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.Group;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.winloadmin.dto.UserDTO;
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -44,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     GoogleSignInClient googleSignInClient;
     FirebaseFirestore db;
-    public static FirebaseUser user;
+    FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +63,9 @@ public class LoginActivity extends AppCompatActivity {
             return insets;
         });
 
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        getWindow().setStatusBarColor(getResources().getColor(android.R.color.transparent));
+
         firebaseAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
@@ -68,13 +77,18 @@ public class LoginActivity extends AppCompatActivity {
         googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
 
 
-        Button loginButton = findViewById(R.id.button4);
+        ImageView loginButton = findViewById(R.id.imageView4);
+        Button btn = findViewById(R.id.button6);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 googleSignIn();
-
+            }
+        });
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                googleSignIn();
             }
         });
 
@@ -90,6 +104,22 @@ public class LoginActivity extends AppCompatActivity {
         Intent signInIntent = googleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, 1250);
 
+//        ActivityResultLauncher<Intent> googleSignInLauncher = registerForActivityResult(
+//                new ActivityResultContracts.StartActivityForResult(),
+//                result -> {
+//                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+//                        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+//                        try {
+//                            GoogleSignInAccount account = task.getResult(ApiException.class);
+//                            if (account != null && account.getIdToken() != null) {
+//                                checkInDB(account.getIdToken());
+//                            }
+//                        } catch (ApiException e) {
+//                            Log.e("GoogleSignIn", "Sign-in failed", e);
+//                        }
+//                    }
+//                });
+
     }
 
     @Override
@@ -100,6 +130,11 @@ public class LoginActivity extends AppCompatActivity {
 
         if(requestCode == 1250){
 //            Log.i("abc",new Gson().toJson(data));
+
+//            if(resultCode != RESULT_OK){
+//                Toast.makeText(this,R.string.login_failed,Toast.LENGTH_SHORT).show();
+//                return;
+//            }
 
             Task<GoogleSignInAccount> googleSignInAccountTask = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
@@ -128,6 +163,7 @@ public class LoginActivity extends AppCompatActivity {
 //                        Log.i("abc",new Gson().toJson(authResult));
 
                         FirebaseUser firebaseUser = authResult.getUser();
+                Log.i("abc", "ID Token: " + new Gson().toJson(firebaseUser));
 
 //                        HashMap<String,Object> hashMap = new HashMap<>();
 //                        hashMap.put("id",firebaseUser.getUid());
@@ -172,7 +208,15 @@ public class LoginActivity extends AppCompatActivity {
 
     private void goToMainActivity() {
 
-        startActivity(new Intent(LoginActivity.this,MainActivity.class));
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getUid());
+        userDTO.setName(user.getDisplayName());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setPhoto_url(user.getPhotoUrl().toString());
+
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        intent.putExtra("user",new Gson().toJson(userDTO));
+        startActivity(intent);
         finish();
 
     }
