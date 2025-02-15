@@ -37,7 +37,14 @@
     <!--  admin  -->
     <string name="add_admin">Add New Admin</string>
 
-    <!--  admin  -->
-    <string name="add_admin">Add New Admin</string>
+    <!--  dashboard  -->
+    <string name="sales_and_revenue_title">Sales and Revenue</string>
+    <string name="orders_title">Orders Status</string>
+    <string name="top_selling">Top Selling Products</string>
+    <string name="total_products">Products</string>
+    <string name="total_orders">Order</string>
+    <string name="total_customers">Customers</string>
+    <string name="count">00</string>
+    <string name="report">Print Report</string>
 
 </resources>
