@@ -46,5 +46,15 @@
     <string name="total_customers">Customers</string>
     <string name="count">00</string>
     <string name="report">Print Report</string>
+    <string name="dashboard_title">Dashboard</string>
+
+    <!--  login  -->
+    <string name="login">Login with Google</string>
+    <string name="not_registered">You Are Not Registered as a Admin</string>
+    <string name="something_went_wrong">Something Went Wrong</string>
+
+    <!--  authentication  -->
+    <string name="default_web_client_id">441817025989-r4pm1824cc4tuqrhtlhrci9arerf77e9.apps.googleusercontent.com</string>
+
 
 </resources>

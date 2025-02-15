@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.winloadmin" />
+                  <option name="mobileSdkAppId" value="1:441817025989:android:4dd6352ee4f1cf4d088fac" />
+                  <option name="projectId" value="winlospices-9fb24" />
+                  <option name="projectNumber" value="441817025989" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

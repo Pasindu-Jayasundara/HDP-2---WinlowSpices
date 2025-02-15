@@ -15,6 +15,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.winloadmin.nav.DashboardFragment;
 import com.example.winloadmin.nav.ProductFragment;
 import com.google.android.material.navigation.NavigationView;
 
@@ -34,6 +35,12 @@ public class MainActivity extends AppCompatActivity {
         NavigationView navigationView = findViewById(R.id.navigationView);
         navigationView.inflateMenu(R.menu.navigation_menu);
 
+        navigationView.getMenu().getItem(0).setChecked(true);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.frameLayout, new DashboardFragment())
+                .setReorderingAllowed(true)
+                .commit();
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -41,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
                 DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
 
                 if (item.getItemId() == R.id.productFragment) {
-                    item.setChecked(true); // Highlight selected item
-                    navigationView.getMenu().getItem(0).setChecked(true);
+                    item.setChecked(true);
+                    navigationView.getMenu().getItem(1).setChecked(true);
 
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.frameLayout, new ProductFragment())

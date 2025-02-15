@@ -4,6 +4,11 @@
     <group android:checkableBehavior="single">
 
         <item
+            android:id="@+id/dashboard"
+            android:title="@string/dashboard_title"
+            android:icon="@drawable/dashboard"
+            />
+        <item
             android:id="@+id/productFragment"
             android:title="@string/title"
             android:icon="@drawable/product"
