@@ -27,6 +27,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.example.winloadmin.dto.CustomerDTO;
+import com.example.winloadmin.dto.OrderDTO;
+import com.example.winloadmin.dto.OrderItemDTO;
+import com.example.winloadmin.dto.ProductDTO;
 import com.example.winloadmin.dto.UserDTO;
 import com.example.winloadmin.nav.AdminFragment;
 import com.example.winloadmin.nav.DashboardFragment;
@@ -35,9 +39,18 @@ import com.example.winloadmin.nav.ProductFragment;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     public static UserDTO userDTO;
+    public static int orderCount;
+
+    List<OrderItemDTO> orderItemDTOList = new ArrayList<>();
+    public static List<OrderDTO> orderDTOList = new ArrayList<>();
+    public static List<CustomerDTO> customerDTOList = new ArrayList<>();
+    public static List<ProductDTO> productDTOList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             getWindow().setDecorFitsSystemWindows(false);
             getWindow().getInsetsController().hide(WindowInsets.Type.systemBars());
@@ -90,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
         // default select menu - dashboard
         navigationView.getMenu().getItem(0).setChecked(true);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.frameLayout, new DashboardFragment())
+                .replace(R.id.frameLayout, new DashboardFragment(orderItemDTOList))
                 .setReorderingAllowed(true)
                 .commit();
 
@@ -111,13 +125,13 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if(item.getItemId() == R.id.dashboardFragment){
 
-                    fragment = new DashboardFragment();
+                    fragment = new DashboardFragment(orderItemDTOList);
                     index = 0;
 
                 }
                 if(item.getItemId() == R.id.orderFragment){
 
-                    fragment = new OrderFragment();
+                    fragment = new OrderFragment(orderDTOList);
                     index = 2;
 
                 }

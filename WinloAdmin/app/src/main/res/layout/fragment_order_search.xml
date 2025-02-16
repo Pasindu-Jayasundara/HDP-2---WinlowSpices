@@ -19,12 +19,14 @@
         app:layout_constraintTop_toBottomOf="@+id/spinner">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/searchText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/order_id" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/orderRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"

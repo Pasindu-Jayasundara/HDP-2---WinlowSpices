@@ -1,5 +1,10 @@
 package com.example.winloadmin.nav;
 
+import static com.example.winloadmin.MainActivity.customerDTOList;
+import static com.example.winloadmin.MainActivity.orderCount;
+import static com.example.winloadmin.MainActivity.orderDTOList;
+import static com.example.winloadmin.MainActivity.productDTOList;
+
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -48,10 +53,17 @@ import java.util.Map;
 public class DashboardFragment extends Fragment {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    List<OrderItemDTO> orderItemDTOList = new ArrayList<>();
-    List<OrderDTO> orderDTOList = new ArrayList<>();
-    List<CustomerDTO> customerDTOList = new ArrayList<>();
-    List<ProductDTO> productDTOList = new ArrayList<>();
+    List<OrderItemDTO> orderItemDTOList;
+//    List<OrderDTO> orderDTOList;
+//    List<CustomerDTO> customerDTOList;
+//    List<ProductDTO> productDTOList;
+
+    public DashboardFragment(List<OrderItemDTO> orderItemDTOList) {
+        this.orderItemDTOList = orderItemDTOList;
+//        this.orderDTOList = orderDTOList;
+//        this.customerDTOList = customerDTOList;
+//        this.productDTOList = productDTOList;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -128,7 +140,7 @@ public class DashboardFragment extends Fragment {
             index++;
         }
 
-        BarDataSet barDataSet = new BarDataSet(barEntryList,"Top Selling Products");
+        BarDataSet barDataSet = new BarDataSet(barEntryList,getString(R.string.top_selling));
         barDataSet.setColor(Color.BLUE);
         barDataSet.setValueTextSize(12f);
 
@@ -179,7 +191,7 @@ public class DashboardFragment extends Fragment {
 
         }
 
-        PieDataSet pieDataSet = new PieDataSet(pieEntryList, "Order Status");
+        PieDataSet pieDataSet = new PieDataSet(pieEntryList, getString(R.string.orders_title));
         PieData pieData = new PieData(pieDataSet);
 
         PieChart pieChart = view.findViewById(R.id.pieChart);
@@ -207,13 +219,13 @@ public class DashboardFragment extends Fragment {
             index++;
         }
 
-        LineDataSet lineSalesDataSet = new LineDataSet(salesEntryList,"Sales (Units)");
+        LineDataSet lineSalesDataSet = new LineDataSet(salesEntryList,getString(R.string.sales));
         lineSalesDataSet.setColor(Color.BLUE);
         lineSalesDataSet.setCircleColor(Color.BLUE);
         lineSalesDataSet.setLineWidth(2f);
         lineSalesDataSet.setValueTextSize(10f);
 
-        LineDataSet linRevenueDataSet = new LineDataSet(revenueEntryList,"Revenue (Rs.)");
+        LineDataSet linRevenueDataSet = new LineDataSet(revenueEntryList,getString(R.string.revenue));
         linRevenueDataSet.setColor(Color.RED);
         linRevenueDataSet.setCircleColor(Color.RED);
         linRevenueDataSet.setLineWidth(2f);
@@ -253,6 +265,8 @@ public class DashboardFragment extends Fragment {
                                     orderItemDTOList.addAll(orderList);
                                 }
                             }
+
+                            orderCount = orderDTOList.size();
 
                             int size = documentSnapshots.size();
                             TextView productCount = view.findViewById(R.id.textView25);

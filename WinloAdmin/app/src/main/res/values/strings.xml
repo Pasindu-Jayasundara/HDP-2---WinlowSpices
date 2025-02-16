@@ -33,9 +33,19 @@
     <string name="order_qty">10</string>
     <string name="order_qty_title">Qty:</string>
     <string name="order_id_title">Id:</string>
+    <string name="order_title">Orders</string>
+    <string name="update_order_status">Update Order Status To:</string>
+    <string name="update_order_status_btn">Update</string>
+    <string name="delivered">Delivered</string>
+    <string name="delivering">Delivering</string>
+    <string name="ready_to_deliver">Ready to Deliver</string>
+    <string name="pending">Pending</string>
+    <string name="order_status_updated">Order status updated</string>
+    <string name="order_status_update_failed">Order status update Failed</string>
 
     <!--  admin  -->
     <string name="add_admin">Add New Admin</string>
+    <string name="admin_title">Admin</string>
 
     <!--  dashboard  -->
     <string name="sales_and_revenue_title">Sales and Revenue</string>
@@ -47,6 +57,8 @@
     <string name="count">00</string>
     <string name="report">Print Report</string>
     <string name="dashboard_title">Dashboard</string>
+    <string name="sales">Sales (Units)</string>
+    <string name="revenue">Revenue (Rs.)</string>
 
     <!--  login  -->
     <string name="login">Login with Google</string>
@@ -57,10 +69,5 @@
     <!--  authentication  -->
     <string name="default_web_client_id">441817025989-r4pm1824cc4tuqrhtlhrci9arerf77e9.apps.googleusercontent.com</string>
 
-    <!--  orders  -->
-    <string name="order_title">Orders</string>
-
-    <!--  admin   -->
-    <string name="admin_title">Admin</string>
 
 </resources>
