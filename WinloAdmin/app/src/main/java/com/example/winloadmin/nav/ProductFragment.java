@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.winloadmin.R;
+import com.example.winloadmin.product.AddNewProductFragment;
 import com.example.winloadmin.product.AllProductFragment;
 import com.example.winloadmin.product.ProductSearchFragment;
 import com.google.android.material.chip.ChipGroup;
@@ -84,7 +85,7 @@ public class ProductFragment extends Fragment {
             public void onClick(View v) {
 
                 getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragmentContainerView40, new AllProductFragment())
+                        .replace(R.id.fragmentContainerView40, new AddNewProductFragment())
                         .setReorderingAllowed(true)
                         .commit();
 
