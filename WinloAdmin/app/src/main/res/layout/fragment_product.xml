@@ -104,7 +104,7 @@
                             android:paddingRight="8dp"
                             android:paddingBottom="8dp"
                             android:src="@drawable/product"
-                            app:srcCompat="@drawable/list" />
+                            app:srcCompat="@drawable/add_icon" />
 
                         <TextView
                             android:id="@+id/textView40"
