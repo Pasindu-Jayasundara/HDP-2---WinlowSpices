@@ -17,6 +17,34 @@
     <string name="search">Search</string>
     <string name="weight">00 g</string>
     <string name="unit_price">Rs. 5000.00</string>
+    <string name="hint_product_name">Product Name</string>
+    <string name="hint_product_category">Category</string>
+    <string name="delete">Delete</string>
+    <string name="update">Update</string>
+    <string name="confirm_delete_title">Delete Product</string>
+    <string name="confirm_delete_txt">Are You Sure You Want To Delete This Product ?</string>
+    <string name="yes">Yes</string>
+    <string name="delete_failed">Product Delete Failed</string>
+    <string name="delete_success">Product Delete Success</string>
+    <string name="update_failed">Product Update Failed</string>
+    <string name="update_success">Product Update Success</string>
+    <string name="update_info">Update Product Info</string>
+    <string name="cannot_be_deleted">Product Cannot be Deleted</string>
+    <string name="product_name">Product Name</string>
+    <string name="seasoning">Seasoning</string>
+    <string name="grind_spices">Grind Spices</string>
+    <string name="spices">Spices</string>
+    <string name="not_available">Not Available</string>
+    <string name="available">Available</string>
+    <string name="add">Add</string>
+    <string name="category">Category</string>
+    <string name="availability">Availability</string>
+    <string name="new_weight_option">New Weight Option</string>
+    <string name="new_weight">Weight</string>
+    <string name="new_price">Price</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="no_changes">No Changes</string>
+    <string name="add_product_title">Add New Product</string>
 
     <!--  order  -->
     <string name="total_order_title">Total Orders:</string>

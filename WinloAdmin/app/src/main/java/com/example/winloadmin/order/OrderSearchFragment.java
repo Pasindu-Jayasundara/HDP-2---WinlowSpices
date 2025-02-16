@@ -112,9 +112,8 @@ public class OrderSearchFragment extends Fragment {
 
             if(orderDTO.getOrder_id().contains(searchText)) {
 
-                orderDTOList.clear();
-                orderDTOList.add(orderDTO);
-
+//                orderDTOList.clear();
+                orderDTOList.add(0,orderDTO);
                 recyclerViewOrderSearchFragment.getAdapter().notifyDataSetChanged();
             }
 

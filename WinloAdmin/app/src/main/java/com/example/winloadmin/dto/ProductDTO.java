@@ -5,6 +5,7 @@ import java.util.List;
 
 public class ProductDTO implements Serializable {
 
+    private String id;
     private String category;
     private String discount;
     private String image_path;
@@ -15,13 +16,22 @@ public class ProductDTO implements Serializable {
     public ProductDTO() {
     }
 
-    public ProductDTO(String category, String discount, String image_path, String name, String stock, List<WeightCategoryDTO> weight_category) {
+    public ProductDTO(String category, String discount, String image_path, String name, String stock, List<WeightCategoryDTO> weight_category, String id) {
         this.category = category;
         this.discount = discount;
         this.image_path = image_path;
         this.name = name;
         this.stock = stock;
         this.weight_category = weight_category;
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getCategory() {

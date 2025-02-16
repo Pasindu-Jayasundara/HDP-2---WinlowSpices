@@ -54,6 +54,7 @@ public class DashboardFragment extends Fragment {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     List<OrderItemDTO> orderItemDTOList;
+    public static String topSellingProduct;
 //    List<OrderDTO> orderDTOList;
 //    List<CustomerDTO> customerDTOList;
 //    List<ProductDTO> productDTOList;
@@ -76,13 +77,13 @@ public class DashboardFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (productDTOList.isEmpty()) {
+        if (!productDTOList.isEmpty()) {
             loadProducts(view);
         }
-        if (customerDTOList.isEmpty()) {
+        if (!customerDTOList.isEmpty()) {
             loadCustomers(view);
         }
-        if (orderItemDTOList.isEmpty()) {
+        if (!orderItemDTOList.isEmpty()) {
             loadOrders(view);
         }
 
@@ -136,6 +137,8 @@ public class DashboardFragment extends Fragment {
 
             barEntryList.add(new BarEntry(index, quantity));
             productNameList.add(productName);
+
+            topSellingProduct = productName;
 
             index++;
         }
@@ -323,7 +326,9 @@ public class DashboardFragment extends Fragment {
                             for (DocumentSnapshot documentSnapshot : documentSnapshots) {
 
                                 ProductDTO productDTO = documentSnapshot.toObject(ProductDTO.class);
+                                productDTO.setId(documentSnapshot.getId());
                                 productDTOList.add(productDTO);
+
                             }
 
                             int size = documentSnapshots.size();
