@@ -57,5 +57,10 @@
     <!--  authentication  -->
     <string name="default_web_client_id">441817025989-r4pm1824cc4tuqrhtlhrci9arerf77e9.apps.googleusercontent.com</string>
 
+    <!--  orders  -->
+    <string name="order_title">Orders</string>
+
+    <!--  admin   -->
+    <string name="admin_title">Admin</string>
 
 </resources>
