@@ -27,6 +27,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -92,9 +93,13 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        if(firebaseAuth.getCurrentUser() != null){
-            user = firebaseAuth.getCurrentUser();
+        if(user!= null){
             goToMainActivity();
+        }else{
+            if(firebaseAuth.getCurrentUser()!=null){
+                firebaseAuth.signOut();
+                googleSignInClient.signOut();
+            }
         }
 
     }
@@ -163,29 +168,39 @@ public class LoginActivity extends AppCompatActivity {
 //                        Log.i("abc",new Gson().toJson(authResult));
 
                         FirebaseUser firebaseUser = authResult.getUser();
-                Log.i("abc", "ID Token: " + new Gson().toJson(firebaseUser));
+//                Log.i("abc", "ID Token: " + new Gson().toJson(firebaseUser));
 
-//                        HashMap<String,Object> hashMap = new HashMap<>();
-//                        hashMap.put("id",firebaseUser.getUid());
-//                        hashMap.put("name",firebaseUser.getDisplayName());
-//                        hashMap.put("email",firebaseUser.getEmail());
-//                        hashMap.put("profileImage",firebaseUser.getPhotoUrl().toString());
+                        HashMap<String,Object> hashMap = new HashMap<>();
+                        hashMap.put("id",firebaseUser.getUid());
+                        hashMap.put("name",firebaseUser.getDisplayName());
+                        hashMap.put("email",firebaseUser.getEmail());
+                        hashMap.put("profileImage",firebaseUser.getPhotoUrl().toString());
 
                         db.collection("admin").document(firebaseUser.getEmail())
                                 .get()
                                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                     @Override
                                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-//                                        Log.i("abc",new Gson().toJson(documentSnapshot));
 
-                                        user = firebaseUser;
-                                        goToMainActivity();
+                                        boolean exists = documentSnapshot.exists();
+                                        if(exists){
+                                            user = firebaseUser;
+                                            goToMainActivity();
+                                        }else{
 
+                                            firebaseAuth.signOut();
+                                            googleSignInClient.signOut();
+
+                                            Toast.makeText(LoginActivity.this,R.string.not_registered,Toast.LENGTH_SHORT).show();;
+                                        }
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
+
+                                        firebaseAuth.signOut();
+                                        googleSignInClient.signOut();
 
                                         Toast.makeText(LoginActivity.this,R.string.not_registered,Toast.LENGTH_SHORT).show();;
 
@@ -198,6 +213,9 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+
+                        firebaseAuth.signOut();
+                        googleSignInClient.signOut();
 
                         Toast.makeText(LoginActivity.this,R.string.something_went_wrong,Toast.LENGTH_SHORT).show();;
 
