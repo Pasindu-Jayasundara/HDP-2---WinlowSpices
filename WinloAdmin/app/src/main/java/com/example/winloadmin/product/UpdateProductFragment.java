@@ -244,6 +244,7 @@ public class UpdateProductFragment extends Fragment {
                         newProductDTO.setCategory(updateMap.get("category").toString());
                         newProductDTO.setStock(updateMap.get("stock").toString());
                         newProductDTO.setWeight_category(weightCategoryList);
+                        newProductDTO.setImage_path(productDTO.getImage_path());
 
                         productDTOList.remove(productDTO);
                         productDTOList.add(newProductDTO);

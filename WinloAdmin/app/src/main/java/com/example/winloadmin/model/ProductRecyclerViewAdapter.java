@@ -313,8 +313,8 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
         TextView price = inflatedWeightView.findViewById(R.id.textView36);
         ImageButton deleteBtn = inflatedWeightView.findViewById(R.id.imageButton);
 
-        weight.setText(String.valueOf(weightCategoryDTO.getWeight()));
-        price.setText(String.valueOf(weightCategoryDTO.getUnit_price()));
+        weight.setText(String.valueOf(weightCategoryDTO.getWeight())+" g");
+        price.setText("Rs. "+String.valueOf(weightCategoryDTO.getUnit_price()));
 
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
