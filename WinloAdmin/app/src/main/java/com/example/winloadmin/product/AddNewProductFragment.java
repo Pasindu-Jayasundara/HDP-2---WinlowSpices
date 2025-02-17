@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -94,7 +95,37 @@ public class AddNewProductFragment extends Fragment {
         });
 
         // load categories
+        Spinner categorySpinner = view.findViewById(R.id.spinner5);
+        Spinner availabilitySpinner = view.findViewById(R.id.spinner6);
+
+        // load category spices, grind spices , seasoning
+        List<String> categoryList = new ArrayList<>();
+        categoryList.add(getString(R.string.select_category));
+        categoryList.add(getString(R.string.spices));
+        categoryList.add(getString(R.string.grind_spices));
+        categoryList.add(getString(R.string.seasoning));
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
+                view.getContext(),
+                android.R.layout.simple_spinner_dropdown_item,
+                categoryList
+        );
+        categorySpinner.setAdapter(arrayAdapter);
+        categorySpinner.setSelection(0);
+
         // load availability
+        List<String> availabilityList = new ArrayList<>();
+        availabilityList.add(getString(R.string.select_availability));
+        availabilityList.add(getString(R.string.available));
+        availabilityList.add(getString(R.string.not_available));
+
+        ArrayAdapter<String> availabilityArrayAdapter = new ArrayAdapter<>(
+                view.getContext(),
+                android.R.layout.simple_spinner_dropdown_item,
+                availabilityList
+        );
+        availabilitySpinner.setAdapter(availabilityArrayAdapter);
+        availabilitySpinner.setSelection(0);
 
     }
 
@@ -268,7 +299,7 @@ public class AddNewProductFragment extends Fragment {
                                 public void onFailure(@NonNull Exception e) {
 
                                     Toast.makeText(view.getContext(), R.string.product_adding_failed, Toast.LENGTH_SHORT).show();
-                                    deleteImage();
+                                    deleteImage(view);
 
                                 }
                             });
@@ -308,14 +339,13 @@ public class AddNewProductFragment extends Fragment {
         // Delete the existing file
         existingFileRef.delete()
                 .addOnSuccessListener(aVoid -> {
-
+                    clearFields(view);
                 })
                 .addOnFailureListener(e -> {
                     // Handle failure in deleting the existing image
                     Toast.makeText(view.getContext(), R.string.failed_to_delete_old_image, Toast.LENGTH_SHORT).show();
+                    clearFields(view);
                 });
-
-        productMap.put("image_path","");
 
     }
 
