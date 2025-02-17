@@ -55,6 +55,7 @@ public class LoginActivity extends AppCompatActivity {
     GoogleSignInClient googleSignInClient;
     FirebaseFirestore db;
     FirebaseUser user;
+    public static HashMap<String,Object> adminHashMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -179,11 +180,12 @@ public class LoginActivity extends AppCompatActivity {
                         FirebaseUser firebaseUser = authResult.getUser();
 //                Log.i("abc", "ID Token: " + new Gson().toJson(firebaseUser));
 
-                        HashMap<String,Object> hashMap = new HashMap<>();
-                        hashMap.put("id",firebaseUser.getUid());
-                        hashMap.put("name",firebaseUser.getDisplayName());
-                        hashMap.put("email",firebaseUser.getEmail());
-                        hashMap.put("profileImage",firebaseUser.getPhotoUrl().toString());
+                        adminHashMap.put("id",firebaseUser.getUid());
+                        adminHashMap.put("name",firebaseUser.getDisplayName());
+                        adminHashMap.put("email",firebaseUser.getEmail());
+                        adminHashMap.put("profileImage",firebaseUser.getPhotoUrl().toString());
+
+
 
                         db.collection("admin").document(firebaseUser.getEmail())
                                 .get()
@@ -194,7 +196,10 @@ public class LoginActivity extends AppCompatActivity {
                                         boolean exists = documentSnapshot.exists();
                                         if(exists){
                                             user = firebaseUser;
-                                            goToMainActivity();
+
+                                            updateDb(documentSnapshot);
+//                                            goToMainActivity();
+
                                         }else{
 
                                             firebaseAuth.signOut();
@@ -228,6 +233,26 @@ public class LoginActivity extends AppCompatActivity {
 
                         Toast.makeText(LoginActivity.this,R.string.something_went_wrong,Toast.LENGTH_SHORT).show();;
 
+                    }
+                });
+
+    }
+
+    private void updateDb(DocumentSnapshot documentSnapshot) {
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("admin").document(documentSnapshot.getId())
+                .update(adminHashMap)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        goToMainActivity();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        goToMainActivity();
                     }
                 });
 

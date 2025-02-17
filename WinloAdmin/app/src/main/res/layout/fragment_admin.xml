@@ -24,6 +24,7 @@
             android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/addNewAdminCard"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="16dp">
@@ -70,7 +71,7 @@
                     </LinearLayout>
 
                     <androidx.fragment.app.FragmentContainerView
-                        android:id="@+id/fragmentContainerView"
+                        android:id="@+id/adminFragmentContainerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
@@ -82,6 +83,7 @@
     </ScrollView>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/adminRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
