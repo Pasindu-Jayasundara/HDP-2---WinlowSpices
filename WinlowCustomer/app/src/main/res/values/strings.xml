@@ -155,6 +155,7 @@
     <string name="profile_save">Save</string>
     <string name="upload_success">Upload successful!</string>
     <string name="upload_failed">Upload Failed</string>
+    <string name="failed_to_delete_old_image">Failed to delete old image</string>
 
     <!--  language  -->
     <string name="language_title">Language</string>

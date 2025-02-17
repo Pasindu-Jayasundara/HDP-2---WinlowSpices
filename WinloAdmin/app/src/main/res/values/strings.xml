@@ -45,6 +45,15 @@
     <string name="save_changes">Save Changes</string>
     <string name="no_changes">No Changes</string>
     <string name="add_product_title">Add New Product</string>
+    <string name="add_product">Save Product</string>
+    <string name="new_product_info">New Product Info</string>
+    <string name="missing_price">Missing Price</string>
+    <string name="missing_weight">Missing Weight</string>
+    <string name="missing_data">Missing Data</string>
+    <string name="image_uploadFailed_abort_adding">Image Upload Failed! Abort Adding Product</string>
+    <string name="product_adding_failed">Product Adding Failed</string>
+    <string name="product_adding_success">Product Adding Success</string>
+    <string name="failed_to_delete_old_image">Failed to delete old image</string>
 
     <!--  order  -->
     <string name="total_order_title">Total Orders:</string>

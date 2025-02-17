@@ -171,4 +171,5 @@
     <string name="order_status">ඇණවුම් තත්ත්වය:</string>
     <string name="send_email">Email එකක් යවන්න</string>
     <string name="upload_success">උඩුගත කිරීම සාර්ථකයි !</string>
+    <string name="failed_to_delete_old_image">පැරණි රූපය මකා දැමීමට අසමත් විය</string>
 </resources>
