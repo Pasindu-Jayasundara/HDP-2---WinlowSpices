@@ -5,4 +5,7 @@
     <color name="blue">#151E50</color>
     <color name="transparent">#00FFFFFF</color>
     <color name="orange">#6F4507</color>
+    <color name="call">#076158</color>
+    <color name="msg">#16588C</color>
+    <color name="email">#7E1035</color>
 </resources>
