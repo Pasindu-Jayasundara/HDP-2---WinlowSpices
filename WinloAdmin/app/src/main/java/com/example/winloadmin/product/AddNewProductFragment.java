@@ -2,6 +2,9 @@ package com.example.winloadmin.product;
 
 import static android.app.Activity.RESULT_OK;
 
+import static com.example.winloadmin.MainActivity.productDTOList;
+import static com.example.winloadmin.nav.DashboardFragment.topSellingProduct;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -11,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,12 +25,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.winloadmin.R;
+import com.example.winloadmin.dto.ProductDTO;
 import com.example.winloadmin.dto.WeightCategoryDTO;
 import com.example.winloadmin.model.callback.ImageUploadCallback;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -74,7 +80,7 @@ public class AddNewProductFragment extends Fragment {
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addToWeightList(v);
+                addToWeightList(view);
             }
         });
 
@@ -84,9 +90,9 @@ public class AddNewProductFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                boolean isOk = checkAbility(v);
+                boolean isOk = checkAbility(view);
                 if (isOk) {
-                    saveProduct(v);
+                    saveProduct(view);
                 } else {
                     Toast.makeText(v.getContext(), R.string.missing_data, Toast.LENGTH_SHORT).show();
                 }
@@ -148,12 +154,15 @@ public class AddNewProductFragment extends Fragment {
         }
 
         WeightCategoryDTO weightCategoryDTO = new WeightCategoryDTO();
-        weightCategoryDTO.setWeight(Integer.parseInt(weight));
-        weightCategoryDTO.setUnit_price(Integer.parseInt(price));
+        weightCategoryDTO.setWeight(Double.parseDouble(weight));
+        weightCategoryDTO.setUnit_price(Double.parseDouble(price));
 
         weightCategoryList.add(weightCategoryDTO);
 
         addCategoryToList(weightCategoryDTO, v);
+
+        weightView.setText("");
+        priceView.setText("");
 
     }
 
@@ -169,20 +178,39 @@ public class AddNewProductFragment extends Fragment {
         TextView price = inflated.findViewById(R.id.textView36);
         ImageButton deleteBtn = inflated.findViewById(R.id.imageButton);
 
-        weight.setText(String.valueOf(weightCategoryDTO.getWeight()));
-        price.setText(String.valueOf(weightCategoryDTO.getUnit_price()));
+        weight.setText(String.valueOf(weightCategoryDTO.getWeight())+" g");
+        price.setText("Rs. "+String.valueOf(weightCategoryDTO.getUnit_price()));
 
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 weightCategoryList.remove(weightCategoryDTO);
+
+                // Find the parent layout (LinearLayout) that holds all items
+                LinearLayout parentLayout = (LinearLayout) scrollView.getChildAt(0);
+                parentLayout.removeView(inflated);  // Remove the inflated item view
+
                 scrollView.removeView(inflated);
 
             }
         });
 
-        scrollView.addView(inflated, 0);
+//        scrollView.addView(inflated, 0);
+
+        // Get the parent layout (LinearLayout) inside the ScrollView
+        LinearLayout parentLayout;
+        if (scrollView.getChildCount() == 0) {
+            // Create the parent layout if it doesn't exist
+            parentLayout = new LinearLayout(view.getContext());
+            parentLayout.setOrientation(LinearLayout.VERTICAL);
+            scrollView.addView(parentLayout);  // Add the LinearLayout as the only child of ScrollView
+        } else {
+            parentLayout = (LinearLayout) scrollView.getChildAt(0);  // Get the existing parent layout
+        }
+
+        // Add the inflated item to the parent layout (LinearLayout)
+            parentLayout.addView(inflated, 0);  // Add to the start
 
     }
 
@@ -289,6 +317,27 @@ public class AddNewProductFragment extends Fragment {
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
 
+
+                                    Gson gson = new Gson();
+                                    String json = gson.toJson(productMap);
+
+                                    ProductDTO productDTO = gson.fromJson(json, ProductDTO.class);
+                                    productDTOList.add(productDTO);
+
+//                                    RecyclerView recyclerView = view.getRootView().findViewById(R.id.productRecyclerView);
+//                                    recyclerView.getAdapter().notifyDataSetChanged();
+
+//                                    RecyclerView recyclerView2 = view.getRootView().findViewById(R.id.allProductRecyclerView);
+//                                    recyclerView2.getAdapter().notifyDataSetChanged();
+
+                                    // top selling product name
+//                                    TextView topSellingProductView = view.getRootView().findViewById(R.id.textView5);
+//                                    topSellingProductView.setText(topSellingProduct);
+
+                                    // product count
+//                                    TextView productCount = view.getRootView().findViewById(R.id.textView3);
+//                                    productCount.setText(String.valueOf(productDTOList.size()));
+
                                     Toast.makeText(view.getContext(), R.string.product_adding_success, Toast.LENGTH_SHORT).show();
                                     clearFields(view);
 
@@ -328,6 +377,11 @@ public class AddNewProductFragment extends Fragment {
         weightCategoryList.clear();
         scrollView.removeAllViews();
 
+        EditText weightView = view.findViewById(R.id.editTextText6);
+        EditText priceView = view.findViewById(R.id.editTextText5);
+
+        weightView.setText("");
+        priceView.setText("");
 
     }
 

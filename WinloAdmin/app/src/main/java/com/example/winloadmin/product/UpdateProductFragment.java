@@ -74,6 +74,8 @@ public class UpdateProductFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 addToWeightList(newWeightView.getText().toString(),newPriceView.getText().toString(),v);
+                newWeightView.setText("");
+                newPriceView.setText("");
             }
         });
 

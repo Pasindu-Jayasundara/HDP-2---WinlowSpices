@@ -11,6 +11,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import com.example.winloadmin.dto.CustomerDTO;
 import com.example.winloadmin.dto.OrderDTO;
 import com.example.winloadmin.dto.OrderItemDTO;
 import com.example.winloadmin.dto.ProductDTO;
+import com.example.winloadmin.model.ProductViewModel;
 import com.example.winloadmin.model.callback.CustomerLoadCallback;
 import com.example.winloadmin.model.callback.OrderLoadCallback;
 import com.example.winloadmin.model.callback.ProductLoadCallback;
@@ -64,6 +66,9 @@ public class DashboardFragment extends Fragment {
 //    List<CustomerDTO> customerDTOList;
 //    List<ProductDTO> productDTOList;
 
+//    ProductViewModel productViewModel = new ViewModelProvider(requireActivity()).get(ProductViewModel.class);
+
+
     public DashboardFragment(List<OrderItemDTO> orderItemDTOList) {
         this.orderItemDTOList = orderItemDTOList;
 //        this.orderDTOList = orderDTOList;
@@ -89,13 +94,16 @@ public class DashboardFragment extends Fragment {
 
                     if(isSuccess){
 
+//                        List<ProductDTO> proList = new ArrayList<>();
+
                         for (DocumentSnapshot documentSnapshot : documentSnapshots) {
 
                             ProductDTO productDTO = documentSnapshot.toObject(ProductDTO.class);
                             productDTO.setId(documentSnapshot.getId());
                             productDTOList.add(productDTO);
-
+//                            proList.add(productDTO);
                         }
+//                        productViewModel.updateProductList(proList);
 
                         int size = documentSnapshots.size();
                         TextView productCount = view.findViewById(R.id.textView29);
