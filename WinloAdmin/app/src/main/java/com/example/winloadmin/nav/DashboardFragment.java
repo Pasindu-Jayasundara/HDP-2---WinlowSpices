@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,9 @@ import com.example.winloadmin.dto.CustomerDTO;
 import com.example.winloadmin.dto.OrderDTO;
 import com.example.winloadmin.dto.OrderItemDTO;
 import com.example.winloadmin.dto.ProductDTO;
+import com.example.winloadmin.model.callback.CustomerLoadCallback;
+import com.example.winloadmin.model.callback.OrderLoadCallback;
+import com.example.winloadmin.model.callback.ProductLoadCallback;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -42,6 +46,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -77,20 +82,95 @@ public class DashboardFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (!productDTOList.isEmpty()) {
-            loadProducts(view);
-        }
-        if (!customerDTOList.isEmpty()) {
-            loadCustomers(view);
-        }
-        if (!orderItemDTOList.isEmpty()) {
-            loadOrders(view);
-        }
+//        if (productDTOList.isEmpty()) {
+            loadProducts(view, new ProductLoadCallback() {
+                @Override
+                public void onProductLoad(boolean isSuccess, List<DocumentSnapshot> documentSnapshots) {
 
-        loadSalesAndRevenueLineChart(view);
-        loadOrderStatusPieChart(view);
+                    if(isSuccess){
+
+                        for (DocumentSnapshot documentSnapshot : documentSnapshots) {
+
+                            ProductDTO productDTO = documentSnapshot.toObject(ProductDTO.class);
+                            productDTO.setId(documentSnapshot.getId());
+                            productDTOList.add(productDTO);
+
+                        }
+
+                        int size = documentSnapshots.size();
+                        TextView productCount = view.findViewById(R.id.textView29);
+                        productCount.setText(String.valueOf(size));
+
+                        load(view);
+
+                    }
+
+                }
+            });
+//        }
+//        if (customerDTOList.isEmpty()) {
+            loadCustomers(view, new CustomerLoadCallback() {
+                @Override
+                public void onCustomerLoad(boolean isSuccess, List<DocumentSnapshot> documentSnapshots) {
+
+                    if(isSuccess){
+
+                        for (DocumentSnapshot documentSnapshot : documentSnapshots) {
+
+                            CustomerDTO customerDTO = documentSnapshot.toObject(CustomerDTO.class);
+                            customerDTOList.add(customerDTO);
+                        }
+
+                        int size = documentSnapshots.size();
+                        TextView productCount = view.findViewById(R.id.textView27);
+                        productCount.setText(String.valueOf(size));
+                        load(view);
+
+                    }
+
+                }
+            });
+//        }
+//        if (orderItemDTOList.isEmpty()) {
+            loadOrders(view, new OrderLoadCallback() {
+                @Override
+                public void onOrderLoad(boolean isSuccess, List<DocumentSnapshot> documentSnapshots) {
+
+                    if(isSuccess){
+
+                        for (DocumentSnapshot documentSnapshot : documentSnapshots) {
+
+                            OrderDTO orderDTO = documentSnapshot.toObject(OrderDTO.class);
+                            orderDTOList.add(orderDTO);
+
+                            Log.i("vvv",new Gson().toJson(orderDTOList));
+
+                            List<OrderItemDTO> orderList = orderDTO.getOrder_list();
+                            if(orderList!=null){
+                                orderItemDTOList.addAll(orderList);
+                            }
+                        }
+
+                        orderCount = orderDTOList.size();
+
+                        int size = documentSnapshots.size();
+                        TextView productCount = view.findViewById(R.id.textView25);
+                        productCount.setText(String.valueOf(size));
+
+                        loadOrderStatusPieChart(view);
+                        load(view);
+                    }
+
+                }
+            });
+//        }
+
+
+
+    }
+    private void load(View view){
         loadTopSellingProductsHorizontalBarChart(view);
-
+        loadSalesAndRevenueLineChart(view);
     }
 
     private void loadTopSellingProductsHorizontalBarChart(View view) {
@@ -152,6 +232,7 @@ public class DashboardFragment extends Fragment {
 
         HorizontalBarChart horizontalBarChart = view.findViewById(R.id.horizontalBarChart);
         horizontalBarChart.setData(barData);
+        horizontalBarChart.setDescription(null);
 
         XAxis xAxis = horizontalBarChart.getXAxis();
         xAxis.setValueFormatter(new IndexAxisValueFormatter(productNameList));
@@ -199,6 +280,7 @@ public class DashboardFragment extends Fragment {
 
         PieChart pieChart = view.findViewById(R.id.pieChart);
         pieChart.setData(pieData);
+        pieChart.setDescription(null);
         pieChart.invalidate();
     }
 
@@ -240,11 +322,12 @@ public class DashboardFragment extends Fragment {
 
         LineChart lineChart = view.findViewById(R.id.lineChart);
         lineChart.setData(lineData);
+        lineChart.setDescription(null);
         lineChart.invalidate();
 
     }
 
-    private void loadOrders(View view) {
+    private void loadOrders(View view, OrderLoadCallback orderLoadCallback) {
 
         db.collection("order")
 //                .where(Filter.notEqualTo("order_status", "Delivered"))
@@ -258,22 +341,23 @@ public class DashboardFragment extends Fragment {
                         if (!empty) {
 
                             List<DocumentSnapshot> documentSnapshots = task.getResult().getDocuments();
-                            for (DocumentSnapshot documentSnapshot : documentSnapshots) {
-
-                                OrderDTO orderDTO = documentSnapshot.toObject(OrderDTO.class);
-                                orderDTOList.add(orderDTO);
-
-                                List<OrderItemDTO> orderList = orderDTO.getOrder_list();
-                                if(orderList!=null){
-                                    orderItemDTOList.addAll(orderList);
-                                }
-                            }
-
-                            orderCount = orderDTOList.size();
-
-                            int size = documentSnapshots.size();
-                            TextView productCount = view.findViewById(R.id.textView25);
-                            productCount.setText(String.valueOf(size));
+                            orderLoadCallback.onOrderLoad(true,documentSnapshots);
+//                            for (DocumentSnapshot documentSnapshot : documentSnapshots) {
+//
+//                                OrderDTO orderDTO = documentSnapshot.toObject(OrderDTO.class);
+//                                orderDTOList.add(orderDTO);
+//
+//                                List<OrderItemDTO> orderList = orderDTO.getOrder_list();
+//                                if(orderList!=null){
+//                                    orderItemDTOList.addAll(orderList);
+//                                }
+//                            }
+//
+//                            orderCount = orderDTOList.size();
+//
+//                            int size = documentSnapshots.size();
+//                            TextView productCount = view.findViewById(R.id.textView25);
+//                            productCount.setText(String.valueOf(size));
 
                         }
 
@@ -282,7 +366,7 @@ public class DashboardFragment extends Fragment {
 
     }
 
-    private void loadCustomers(View view) {
+    private void loadCustomers(View view, CustomerLoadCallback customerLoadCallback) {
 
         db.collection("user")
                 .get()
@@ -294,15 +378,16 @@ public class DashboardFragment extends Fragment {
                         if (!empty) {
 
                             List<DocumentSnapshot> documentSnapshots = task.getResult().getDocuments();
-                            for (DocumentSnapshot documentSnapshot : documentSnapshots) {
-
-                                CustomerDTO customerDTO = documentSnapshot.toObject(CustomerDTO.class);
-                                customerDTOList.add(customerDTO);
-                            }
-
-                            int size = documentSnapshots.size();
-                            TextView productCount = view.findViewById(R.id.textView27);
-                            productCount.setText(String.valueOf(size));
+                            customerLoadCallback.onCustomerLoad(true,documentSnapshots);
+//                            for (DocumentSnapshot documentSnapshot : documentSnapshots) {
+//
+//                                CustomerDTO customerDTO = documentSnapshot.toObject(CustomerDTO.class);
+//                                customerDTOList.add(customerDTO);
+//                            }
+//
+//                            int size = documentSnapshots.size();
+//                            TextView productCount = view.findViewById(R.id.textView27);
+//                            productCount.setText(String.valueOf(size));
 
                         }
 
@@ -311,7 +396,7 @@ public class DashboardFragment extends Fragment {
 
     }
 
-    private void loadProducts(View view) {
+    private void loadProducts(View view, ProductLoadCallback productLoadCallback) {
 
         db.collection("product")
                 .get()
@@ -323,17 +408,18 @@ public class DashboardFragment extends Fragment {
                         if (!empty) {
 
                             List<DocumentSnapshot> documentSnapshots = task.getResult().getDocuments();
-                            for (DocumentSnapshot documentSnapshot : documentSnapshots) {
-
-                                ProductDTO productDTO = documentSnapshot.toObject(ProductDTO.class);
-                                productDTO.setId(documentSnapshot.getId());
-                                productDTOList.add(productDTO);
-
-                            }
-
-                            int size = documentSnapshots.size();
-                            TextView productCount = view.findViewById(R.id.textView29);
-                            productCount.setText(String.valueOf(size));
+                            productLoadCallback.onProductLoad(true,documentSnapshots);
+//                            for (DocumentSnapshot documentSnapshot : documentSnapshots) {
+//
+//                                ProductDTO productDTO = documentSnapshot.toObject(ProductDTO.class);
+//                                productDTO.setId(documentSnapshot.getId());
+//                                productDTOList.add(productDTO);
+//
+//                            }
+//
+//                            int size = documentSnapshots.size();
+//                            TextView productCount = view.findViewById(R.id.textView29);
+//                            productCount.setText(String.valueOf(size));
 
                         }
 

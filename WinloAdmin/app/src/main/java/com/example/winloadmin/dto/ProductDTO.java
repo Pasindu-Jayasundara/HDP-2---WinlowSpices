@@ -7,7 +7,7 @@ public class ProductDTO implements Serializable {
 
     private String id;
     private String category;
-    private String discount;
+    private double discount;
     private String image_path;
     private String name;
     private String stock;
@@ -16,7 +16,7 @@ public class ProductDTO implements Serializable {
     public ProductDTO() {
     }
 
-    public ProductDTO(String category, String discount, String image_path, String name, String stock, List<WeightCategoryDTO> weight_category, String id) {
+    public ProductDTO(String category, double discount, String image_path, String name, String stock, List<WeightCategoryDTO> weight_category, String id) {
         this.category = category;
         this.discount = discount;
         this.image_path = image_path;
@@ -42,11 +42,11 @@ public class ProductDTO implements Serializable {
         this.category = category;
     }
 
-    public String getDiscount() {
+    public double getDiscount() {
         return discount;
     }
 
-    public void setDiscount(String discount) {
+    public void setDiscount(double discount) {
         this.discount = discount;
     }
 
