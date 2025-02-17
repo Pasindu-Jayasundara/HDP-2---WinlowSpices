@@ -23,11 +23,16 @@
             android:title="@string/admin_title"
             android:icon="@drawable/admin"
             />
-<!--        <item-->
-<!--            android:id="@+id/productFragment"-->
-<!--            android:title="@string/title"-->
-<!--            android:icon="@drawable/product"-->
-<!--            />-->
+        <item
+            android:id="@+id/userFragment"
+            android:title="@string/user_title"
+            android:icon="@drawable/user"
+            />
+        <item
+            android:id="@+id/bannerFragment"
+            android:title="@string/banner_title"
+            android:icon="@drawable/banner"
+            />
 
     </group>
 

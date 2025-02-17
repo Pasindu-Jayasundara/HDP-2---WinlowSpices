@@ -33,9 +33,11 @@ import com.example.winloadmin.dto.OrderItemDTO;
 import com.example.winloadmin.dto.ProductDTO;
 import com.example.winloadmin.dto.UserDTO;
 import com.example.winloadmin.nav.AdminFragment;
+import com.example.winloadmin.nav.BannerFragment;
 import com.example.winloadmin.nav.DashboardFragment;
 import com.example.winloadmin.nav.OrderFragment;
 import com.example.winloadmin.nav.ProductFragment;
+import com.example.winloadmin.nav.UserFragment;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 
@@ -140,6 +142,17 @@ public class MainActivity extends AppCompatActivity {
                     fragment = new AdminFragment();
                     index = 3;
                 }
+                if(item.getItemId() == R.id.userFragment) {
+
+                    fragment = new UserFragment();
+                    index = 4;
+                }
+                if(item.getItemId() == R.id.bannerFragment) {
+
+                    fragment = new BannerFragment();
+                    index = 5;
+                }
+
 
 
                 if(fragment!=null){
