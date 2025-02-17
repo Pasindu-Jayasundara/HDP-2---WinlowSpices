@@ -137,6 +137,9 @@
     <string name="call_end">Call Ended</string>
     <string name="end_call">End Call</string>
 
+    <!--  banner  -->
+    <string name="add_new_banner">Add New Banner</string>
+
     <!--  authentication  -->
     <string name="default_web_client_id">441817025989-r4pm1824cc4tuqrhtlhrci9arerf77e9.apps.googleusercontent.com</string>
     <!-- Strings used for fragments for navigation -->
