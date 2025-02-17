@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,14 +25,15 @@ import com.example.winloadmin.model.ProductRecyclerViewAdapter;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductSearchFragment extends Fragment {
 
     String searchBy;
     List<ProductDTO> originalProductDTOList;
-
-    public static ProductRecyclerViewAdapter productRecyclerViewAdapter;
+    public static RecyclerView recyclerView;
+//    public static ProductRecyclerViewAdapter productRecyclerViewAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,7 +71,8 @@ public class ProductSearchFragment extends Fragment {
                     productDTOList.clear();
                     productDTOList.addAll(originalProductDTOList);
 
-                    productRecyclerViewAdapter.notifyDataSetChanged();
+                    recyclerView.getAdapter().notifyDataSetChanged();
+//                    productRecyclerViewAdapter.notifyDataSetChanged();
 
                 }
             }
@@ -112,38 +115,72 @@ public class ProductSearchFragment extends Fragment {
         });
 
         // load product
-        RecyclerView recyclerView = view.findViewById(R.id.productRecyclerView);
+        recyclerView = view.findViewById(R.id.productRecyclerView);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        productRecyclerViewAdapter = new ProductRecyclerViewAdapter();
+        ProductRecyclerViewAdapter productRecyclerViewAdapter = new ProductRecyclerViewAdapter();
         recyclerView.setAdapter(productRecyclerViewAdapter);
 
     }
 
+//    private void searchProduct(String searchText) {
+//
+//        for(ProductDTO productDTO:productDTOList){
+//
+//            if(searchBy.equals("name")){
+//
+//                if(productDTO.getName().toLowerCase().contains(searchText.toLowerCase())){
+//                    productDTOList.add(0,productDTO);
+//                    productRecyclerViewAdapter.notifyDataSetChanged();
+//                }
+//
+//            }
+//
+//            if(searchBy.equals("category")){
+//
+//                if(productDTO.getCategory().toLowerCase().contains(searchText.toLowerCase())){
+//                    productDTOList.add(0,productDTO);
+//                    productRecyclerViewAdapter.notifyDataSetChanged();
+//                }
+//            }
+//
+//        }
+//
+//    }
+
     private void searchProduct(String searchText) {
+        // Create a temporary list to hold the matching products
+        List<ProductDTO> filteredList = new ArrayList<>();
 
-        for(ProductDTO productDTO:productDTOList){
-
-            if(searchBy.equals("name")){
-
-                if(productDTO.getName().toLowerCase().contains(searchText.toLowerCase())){
-                    productDTOList.add(0,productDTO);
-                    productRecyclerViewAdapter.notifyDataSetChanged();
-                }
-
-            }
-
-            if(searchBy.equals("category")){
-
-                if(productDTO.getCategory().toLowerCase().contains(searchText.toLowerCase())){
-                    productDTOList.add(0,productDTO);
-                    productRecyclerViewAdapter.notifyDataSetChanged();
+        for (ProductDTO productDTO : originalProductDTOList) {
+            if (searchBy.equals("name")) {
+                if (productDTO.getName().toLowerCase().contains(searchText.toLowerCase())) {
+                    filteredList.add(productDTO);
                 }
             }
 
+            if (searchBy.equals("category")) {
+                if (productDTO.getCategory().toLowerCase().contains(searchText.toLowerCase())) {
+                    filteredList.add(productDTO);
+                }
+            }
         }
+        Log.d("ProductSearch", "Filtered List: " + filteredList.toString());
+        Log.d("ProductSearch", "Updated Product List: " + productDTOList.toString());
+
+        // Now update the main list with the filtered results
+        productDTOList.clear();
+        productDTOList.addAll(filteredList);
+
+        // Notify the adapter that the dataset has changed
+//        productRecyclerViewAdapter.notifyDataSetChanged();
+        recyclerView.getAdapter().notifyDataSetChanged();
+
+        productDTOList.clear();
+        productDTOList.addAll(originalProductDTOList);
 
     }
+
 }

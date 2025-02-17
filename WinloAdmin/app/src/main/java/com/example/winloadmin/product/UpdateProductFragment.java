@@ -1,7 +1,8 @@
 package com.example.winloadmin.product;
 
 import static com.example.winloadmin.MainActivity.productDTOList;
-import static com.example.winloadmin.product.ProductSearchFragment.productRecyclerViewAdapter;
+//import static com.example.winloadmin.product.ProductSearchFragment.productRecyclerViewAdapter;
+import static com.example.winloadmin.product.ProductSearchFragment.recyclerView;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -178,12 +180,13 @@ public class UpdateProductFragment extends Fragment {
 
     }
 
-    private void addCategoryToList(WeightCategoryDTO weightCategoryDTO, View view,boolean toStart) {
+    private void addCategoryToList(WeightCategoryDTO weightCategoryDTO, View view, boolean toStart) {
 
         ScrollView scrollView = view.findViewById(R.id.scrollView5);
         LayoutInflater layoutInflater = LayoutInflater.from(view.getContext());
 
-        View inflated = layoutInflater.inflate(R.layout.product_update_weight_category, weightCategoryRecyclerView, false);
+        // Inflate the category view (the individual weight category item)
+        View inflated = layoutInflater.inflate(R.layout.product_update_weight_category, null, false);
 
         TextView weight = inflated.findViewById(R.id.textView35);
         TextView price = inflated.findViewById(R.id.textView36);
@@ -195,22 +198,35 @@ public class UpdateProductFragment extends Fragment {
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 weightCategoryList.remove(weightCategoryDTO);
-                scrollView.removeView(inflated);
+
+                // Find the parent layout (LinearLayout) that holds all items
+                LinearLayout parentLayout = (LinearLayout) scrollView.getChildAt(0);
+                parentLayout.removeView(inflated);  // Remove the inflated item view
 
                 isWeightListChanged = true;
-
             }
         });
 
-        if(toStart){
-            scrollView.addView(inflated,0);
-        }else{
-            scrollView.addView(inflated);
+        // Get the parent layout (LinearLayout) inside the ScrollView
+        LinearLayout parentLayout;
+        if (scrollView.getChildCount() == 0) {
+            // Create the parent layout if it doesn't exist
+            parentLayout = new LinearLayout(view.getContext());
+            parentLayout.setOrientation(LinearLayout.VERTICAL);
+            scrollView.addView(parentLayout);  // Add the LinearLayout as the only child of ScrollView
+        } else {
+            parentLayout = (LinearLayout) scrollView.getChildAt(0);  // Get the existing parent layout
         }
 
+        // Add the inflated item to the parent layout (LinearLayout)
+        if (toStart) {
+            parentLayout.addView(inflated, 0);  // Add to the start
+        } else {
+            parentLayout.addView(inflated);  // Add to the end
+        }
     }
+
 
     private void updateProduct(Context context) {
 
@@ -232,7 +248,8 @@ public class UpdateProductFragment extends Fragment {
                         productDTOList.remove(productDTO);
                         productDTOList.add(newProductDTO);
 
-                        productRecyclerViewAdapter.notifyDataSetChanged();
+                        recyclerView.getAdapter().notifyDataSetChanged();
+//                        productRecyclerViewAdapter.notifyDataSetChanged();
                         weightCategoryRecyclerView.getAdapter().notifyDataSetChanged();
 
                         Toast.makeText(context,R.string.update_success, Toast.LENGTH_SHORT).show();

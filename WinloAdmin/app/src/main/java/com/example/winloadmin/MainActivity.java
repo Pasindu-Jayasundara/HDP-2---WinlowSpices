@@ -25,6 +25,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
 import com.example.winloadmin.dto.CustomerDTO;
@@ -54,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
     public static List<CustomerDTO> customerDTOList = new ArrayList<>();
     public static List<ProductDTO> productDTOList = new ArrayList<>();
 
+    public static FragmentManager fragmentManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         }
 
+        fragmentManager = getSupportFragmentManager();
+
         // menu
         DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
 
@@ -84,18 +89,18 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if(intent.hasExtra("user")){
             userDTO = new Gson().fromJson(intent.getStringExtra("user"), UserDTO.class);
+
+            ImageView profileImg = findViewById(R.id.imageView6);
+            Glide.with(this)
+                    .load(Uri.parse(userDTO.getPhoto_url()))
+                    .placeholder(AppCompatResources.getDrawable(this,R.drawable.user))
+                    .circleCrop()
+                    .error(AppCompatResources.getDrawable(this,R.drawable.user))
+                    .into(profileImg);
         }
 
-        // toolbar
+        // menu
         ImageView menu = findViewById(R.id.imageView7);
-        ImageView profileImg = findViewById(R.id.imageView6);
-        Glide.with(this)
-                .load(Uri.parse(userDTO.getPhoto_url()))
-                .placeholder(AppCompatResources.getDrawable(this,R.drawable.user))
-                .circleCrop()
-                .error(AppCompatResources.getDrawable(this,R.drawable.user))
-                .into(profileImg);
-
         menu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
