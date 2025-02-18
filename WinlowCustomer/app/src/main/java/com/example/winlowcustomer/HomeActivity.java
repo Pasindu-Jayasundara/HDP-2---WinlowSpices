@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.ImageView;
@@ -273,6 +274,7 @@ public class HomeActivity extends AppCompatActivity {
 
     public void loadCategories(HashSet<String> categoryHashSet, ChipGroup chipGroup, Activity activity) {
         chipGroup.removeAllViews();
+        Log.i("language",language);
         if (!language.equals("en")) {
 
             for (String category : categoryHashSet) {

@@ -40,12 +40,12 @@ public class OrderRecyclerViewCardInnerRecyclerViewAdapter extends RecyclerView.
 
         String name = orderItemDTO.getName();
 
-        String regex = "\\(([^)]+)\\)";  // Captures anything inside parentheses
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(name);
-        String weight = matcher.group(1);
+//        String regex = "\\(([^)]+)\\)";  // Captures anything inside parentheses
+//        Pattern pattern = Pattern.compile(regex);
+//        Matcher matcher = pattern.matcher(name);
+//        String weight = matcher.group(1);
 
-        holder.weight.setText(weight);
+        holder.weight.setText(name);
         holder.qty.setText(String.valueOf(orderItemDTO.getQuantity()));
 
     }
