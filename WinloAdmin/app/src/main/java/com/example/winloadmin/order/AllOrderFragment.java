@@ -1,5 +1,7 @@
 package com.example.winloadmin.order;
 
+import static com.example.winloadmin.MainActivity.orderDTOList;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,10 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.winloadmin.R;
-import com.example.winloadmin.dto.OrderDTO;
 import com.example.winloadmin.model.OrderRecyclerViewAdapter;
-
-import java.util.List;
 
 public class AllOrderFragment extends Fragment {
 
@@ -37,7 +36,7 @@ public class AllOrderFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext(),LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        OrderRecyclerViewAdapter adapter = new OrderRecyclerViewAdapter(getParentFragmentManager());
+        OrderRecyclerViewAdapter adapter = new OrderRecyclerViewAdapter(getParentFragmentManager(), orderDTOList);
         recyclerView.setAdapter(adapter);
 
     }

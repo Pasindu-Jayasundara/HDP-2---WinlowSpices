@@ -1,5 +1,6 @@
 package com.example.winloadmin.nav;
 
+import static androidx.core.content.ContextCompat.getColor;
 import static com.example.winloadmin.MainActivity.customerDTOList;
 import static com.example.winloadmin.MainActivity.orderCount;
 import static com.example.winloadmin.MainActivity.orderDTOList;
@@ -45,6 +46,7 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -273,6 +275,8 @@ public class DashboardFragment extends Fragment {
 
         List<PieEntry> pieEntryList = new ArrayList<>();
 
+        PieChart pieChart = view.findViewById(R.id.pieChart);
+
         // Convert counts to percentages
         for (Map.Entry<String, Integer> entry : map.entrySet()) {
 
@@ -283,10 +287,16 @@ public class DashboardFragment extends Fragment {
 
         }
 
-        PieDataSet pieDataSet = new PieDataSet(pieEntryList, getString(R.string.orders_title));
+        List<Integer> coloList = new ArrayList<>();
+        coloList.add(getColor(view.getContext(),R.color.pending_order));
+        coloList.add(getColor(view.getContext(),R.color.ready_to_deliver_order));
+        coloList.add(getColor(view.getContext(),R.color.delivering_order));
+        coloList.add(getColor(view.getContext(),R.color.delivered_order));
+
+        PieDataSet pieDataSet = new PieDataSet(pieEntryList, null);
+        pieDataSet.setColors(coloList);
         PieData pieData = new PieData(pieDataSet);
 
-        PieChart pieChart = view.findViewById(R.id.pieChart);
         pieChart.setData(pieData);
         pieChart.setDescription(null);
         pieChart.invalidate();
@@ -338,7 +348,7 @@ public class DashboardFragment extends Fragment {
     private void loadOrders(View view, OrderLoadCallback orderLoadCallback) {
 
         db.collection("order")
-//                .where(Filter.notEqualTo("order_status", "Delivered"))
+                .where(Filter.notEqualTo("order_status", "Delivered"))
                 .orderBy("date_time", Query.Direction.ASCENDING)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

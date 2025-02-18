@@ -1,7 +1,6 @@
 package com.example.winloadmin.model;
 
-import static com.example.winloadmin.MainActivity.orderDTOList;
-import static com.example.winloadmin.order.OrderSearchFragment.recyclerViewOrderSearchFragment;
+//import static com.example.winloadmin.MainActivity.orderDTOList;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,11 +30,11 @@ import java.util.List;
 
 public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecyclerViewAdapter.OrderRecyclerViewHolder>{
 
-//    List<OrderDTO> orderDTOList;
+    List<OrderDTO> ol;
     FragmentManager fragmentManager;
 
-    public OrderRecyclerViewAdapter(FragmentManager fragmentManager) {
-//        this.orderDTOList = orderDTOList;
+    public OrderRecyclerViewAdapter(FragmentManager fragmentManager, List<OrderDTO> ol) {
+        this.ol = ol;
         this.fragmentManager = fragmentManager;
     }
 
@@ -52,7 +51,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
     @Override
     public void onBindViewHolder(@NonNull OrderRecyclerViewHolder holder, int position) {
 
-        OrderDTO orderDTO = orderDTOList.get(position);
+        OrderDTO orderDTO = ol.get(position);
 
         holder.orderId.setText(orderDTO.getOrder_id());
 //        holder.productName.setText(orderDTO.getOrder_list().get(0).getName());
@@ -83,7 +82,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
                 holder.itemView.getContext(),
-                android.R.layout.simple_spinner_item,
+                android.R.layout.simple_spinner_dropdown_item,
                 list
         );
 
@@ -98,7 +97,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
             @Override
             public void onClick(View v) {
 
-                updateDatabase(inflated,orderDTO);
+                updateDatabase(inflated,orderDTO,holder.recyclerView);
 
             }
         });
@@ -109,7 +108,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
 
     @Override
     public int getItemCount() {
-        return orderDTOList.size();
+        return ol.size();
     }
 
     public class OrderRecyclerViewHolder extends RecyclerView.ViewHolder{
@@ -131,7 +130,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
         }
     }
 
-    private void updateDatabase(View view,OrderDTO orderDTO2) {
+    private void updateDatabase(View view, OrderDTO orderDTO2, RecyclerView recyclerView) {
 
         Spinner spinner = view.findViewById(R.id.spinner3);
         String newStatus = spinner.getSelectedItem().toString();
@@ -149,13 +148,18 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
                     public void onSuccess(Void unused) {
                         Toast.makeText(view.getContext(), R.string.order_status_updated, Toast.LENGTH_SHORT).show();
 
-//                        orderStatus = newStatus;
-                        orderDTOList.forEach(orderDTO -> {
+                        List<OrderDTO> newList = new ArrayList<>();
+                        ol.forEach(orderDTO -> {
                             if(orderDTO.getOrder_id().equals(orderDTO2.getOrder_id())){
                                 orderDTO.setOrder_status(newStatus);
                             }
+                            if(!orderDTO.getOrder_status().equals(view.getContext().getString(R.string.delivered))){
+                                newList.add(orderDTO);
+                            }
                         });
-                        recyclerViewOrderSearchFragment.getAdapter().notifyDataSetChanged();
+                        ol.clear();
+                        ol.addAll(newList);
+                        recyclerView.getAdapter().notifyDataSetChanged();
 
                     }
                 })

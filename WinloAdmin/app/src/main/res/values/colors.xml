@@ -8,4 +8,8 @@
     <color name="call">#076158</color>
     <color name="msg">#16588C</color>
     <color name="email">#7E1035</color>
+    <color name="pending_order">#2AB325</color>
+    <color name="ready_to_deliver_order">#6129C5</color>
+    <color name="delivering_order">#B68E14</color>
+    <color name="delivered_order">#1767A6</color>
 </resources>
