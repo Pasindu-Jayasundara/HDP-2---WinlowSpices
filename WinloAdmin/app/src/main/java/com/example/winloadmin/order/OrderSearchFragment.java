@@ -90,11 +90,13 @@ public class OrderSearchFragment extends Fragment {
                 String searchText = searchTextView.getText().toString();
                 if(searchText.isEmpty()){
 
-                    orderDTOList.clear();
-                    orderDTOList.addAll(orderDTOListOriginal);
-
+//                    orderDTOList.clear();
+//                    orderDTOList.addAll(orderDTOListOriginal);
+                    RecyclerView recyclerView = view.findViewById(R.id.orderRecyclerView);
+                    OrderRecyclerViewAdapter adapter = new OrderRecyclerViewAdapter(getParentFragmentManager(), new ArrayList<>());
+                    recyclerView.setAdapter(adapter);
                     spinner.setEnabled(true);
-                    sortOrders(view);
+//                    sortOrders(view);
 
                 }
 
@@ -114,7 +116,7 @@ public class OrderSearchFragment extends Fragment {
                         public void onOrderSearch(boolean isSuccess, QuerySnapshot documentSnapshots) {
                             if(isSuccess) {
 
-                                orderDTOList.clear();
+//                                orderDTOList.clear();
                                 List<OrderDTO> ol = new ArrayList<>();
 
                                 List<DocumentSnapshot> dssl = documentSnapshots.getDocuments();
@@ -137,8 +139,8 @@ public class OrderSearchFragment extends Fragment {
                                 OrderRecyclerViewAdapter adapter = new OrderRecyclerViewAdapter(getParentFragmentManager(),ol);
                                 recyclerView.setAdapter(adapter);
 //                                recyclerView.setAdapter();
-                                orderDTOList.clear();
-                                orderDTOList.addAll(orderDTOListOriginal);
+//                                orderDTOList.clear();
+//                                orderDTOList.addAll(orderDTOListOriginal);
                             }
                         }
                     });
