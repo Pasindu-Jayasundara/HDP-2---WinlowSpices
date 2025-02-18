@@ -48,6 +48,11 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
     List<WeightCategoryDTO> weightCategoryList;
     boolean isWeightListChanged;
     Map<String,Object> updateMap = new HashMap<>();
+    List<ProductDTO> filteredList;
+
+    public ProductRecyclerViewAdapter(List<ProductDTO> filteredList) {
+        this.filteredList = filteredList;
+    }
 //    RecyclerView weightCategoryRecyclerView;
 
     @NonNull
@@ -63,7 +68,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
     @Override
     public void onBindViewHolder(@NonNull ProductRecyclerViewHolder holder, int position) {
 
-        ProductDTO productDTO = productDTOList.get(position);
+        ProductDTO productDTO = filteredList.get(position);
 
         holder.productName.setText(productDTO.getName());
         holder.category.setText(productDTO.getCategory());
@@ -187,7 +192,9 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
                         newProductDTO.setStock(updateMap.get("stock").toString());
                         newProductDTO.setWeight_category(weightCategoryList);
 
-                        productDTOList.remove(productDTO);
+                        filteredList.remove(productDTO);
+                        filteredList.add(newProductDTO);
+                        productDTOList.add(newProductDTO);
                         productDTOList.add(newProductDTO);
 
                         recyclerView.getAdapter().notifyDataSetChanged();
@@ -384,6 +391,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
                     @Override
                     public void onSuccess(Void unused) {
 
+                        filteredList.remove(productDTO);
                         productDTOList.remove(productDTO);
                         notifyDataSetChanged();
 
@@ -404,7 +412,7 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
 
     @Override
     public int getItemCount() {
-        return productDTOList.size();
+        return filteredList.size();
     }
 
     public class ProductRecyclerViewHolder extends RecyclerView.ViewHolder{

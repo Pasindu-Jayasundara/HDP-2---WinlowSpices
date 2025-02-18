@@ -68,11 +68,15 @@ public class ProductSearchFragment extends Fragment {
             public void afterTextChanged(Editable s) {
                 if(searchTxt.getText().toString().isEmpty()){
 
-                    productDTOList.clear();
-                    productDTOList.addAll(originalProductDTOList);
-
-                    recyclerView.getAdapter().notifyDataSetChanged();
+                    ProductRecyclerViewAdapter productRecyclerViewAdapter = new ProductRecyclerViewAdapter(new ArrayList<>());
+                    recyclerView.setAdapter(productRecyclerViewAdapter);
+//                    productDTOList.clear();
+//                    productDTOList.addAll(originalProductDTOList);
+//
+//                    recyclerView.getAdapter().notifyDataSetChanged();
 //                    productRecyclerViewAdapter.notifyDataSetChanged();
+
+
 
                 }
             }
@@ -109,6 +113,18 @@ public class ProductSearchFragment extends Fragment {
                 String searchText = searchTxt.getText().toString();
                 if(!searchText.isBlank()){
                     searchProduct(searchText);
+                }else{
+
+                        ProductRecyclerViewAdapter productRecyclerViewAdapter = new ProductRecyclerViewAdapter(new ArrayList<>());
+                        recyclerView.setAdapter(productRecyclerViewAdapter);
+//                    productDTOList.clear();
+//                    productDTOList.addAll(originalProductDTOList);
+//
+//                    recyclerView.getAdapter().notifyDataSetChanged();
+//                    productRecyclerViewAdapter.notifyDataSetChanged();
+
+
+
                 }
 
             }
@@ -117,11 +133,11 @@ public class ProductSearchFragment extends Fragment {
         // load product
         recyclerView = view.findViewById(R.id.productRecyclerView);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
-        recyclerView.setLayoutManager(linearLayoutManager);
-
-        ProductRecyclerViewAdapter productRecyclerViewAdapter = new ProductRecyclerViewAdapter();
-        recyclerView.setAdapter(productRecyclerViewAdapter);
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
+//        recyclerView.setLayoutManager(linearLayoutManager);
+//
+//        ProductRecyclerViewAdapter productRecyclerViewAdapter = new ProductRecyclerViewAdapter();
+//        recyclerView.setAdapter(productRecyclerViewAdapter);
 
     }
 
@@ -171,15 +187,20 @@ public class ProductSearchFragment extends Fragment {
         Log.d("ProductSearch", "Updated Product List: " + productDTOList.toString());
 
         // Now update the main list with the filtered results
-        productDTOList.clear();
-        productDTOList.addAll(filteredList);
+//        productDTOList.clear();
+//        productDTOList.addAll(filteredList);
 
         // Notify the adapter that the dataset has changed
 //        productRecyclerViewAdapter.notifyDataSetChanged();
-        recyclerView.getAdapter().notifyDataSetChanged();
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
+        recyclerView.setLayoutManager(linearLayoutManager);
 
-        productDTOList.clear();
-        productDTOList.addAll(originalProductDTOList);
+        ProductRecyclerViewAdapter productRecyclerViewAdapter = new ProductRecyclerViewAdapter(filteredList);
+        recyclerView.setAdapter(productRecyclerViewAdapter);
+//        recyclerView.getAdapter().notifyDataSetChanged();
+
+//        productDTOList.clear();
+//        productDTOList.addAll(originalProductDTOList);
 
     }
 

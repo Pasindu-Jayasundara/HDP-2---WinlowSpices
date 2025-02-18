@@ -1,5 +1,7 @@
 package com.example.winloadmin.product;
 
+import static com.example.winloadmin.MainActivity.productDTOList;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -35,7 +37,7 @@ public class AllProductFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext(),LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        ProductRecyclerViewAdapter adapter = new ProductRecyclerViewAdapter();
+        ProductRecyclerViewAdapter adapter = new ProductRecyclerViewAdapter(productDTOList);
         recyclerView.setAdapter(adapter);
     }
 }
