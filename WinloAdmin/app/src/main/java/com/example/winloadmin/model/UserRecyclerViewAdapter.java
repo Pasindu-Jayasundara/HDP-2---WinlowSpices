@@ -1,13 +1,16 @@
 package com.example.winloadmin.model;
 
+import static androidx.core.content.ContextCompat.getString;
 import static androidx.core.content.ContextCompat.startActivity;
 import static com.example.winloadmin.MainActivity.customerDTOList;
+//import static com.example.winloadmin.MainActivity.packageManager;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.telecom.Call;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +26,7 @@ import com.example.winloadmin.CallUserActivity;
 import com.example.winloadmin.R;
 import com.example.winloadmin.dto.CustomerDTO;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.gson.Gson;
 
 public class UserRecyclerViewAdapter extends RecyclerView.Adapter<UserRecyclerViewAdapter.UserRecyclerViewHolder> {
 
@@ -102,10 +106,13 @@ public class UserRecyclerViewAdapter extends RecyclerView.Adapter<UserRecyclerVi
         // email
         holder.emailBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v1) {
 
-                LayoutInflater layoutInflater = LayoutInflater.from(v.getContext());
-                View inflated = layoutInflater.inflate(R.layout.email_card, v.findViewById(R.id.userRecyclerView), false);
+                LayoutInflater layoutInflater = LayoutInflater.from(v1.getContext());
+                View inflated = layoutInflater.inflate(R.layout.email_card, v1.findViewById(R.id.userRecyclerView), false);
+
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(v1.getContext()).setView(inflated);
+                AlertDialog alertDialog = alertBuilder.create(); // Create the AlertDialog
 
                 TextView email = inflated.findViewById(R.id.textView45);
                 email.setText(customerDTO.getEmail());
@@ -113,38 +120,32 @@ public class UserRecyclerViewAdapter extends RecyclerView.Adapter<UserRecyclerVi
                 TextView subject = inflated.findViewById(R.id.emailSubject);
                 TextView body = inflated.findViewById(R.id.emailBody);
                 Button sendBtn = inflated.findViewById(R.id.button16);
+
                 sendBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
                         String subjectText = subject.getText().toString();
                         String bodyText = body.getText().toString();
 
                         if(subjectText.isEmpty()){
-                            subject.setError(v.getContext().getString(R.string.subject_is_required));
-                        }else if(bodyText.isEmpty()){
-                            body.setError(v.getContext().getString(R.string.body_is_required));
-                        }else{
-
+                            subject.setError(v1.getContext().getString(R.string.subject_is_required));
+                        } else if(bodyText.isEmpty()){
+                            body.setError(v1.getContext().getString(R.string.body_is_required));
+                        } else {
                             Intent intent = new Intent(Intent.ACTION_SENDTO);
-                            intent.setData(Uri.parse("mailto:"+customerDTO.getEmail()));
-                            intent.putExtra(Intent.EXTRA_TEXT,bodyText);
+                            intent.setData(Uri.parse("mailto:" + customerDTO.getEmail()));
+                            intent.putExtra(Intent.EXTRA_TEXT, bodyText);
                             intent.putExtra(Intent.EXTRA_SUBJECT, subjectText);
 
-                            if (intent.resolveActivity(v.getContext().getPackageManager()) != null) {
-                                startActivity(v.getContext(),intent,null);
-                            }else{
-                                Toast.makeText(v.getContext(), R.string.action_cannot_be_completed, Toast.LENGTH_SHORT).show();
-                            }
+                            v1.getContext().startActivity(Intent.createChooser(intent, getString(v1.getContext(),R.string.choose_email_app)));
 
+                            alertDialog.dismiss();
                         }
-
                     }
                 });
 
+                alertDialog.show();
 
-                AlertDialog.Builder alert = new AlertDialog.Builder(v.getContext()).setView(inflated);
-                alert.show();
 
             }
         });

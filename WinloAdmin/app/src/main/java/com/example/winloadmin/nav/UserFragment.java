@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.winloadmin.R;
+import com.example.winloadmin.model.UserRecyclerViewAdapter;
 
 public class UserFragment extends Fragment {
 
@@ -37,6 +38,9 @@ public class UserFragment extends Fragment {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext(),LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(linearLayoutManager);
+
+        UserRecyclerViewAdapter userRecyclerViewAdapter = new UserRecyclerViewAdapter();
+        recyclerView.setAdapter(userRecyclerViewAdapter);
 
     }
 }
