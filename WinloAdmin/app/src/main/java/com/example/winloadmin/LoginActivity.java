@@ -99,7 +99,9 @@ public class LoginActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                btn.setText(R.string.wait);
                 googleSignIn();
+                btn.setText(R.string.login);
             }
         });
 
@@ -180,7 +182,7 @@ public class LoginActivity extends AppCompatActivity {
                         FirebaseUser firebaseUser = authResult.getUser();
 //                Log.i("abc", "ID Token: " + new Gson().toJson(firebaseUser));
 
-                        adminHashMap.put("id",firebaseUser.getUid());
+//                        adminHashMap.put("id",firebaseUser.getUid());
                         adminHashMap.put("name",firebaseUser.getDisplayName());
                         adminHashMap.put("email",firebaseUser.getEmail());
                         adminHashMap.put("profileImage",firebaseUser.getPhotoUrl().toString());

@@ -18,17 +18,22 @@ import android.widget.Toast;
 
 import com.example.winloadmin.R;
 import com.example.winloadmin.dto.AdminDTO;
+import com.example.winloadmin.model.AdminRecyclerViewAdapter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class AddNewAdminFragment extends Fragment {
+
+    RecyclerView recyclerView;
+
+    public AddNewAdminFragment(RecyclerView recyclerView) {
+        this.recyclerView = recyclerView;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,78 +47,93 @@ public class AddNewAdminFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         TextInputEditText emailView = view.findViewById(R.id.newAdminEmailAddress);
+        TextInputEditText nameView = view.findViewById(R.id.newAdminName);
 
         Button addBtn = view.findViewById(R.id.button12);
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if(!emailView.getText().toString().isBlank()){
+                if(!nameView.getText().toString().isBlank()) {
 
-                    boolean isFound = false;
+                    if (!emailView.getText().toString().isBlank()) {
 
-                    for(AdminDTO adminDTO:adminDTOList){
-                        if(adminDTO.getEmail().equals(emailView.getText().toString())){
+                        boolean isFound = false;
 
-                            isFound = true;
+                        for (AdminDTO adminDTO : adminDTOList) {
+                            if (adminDTO.getEmail().equals(emailView.getText().toString())) {
 
-                            Toast.makeText(v.getContext(),R.string.already_registered_admin,Toast.LENGTH_SHORT).show();
-                            break;
+                                isFound = true;
+
+                                Toast.makeText(v.getContext(), R.string.already_registered_admin, Toast.LENGTH_SHORT).show();
+                                break;
+                            }
                         }
-                    }
-                    if(!isFound){
+                        if (!isFound) {
 
-                        if(adminHashMap.get("email").toString().equals(emailView.getText().toString())){
-                            Toast.makeText(v.getContext(),R.string.already_registered_admin,Toast.LENGTH_SHORT).show();
-                        }else{
-                            addNewAdmin(v,emailView.getText().toString());
+                            if (adminHashMap.get("email").toString().equals(emailView.getText().toString())) {
+                                Toast.makeText(v.getContext(), R.string.already_registered_admin, Toast.LENGTH_SHORT).show();
+                            } else {
+                                addNewAdmin(view, emailView.getText().toString(),nameView.getText().toString());
+                            }
+
                         }
 
+                    } else {
+                        Toast.makeText(v.getContext(), R.string.enter_new_admin_email, Toast.LENGTH_SHORT).show();
                     }
-
                 }else{
-                    Toast.makeText(v.getContext(),R.string.enter_new_admin_email,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(v.getContext(), R.string.enter_new_admin_name, Toast.LENGTH_SHORT).show();
                 }
 
             }
         });
     }
 
-    private void addNewAdmin(View view, String newAdminEmail) {
+    private void addNewAdmin(View view, String newAdminEmail, String name) {
 
-        Map<String,Object> newAdminMap = new HashMap<>();
-        newAdminMap.put("id","Waiting To Login");
-        newAdminMap.put("name","Waiting To Login");
-        newAdminMap.put("email",newAdminEmail);
-        newAdminMap.put("profileImage","");
+        Map<String, Object> newAdminMap = new HashMap<>();
+        newAdminMap.put("name", name);
+        newAdminMap.put("email", newAdminEmail);
+        newAdminMap.put("profileImage", "");
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("admin")
-                .add(newAdminMap)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                .document(newAdminEmail) // ✅ Setting the email as document ID
+                .set(newAdminMap) // ✅ Use 'set()' instead of 'add()'
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onSuccess(DocumentReference documentReference) {
+                    public void onSuccess(Void unused) {
 
                         AdminDTO adminDTO = new AdminDTO();
-                        adminDTO.setId("Waiting To Login");
-                        adminDTO.setName("Waiting To Login");
+                        adminDTO.setName(name);
                         adminDTO.setProfileImage("");
                         adminDTO.setEmail(newAdminEmail);
 
                         adminDTOList.add(adminDTO);
 
-                        RecyclerView recyclerView = view.findViewById(R.id.adminRecyclerView);
-                        recyclerView.getAdapter().notifyDataSetChanged();
+//                        RecyclerView recyclerView = view.findViewById(R.id.adminRecyclerView);
+                        if(recyclerView.getAdapter()==null){
+                            recyclerView.setAdapter(new AdminRecyclerViewAdapter(adminDTOList, recyclerView));
+                            recyclerView.getAdapter().notifyDataSetChanged();
+                        }else{
+                            recyclerView.getAdapter().notifyDataSetChanged();
+                        }
 
-                        Toast.makeText(view.getContext(),R.string.admin_adding_success,Toast.LENGTH_SHORT).show();
+                        TextInputEditText emailView = view.findViewById(R.id.newAdminEmailAddress);
+                        TextInputEditText nameView = view.findViewById(R.id.newAdminName);
+                        emailView.setText("");
+                        nameView.setText("");
+
+                        Toast.makeText(view.getContext(), R.string.admin_adding_success, Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(view.getContext(),R.string.admin_adding_failed,Toast.LENGTH_SHORT).show();
+                        Toast.makeText(view.getContext(), R.string.admin_adding_failed, Toast.LENGTH_SHORT).show();
                     }
                 });
-
     }
+
 }

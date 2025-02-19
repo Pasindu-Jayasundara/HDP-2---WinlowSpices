@@ -86,8 +86,8 @@
     <string name="add_admin">Add New Admin</string>
     <string name="admin_title">Admin</string>
     <string name="no_admin">No Admin</string>
-    <string name="admin_delete_failed">Admin Removed</string>
-    <string name="admin_delete_success">Admin Remove Failed</string>
+    <string name="admin_delete_failed">Admin Remove Failed</string>
+    <string name="admin_delete_success">Admin Remove Success</string>
     <string name="delete_admin_msg">Are You Sure You Want To Remove This Admin ?</string>
     <string name="delete_admin_title">Remove Admin</string>
     <string name="new_admin_email">Email Address</string>
@@ -95,6 +95,8 @@
     <string name="already_registered_admin">Already Registered Admin</string>
     <string name="admin_adding_failed">Admin Registration Success</string>
     <string name="admin_adding_success">Admin Registration Failed</string>
+    <string name="name">Name</string>
+    <string name="enter_new_admin_name">Enter New Admin Name</string>
 
     <!--  dashboard  -->
     <string name="sales_and_revenue_title">Sales and Revenue</string>
@@ -114,6 +116,7 @@
     <string name="not_registered">You Are Not Registered as a Admin</string>
     <string name="login_failed">Login Failed</string>
     <string name="something_went_wrong">Something Went Wrong</string>
+    <string name="wait">Please Wait ...</string>
 
     <!--  user  -->
     <string name="call">Call</string>

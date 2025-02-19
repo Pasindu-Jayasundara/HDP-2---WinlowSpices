@@ -14,7 +14,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.winloadmin.MainActivity;
 import com.example.winloadmin.R;
 import com.example.winloadmin.dto.AdminDTO;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -22,14 +21,15 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
-import java.util.Map;
 
 public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<AdminRecyclerViewAdapter.AdminRecyclerViewHolder>{
 
     List<AdminDTO> adminDTOList;
+    RecyclerView recyclerView;
 
-    public AdminRecyclerViewAdapter(List<AdminDTO> adminDTOList) {
+    public AdminRecyclerViewAdapter(List<AdminDTO> adminDTOList, RecyclerView recyclerView) {
         this.adminDTOList = adminDTOList;
+        this.recyclerView = recyclerView;
     }
 
     @NonNull
@@ -81,7 +81,7 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<AdminRecycler
     private void deleteAdmin(AdminDTO adminDTO, View view) {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("admin").document(adminDTO.getId())
+        db.collection("admin").document(adminDTO.getEmail())
                 .delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -89,8 +89,12 @@ public class AdminRecyclerViewAdapter extends RecyclerView.Adapter<AdminRecycler
 
                         adminDTOList.remove(adminDTO);
 
-                        RecyclerView recyclerView = view.findViewById(R.id.adminRecyclerView);
-                        recyclerView.getAdapter().notifyDataSetChanged();
+                        if(recyclerView.getAdapter()==null){
+                            recyclerView.setAdapter(new AdminRecyclerViewAdapter(adminDTOList, recyclerView));
+                            recyclerView.getAdapter().notifyDataSetChanged();
+                        }else{
+                            recyclerView.getAdapter().notifyDataSetChanged();
+                        }
 
                         Toast.makeText(view.getContext(),R.string.admin_delete_success,Toast.LENGTH_SHORT).show();
 
