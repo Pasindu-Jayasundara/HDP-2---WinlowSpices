@@ -93,6 +93,8 @@ public class AddNewAddressActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
         ImageButton back = findViewById(R.id.imageButton14);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -201,8 +203,16 @@ public class AddNewAddressActivity extends AppCompatActivity {
                     myLocation(googleMap);
                 }else{
                     String[] permissionArray = {android.Manifest.permission.ACCESS_FINE_LOCATION,android.Manifest.permission.ACCESS_COARSE_LOCATION};
-                    requestPermissions(permissionArray,1);
+                    ActivityCompat.requestPermissions(AddNewAddressActivity.this, permissionArray,1);
                 }
+
+//                LatLng latLng = new LatLng(6.930053224303333, 79.84787284365264);
+//                googleMap.animateCamera(
+//                        CameraUpdateFactory.newCameraPosition(
+//                                new CameraPosition.Builder().target(latLng).zoom(15).build()
+//                        )
+//                );
+
                 googleMap.getUiSettings().setZoomControlsEnabled(true);
                 googleMap.getUiSettings().setZoomGesturesEnabled(true);
                 googleMap.getUiSettings().setScrollGesturesEnabledDuringRotateOrZoom(true);

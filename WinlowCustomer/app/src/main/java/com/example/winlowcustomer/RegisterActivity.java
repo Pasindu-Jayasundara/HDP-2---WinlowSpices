@@ -30,6 +30,7 @@ import com.example.winlowcustomer.modal.SendOtp;
 import com.example.winlowcustomer.modal.SetUpLanguage;
 import com.example.winlowcustomer.modal.Verify;
 import com.example.winlowcustomer.modal.callback.IsNewUserCallback;
+import com.example.winlowcustomer.modal.callback.LoginCallback;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -259,27 +260,33 @@ public class RegisterActivity extends AppCompatActivity {
 
                         // store user in sqlite
                         SQLiteHelper sqLiteHelper = new SQLiteHelper(RegisterActivity.this, "winlow.db", null, 1);
-                        sqLiteHelper.insertSingleUser(sqLiteHelper, docId, userDTO.getName(), userDTO.getMobile(), userDTO.getEmail(),null);
+                        sqLiteHelper.insertSingleUser(sqLiteHelper, docId, userDTO.getName(), userDTO.getMobile(), userDTO.getEmail(), null);
 
                         // store user in shared preferences
-                        CartOperations.isLoggedIn(getApplicationContext());
+                        CartOperations.isLoggedIn(getApplicationContext(), new LoginCallback() {
+                            @Override
+                            public void onLogin(boolean isSuccess) {
 
-                        Intent reIntent = getIntent();
-                        if (reIntent.hasExtra("fromCart")) {
+                                Intent reIntent = getIntent();
+                                if (reIntent.hasExtra("fromCart")) {
 
-                            reIntent.removeExtra("fromCart");
+                                    reIntent.removeExtra("fromCart");
 
-                            Intent intent = new Intent(RegisterActivity.this, ProductViewActivity.class);
-                            startActivity(intent);
+                                    Intent intent = new Intent(RegisterActivity.this, ProductViewActivity.class);
+                                    startActivity(intent);
 
-                            finish();
+                                    finish();
 
-                        } else {
-                            Intent intent = new Intent(RegisterActivity.this, HomeActivity.class);
-                            startActivity(intent);
+                                } else {
+                                    Intent intent = new Intent(RegisterActivity.this, HomeActivity.class);
+                                    startActivity(intent);
 
-                            finish();
-                        }
+                                    finish();
+                                }
+
+
+                            }
+                        });
 
                     }
                 })

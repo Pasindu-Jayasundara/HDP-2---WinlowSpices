@@ -34,7 +34,9 @@ import com.example.winlowcustomer.modal.CartOperations;
 import com.example.winlowcustomer.modal.CartRecyclerViewAdapter;
 import com.example.winlowcustomer.modal.Payhere;
 import com.example.winlowcustomer.modal.SetUpLanguage;
+import com.example.winlowcustomer.modal.callback.ConvertToFirebaseCallback;
 import com.example.winlowcustomer.modal.callback.GetAddressCallback;
+import com.example.winlowcustomer.modal.callback.LoginCallback;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
@@ -76,6 +78,11 @@ public class CheckoutActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainerView9, BottomNavigationFragment.class, null)
+                .setReorderingAllowed(true)
+                .commit();
+
         SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data",MODE_PRIVATE);
         String userJson = sharedPreferences.getString("user", null);
 
@@ -106,6 +113,15 @@ public class CheckoutActivity extends AppCompatActivity {
         // load Address
         Spinner spinner = findViewById(R.id.spinner2);
         Button addAddressBtn = findViewById(R.id.button19);
+        addAddressBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(CheckoutActivity.this,AddressActivity.class);
+                startActivity(intent);
+
+            }
+        });
 
         loadAddress(getApplicationContext(), new GetAddressCallback() {
             @Override
@@ -206,8 +222,14 @@ public class CheckoutActivity extends AppCompatActivity {
                         Log.d("paymentpayhere", msg);
 
                         Toast.makeText(CheckoutActivity.this, R.string.payment_success, Toast.LENGTH_SHORT).show();
-                        Map<String, Object> map = convertToFirebase("Online");
-                        addToFirebase(map);
+                        convertToFirebase("Online", new ConvertToFirebaseCallback() {
+                            @Override
+                            public void onConvert(boolean isSuccess, Map<String, Object> map) {
+                                if(isSuccess){
+                                    addToFirebase(map);
+                                }
+                            }
+                        });
 
                     }else{
                         msg = "Failed:" + response.getData().toString();
@@ -236,38 +258,42 @@ public class CheckoutActivity extends AppCompatActivity {
         }
     }
 
-    private Map<String, Object> convertToFirebase(String paymentMethod) {
+    private void convertToFirebase(String paymentMethod, ConvertToFirebaseCallback convertToFirebaseCallback) {
 
         Map<String,Object> map = new HashMap<>();
 
-        boolean loggedIn = CartOperations.isLoggedIn(getApplicationContext());
+        CartOperations.isLoggedIn(getApplicationContext(), new LoginCallback() {
+            @Override
+            public void onLogin(boolean isSuccess) {
 
-        if (loggedIn) {
+                if(isSuccess){
 
-            // if not in cart add to order
-            // if in cart add to cart increase qty
+                    SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data",MODE_PRIVATE);
+                    String userTxt = sharedPreferences.getString("user", null);
+                    if (userTxt != null) {
 
-            SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data",MODE_PRIVATE);
-            String userTxt = sharedPreferences.getString("user", null);
-            if (userTxt != null) {
+                        Gson gson = new Gson();
+                        UserDTO userDTO = gson.fromJson(userTxt, UserDTO.class);
 
-                Gson gson = new Gson();
-                UserDTO userDTO = gson.fromJson(userTxt, UserDTO.class);
+                        map.put("user_id",userDTO.getId());
+                        map.put("order_list",paymentData.get("items"));
+                        map.put("payment_method",paymentMethod);
+                        map.put("date_time",System.currentTimeMillis());
+                        map.put("order_status","Pending");
+                        map.put("order_id",paymentData.get("orderId"));
 
-                map.put("user_id",userDTO.getId());
-                map.put("order_list",paymentData.get("items"));
-                map.put("payment_method",paymentMethod);
-                map.put("date_time",System.currentTimeMillis());
-                map.put("order_status","Pending");
-                map.put("order_id",paymentData.get("orderId"));
+                        convertToFirebaseCallback.onConvert(true,map);
+
+                    }
+
+                }else{
+                    convertToFirebaseCallback.onConvert(false,null);
+
+                    Toast.makeText(getApplicationContext(), R.string.not_logged_in, Toast.LENGTH_SHORT).show();
+                }
 
             }
-
-        } else {
-            Toast.makeText(getApplicationContext(), R.string.not_logged_in, Toast.LENGTH_SHORT).show();
-        }
-
-        return map;
+        });
 
     }
 
@@ -442,12 +468,20 @@ public class CheckoutActivity extends AppCompatActivity {
             Payhere.pay(paymentData,CheckoutActivity.this);
         }else{
 
-            Map<String, Object> map = convertToFirebase("Cash On Delivery");
-            addToFirebase(map);
+            convertToFirebase("Cash On Delivery", new ConvertToFirebaseCallback() {
+                @Override
+                public void onConvert(boolean isSuccess, Map<String, Object> map) {
 
-            Intent intent = new Intent(CheckoutActivity.this, OrderSuccessActivity.class);
-            startActivity(intent);
-            finish();
+                    if(isSuccess){
+                        addToFirebase(map);
+                    }
+
+                }
+            });
+
+//            Intent intent = new Intent(CheckoutActivity.this, OrderSuccessActivity.class);
+//            startActivity(intent);
+//            finish();
 
         }
 

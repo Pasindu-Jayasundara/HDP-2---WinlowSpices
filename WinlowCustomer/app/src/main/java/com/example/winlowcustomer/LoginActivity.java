@@ -33,6 +33,7 @@ import com.example.winlowcustomer.modal.SetUpLanguage;
 import com.example.winlowcustomer.modal.Verify;
 import com.example.winlowcustomer.modal.callback.GetDataCallback;
 import com.example.winlowcustomer.modal.callback.IsNewUserCallback;
+import com.example.winlowcustomer.modal.callback.LoginCallback;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
@@ -151,18 +152,17 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void otpMatched(String stringMobileNumber) {
-//        Log.i("otpMatched", "aaaaaaaaaaaa");
 
         isNewUser(stringMobileNumber, new IsNewUserCallback() {
             @Override
             public void onResult(boolean isNew) {
 
                 if (!isNew) {
-//                    Log.i("otpMatched", "bbbbbbbbbbbbbbbbbbb");
 
                     Toast.makeText(getApplicationContext(), R.string.login_success, Toast.LENGTH_LONG).show();
 
                     Intent receivedIntent = getIntent();
+
                     String fromCart = receivedIntent.getStringExtra("fromCart");
                     if(fromCart != null){
                         String productDTO = receivedIntent.getStringExtra("productDTO");
@@ -191,21 +191,24 @@ public class LoginActivity extends AppCompatActivity {
                             startActivity(intent);
                         }
                     }else{
-                        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-                        startActivity(intent);
-                    }
-                    if(receivedIntent.hasExtra("back")){
-                        String back = receivedIntent.getStringExtra("back");
-                        if(back.equals("cart")){
-                            receivedIntent.removeExtra("back");
-                            Intent intent = new Intent(LoginActivity.this, CartActivity.class);
+
+                        if(receivedIntent.hasExtra("back")){
+                            String back = receivedIntent.getStringExtra("back");
+                            if(back.equals("cart")){
+                                receivedIntent.removeExtra("back");
+                                Intent intent = new Intent(LoginActivity.this, CartActivity.class);
+                                startActivity(intent);
+                            }
+                            if(back.equals("order")){
+                                receivedIntent.removeExtra("back");
+                                Intent intent = new Intent(LoginActivity.this, OrderHistoryActivity.class);
+                                startActivity(intent);
+                            }
+                        }else{
+                            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                             startActivity(intent);
                         }
-                        if(back.equals("order")){
-                            receivedIntent.removeExtra("back");
-                            Intent intent = new Intent(LoginActivity.this, OrderHistoryActivity.class);
-                            startActivity(intent);
-                        }
+
                     }
 
                 }else{
@@ -218,7 +221,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void isNewUser(String mobile, IsNewUserCallback isNewUserCallback) {
-//        Log.i("otpMatched", "xxxxxxxxx");
 
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
         firestore.collection("user")
@@ -227,11 +229,10 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                        Log.i("otpMatched", "zzzzzzzzzzz");
+
                         boolean isNew = true;
                         if (task.isSuccessful() && !task.getResult().getDocuments().isEmpty()) {
                             isNew = false;
-//                            Log.i("otpMatched", "mmmmmmmmmmmmmm");
 
                             List<DocumentSnapshot> documents = task.getResult().getDocuments();
 
@@ -246,32 +247,44 @@ public class LoginActivity extends AppCompatActivity {
                                 SQLiteHelper sqLiteHelper = new SQLiteHelper(getApplicationContext(), "winlow.db", null, 1);
                                 sqLiteHelper.insertSingleUser(sqLiteHelper, id, name, mobile, email, profile_image);
 
+                                Log.i("CartOperations", "isLoggedIn: 2 abc");
+
                                 // store user in shared preferences
-                                CartOperations.isLoggedIn(getApplicationContext());
+                                CartOperations.isLoggedIn(getApplicationContext(), new LoginCallback() {
+                                    @Override
+                                    public void onLogin(boolean isSuccess) {
 
-                                // store order list
-                                SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
-                                String userJson = sharedPreferences.getString("user",null);
-                                if(userJson!=null){
+                                        if(isSuccess){
 
-                                    UserDTO userDTO = new Gson().fromJson(userJson, UserDTO.class);
-                                    List<String> orderHistoryList = userDTO.getOrderHistory();
+                                            // store order list
+                                            SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
+                                            String userJson = sharedPreferences.getString("user",null);
+                                            if(userJson!=null){
 
-                                    // order history
-                                    List<String> orderHistory = (List<String>) documentSnapshot.get("order_history");
-                                    orderHistoryList.addAll(orderHistory);
+                                                UserDTO userDTO = new Gson().fromJson(userJson, UserDTO.class);
+                                                List<String> orderHistoryList = userDTO.getOrderHistory();
 
-                                    userDTO.setOrderHistory(orderHistoryList);
-                                    userDTO.setProfile_image(profile_image);
+                                                // order history
+                                                List<String> orderHistory = (List<String>) documentSnapshot.get("order_history");
+                                                orderHistoryList.addAll(orderHistory);
 
-                                    sharedPreferences.edit().putString("user",new Gson().toJson(userDTO)).apply();
+                                                userDTO.setOrderHistory(orderHistoryList);
+                                                userDTO.setProfile_image(profile_image);
 
-                                }
+                                                sharedPreferences.edit().putString("user",new Gson().toJson(userDTO)).apply();
+
+                                            }
+
+                                        }else{
+
+                                        }
+
+                                    }
+                                });
+                                Log.i("CartOperations", "isLoggedIn: 2 def");
 
 
                             }
-
-//                            isNew[1] = false;
 
                         }
 

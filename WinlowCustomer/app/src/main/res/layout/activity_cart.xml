@@ -97,6 +97,14 @@
         android:text="@string/cart_btn_txt"
         android:textSize="18sp"
         app:cornerRadius="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/fragmentContainerView10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView10"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

@@ -73,15 +73,9 @@ public class HomeActivity extends AppCompatActivity {
             return insets;
         });
 
-//        setAppLanguage(getApplicationContext());
         if (language != null) {
             setAppLanguage(HomeActivity.this, language);
         }
-//        if(!once){
-//            once = true;
-//            finish();
-//            startActivity(getIntent());
-//        }
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
@@ -202,9 +196,6 @@ public class HomeActivity extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
         loadProfileImage(sharedPreferences);
-
-//            SetUpLanguage.setAppLanguage(HomeActivity.this, language);
-
     }
 
     private void loadProfileImage(SharedPreferences sharedPreferences) {

@@ -70,6 +70,11 @@ public class CartActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainerView10, BottomNavigationFragment.class, null)
+                .setReorderingAllowed(true)
+                .commit();
+
         // back
         ImageButton back = findViewById(R.id.imageButton2);
         back.setOnClickListener(new View.OnClickListener() {
@@ -88,7 +93,9 @@ public class CartActivity extends AppCompatActivity {
 
         // hide checkout part
         TableLayout tableLayout = findViewById(R.id.tableLayout);
-        hideCheckout(tableLayout);
+        Button checkoutButton = findViewById(R.id.button4);
+
+        hideCheckout(tableLayout,checkoutButton);
 
         // load cart list
         loadCartList(userDTO);
@@ -96,7 +103,6 @@ public class CartActivity extends AppCompatActivity {
         totalPriceView = findViewById(R.id.textView12);
 
         // checkout
-        Button checkoutButton = findViewById(R.id.button4);
         checkoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,7 +133,8 @@ public class CartActivity extends AppCompatActivity {
 
         // hide checkout part
         TableLayout tableLayout = findViewById(R.id.tableLayout);
-        hideCheckout(tableLayout);
+        Button btn = findViewById(R.id.button4);
+        hideCheckout(tableLayout,btn);
 
         // load cart list
         loadCartList(userDTO);
@@ -272,9 +279,10 @@ public class CartActivity extends AppCompatActivity {
 
     }
 
-    public static void hideCheckout(TableLayout tableLayout) {
+    public static void hideCheckout(TableLayout tableLayout,Button checkoutBtn) {
         if (tableLayout != null) {
             tableLayout.setVisibility(View.GONE);
+            checkoutBtn.setVisibility(View.GONE);
         }
     }
 

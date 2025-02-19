@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -131,9 +132,10 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
 
                 CartActivity cartActivity = (CartActivity) holder.itemView.getContext();
                 TableLayout tableLayout = cartActivity.findViewById(R.id.tableLayout);
+                Button btn = cartActivity.findViewById(R.id.button4);
 
                 if (checkoutProductList.isEmpty()) {
-                    CartActivity.hideCheckout(tableLayout);  // Hide if empty
+                    CartActivity.hideCheckout(tableLayout,btn);  // Hide if empty
                 } else {
                     CartActivity.showChekout(tableLayout);  // Show if there are items
                 }
