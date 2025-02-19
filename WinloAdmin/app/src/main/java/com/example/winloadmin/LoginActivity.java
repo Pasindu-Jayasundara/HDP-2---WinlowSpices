@@ -1,6 +1,7 @@
 package com.example.winloadmin;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -108,10 +109,17 @@ public class LoginActivity extends AppCompatActivity {
         if(user!= null){
             goToMainActivity();
         }else{
-            if(firebaseAuth.getCurrentUser()!=null){
-                firebaseAuth.signOut();
-                googleSignInClient.signOut();
+
+            FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+            if (currentUser != null) {
+                user = currentUser;
+                goToMainActivity();
             }
+
+//            if(firebaseAuth.getCurrentUser()!=null){
+//                firebaseAuth.signOut();
+//                googleSignInClient.signOut();
+//            }
         }
 
     }
@@ -143,22 +151,12 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-//        Log.i("abc",new Gson().toJson(data));
-
         if(requestCode == 1250){
-//            Log.i("abc",new Gson().toJson(data));
-
-//            if(resultCode != RESULT_OK){
-//                Toast.makeText(this,R.string.login_failed,Toast.LENGTH_SHORT).show();
-//                return;
-//            }
 
             Task<GoogleSignInAccount> googleSignInAccountTask = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
-//                Log.i("abc",new Gson().toJson(googleSignInAccountTask));
 
                 GoogleSignInAccount googleSignInAccount = googleSignInAccountTask.getResult(ApiException.class);
-//                Log.i("abc", "ID Token: " + googleSignInAccount.getIdToken());
 
                 checkInDB(googleSignInAccount.getIdToken());
 
@@ -182,7 +180,7 @@ public class LoginActivity extends AppCompatActivity {
                         FirebaseUser firebaseUser = authResult.getUser();
 //                Log.i("abc", "ID Token: " + new Gson().toJson(firebaseUser));
 
-//                        adminHashMap.put("id",firebaseUser.getUid());
+                        adminHashMap.put("id",firebaseUser.getUid());
                         adminHashMap.put("name",firebaseUser.getDisplayName());
                         adminHashMap.put("email",firebaseUser.getEmail());
                         adminHashMap.put("profileImage",firebaseUser.getPhotoUrl().toString());
@@ -248,6 +246,13 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
+
+                        SharedPreferences sharedPreferences = getSharedPreferences("com.example.winloadmin.data",MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                        editor.putString("admin",new Gson().toJson(adminHashMap));
+                        editor.apply();
+
                         goToMainActivity();
                     }
                 })
@@ -263,15 +268,52 @@ public class LoginActivity extends AppCompatActivity {
     private void goToMainActivity() {
 
         UserDTO userDTO = new UserDTO();
-        userDTO.setId(user.getUid());
-        userDTO.setName(user.getDisplayName());
-        userDTO.setEmail(user.getEmail());
-        userDTO.setPhoto_url(user.getPhotoUrl().toString());
 
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        intent.putExtra("user",new Gson().toJson(userDTO));
-        startActivity(intent);
-        finish();
+        if(adminHashMap.isEmpty()){
+            SharedPreferences sharedPreferences = getSharedPreferences("com.example.winloadmin.data",MODE_PRIVATE);
+            String admin = sharedPreferences.getString("admin", null);
+
+            if(admin != null){
+                adminHashMap = new Gson().fromJson(admin, HashMap.class);
+            }else{
+                return;
+            }
+
+        }
+
+        if(user == null){
+
+            SharedPreferences sharedPreferences = getSharedPreferences("com.example.winloadmin.data",MODE_PRIVATE);
+            String admin = sharedPreferences.getString("admin", null);
+
+            if(admin != null){
+                adminHashMap = new Gson().fromJson(admin, HashMap.class);
+
+                userDTO.setId(adminHashMap.get("id").toString());
+                userDTO.setName(adminHashMap.get("name").toString());
+                userDTO.setEmail(adminHashMap.get("email").toString());
+                userDTO.setPhoto_url(adminHashMap.get("profileImage").toString());
+
+            }
+
+        }else{
+
+            userDTO.setId(user.getUid());
+            userDTO.setName(user.getDisplayName());
+            userDTO.setEmail(user.getEmail());
+            userDTO.setPhoto_url(user.getPhotoUrl().toString());
+
+        }
+
+
+        if(user!=null && !adminHashMap.isEmpty()){
+
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            intent.putExtra("user",new Gson().toJson(userDTO));
+            startActivity(intent);
+            finish();
+
+        }
 
     }
 

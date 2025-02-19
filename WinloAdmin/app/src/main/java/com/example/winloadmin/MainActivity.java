@@ -5,6 +5,7 @@ import static android.view.Gravity.START;
 import static com.example.winloadmin.LoginActivity.adminHashMap;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -187,6 +188,11 @@ public class MainActivity extends AppCompatActivity {
                             new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build());
 
                     googleSignInClient.signOut().addOnCompleteListener(MainActivity.this, task -> {
+
+                        SharedPreferences sharedPreferences = getSharedPreferences("com.example.winloadmin.data",MODE_PRIVATE);
+                        sharedPreferences.edit().clear().apply();
+
+                        adminHashMap.clear();
 
                         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                         startActivity(intent);
