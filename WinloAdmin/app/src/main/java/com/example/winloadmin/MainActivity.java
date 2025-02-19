@@ -2,6 +2,8 @@ package com.example.winloadmin;
 
 import static android.view.Gravity.START;
 
+import static com.example.winloadmin.LoginActivity.adminHashMap;
+
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -41,6 +44,9 @@ import com.example.winloadmin.nav.DashboardFragment;
 import com.example.winloadmin.nav.OrderFragment;
 import com.example.winloadmin.nav.ProductFragment;
 import com.example.winloadmin.nav.UserFragment;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 
@@ -86,23 +92,34 @@ public class MainActivity extends AppCompatActivity {
 
         // menu
         DrawerLayout drawerLayout = findViewById(R.id.drawerLayout);
-
         NavigationView navigationView = findViewById(R.id.navigationView);
-        navigationView.inflateMenu(R.menu.navigation_menu);
+        View headerView = navigationView.getHeaderView(0);
+
+        ImageView imageView = headerView.findViewById(R.id.imageView15);
+        Glide.with(getApplicationContext())
+                .load(adminHashMap.get("profileImage").toString())
+                .circleCrop()
+                .placeholder(R.drawable.product_image)
+                .error(R.drawable.product_image)
+                .into(imageView);
+
+        TextView textView = headerView.findViewById(R.id.textView15);
+        textView.setText(adminHashMap.get("name").toString());
+
 
         // intent
-        Intent intent = getIntent();
-        if(intent.hasExtra("user")){
-            userDTO = new Gson().fromJson(intent.getStringExtra("user"), UserDTO.class);
-
-            ImageView profileImg = findViewById(R.id.imageView6);
-            Glide.with(this)
-                    .load(Uri.parse(userDTO.getPhoto_url()))
-                    .placeholder(AppCompatResources.getDrawable(this,R.drawable.user))
-                    .circleCrop()
-                    .error(AppCompatResources.getDrawable(this,R.drawable.user))
-                    .into(profileImg);
-        }
+//        Intent intent = getIntent();
+//        if (intent.hasExtra("user")) {
+//            userDTO = new Gson().fromJson(intent.getStringExtra("user"), UserDTO.class);
+//
+//            ImageView profileImg = findViewById(R.id.imageView6);
+//            Glide.with(this)
+//                    .load(Uri.parse(userDTO.getPhoto_url()))
+//                    .placeholder(AppCompatResources.getDrawable(this, R.drawable.user))
+//                    .circleCrop()
+//                    .error(AppCompatResources.getDrawable(this, R.drawable.user))
+//                    .into(profileImg);
+//        }
 
         // menu
         ImageView menu = findViewById(R.id.imageView7);
@@ -113,13 +130,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        TextView fragmentName = findViewById(R.id.textView55);
+
         // default select menu - dashboard
         navigationView.getMenu().getItem(0).setChecked(true);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frameLayout, new DashboardFragment(orderItemDTOList))
                 .setReorderingAllowed(true)
                 .commit();
-
+        fragmentName.setText(navigationView.getMenu().getItem(0).getTitle().toString());
         // change fragment
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -128,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Fragment fragment = null;
                 int index = 0;
+                fragmentName.setText(item.getTitle().toString());
 
                 if (item.getItemId() == R.id.productFragment) {
 
@@ -135,37 +155,46 @@ public class MainActivity extends AppCompatActivity {
                     index = 1;
 
                 }
-                if(item.getItemId() == R.id.dashboardFragment){
+                if (item.getItemId() == R.id.dashboardFragment) {
 
                     fragment = new DashboardFragment(orderItemDTOList);
                     index = 0;
 
                 }
-                if(item.getItemId() == R.id.orderFragment){
+                if (item.getItemId() == R.id.orderFragment) {
 
                     fragment = new OrderFragment(orderDTOList);
                     index = 2;
 
                 }
-                if(item.getItemId() == R.id.adminFragment) {
+                if (item.getItemId() == R.id.adminFragment) {
 
                     fragment = new AdminFragment();
                     index = 3;
                 }
-                if(item.getItemId() == R.id.userFragment) {
+                if (item.getItemId() == R.id.userFragment) {
 
                     fragment = new UserFragment();
                     index = 4;
                 }
-                if(item.getItemId() == R.id.bannerFragment) {
+                if (item.getItemId() == R.id.bannerFragment) {
 
                     fragment = new BannerFragment();
                     index = 5;
                 }
+                if (item.getItemId() == R.id.logout) {
+                    GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(MainActivity.this,
+                            new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build());
 
+                    googleSignInClient.signOut().addOnCompleteListener(MainActivity.this, task -> {
 
+                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                    });
+                }
 
-                if(fragment!=null){
+                if (fragment != null) {
 
                     item.setChecked(true);
                     navigationView.getMenu().getItem(index).setChecked(true);
