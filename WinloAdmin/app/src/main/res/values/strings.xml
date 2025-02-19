@@ -152,9 +152,10 @@
     <string name="banner_delete_failed">Banner Delete Failed</string>
     <string name="save_banner">Save Banner</string>
     <string name="select_banner">Select Banner</string>
-    <string name="banner_upload_failed">Banner Upload Success</string>
-    <string name="banner_upload_success">Banner Upload Failed</string>
+    <string name="banner_upload_failed">Banner Upload Failed</string>
+    <string name="banner_upload_success">Banner Upload Success</string>
     <string name="banner_title">Banner</string>
+    <string name="saving">Saving ...</string>
 
     <!--  authentication  -->
     <string name="default_web_client_id">441817025989-r4pm1824cc4tuqrhtlhrci9arerf77e9.apps.googleusercontent.com</string>

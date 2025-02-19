@@ -4,13 +4,23 @@ import java.io.Serializable;
 
 public class BannerDTO implements Serializable {
 
+    private String id;
     private String path;
 
-    public BannerDTO() {
+    public BannerDTO(String id, String path) {
+        this.id = id;
+        this.path = path;
     }
 
-    public BannerDTO(String path) {
-        this.path = path;
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public BannerDTO() {
     }
 
     public String getPath() {

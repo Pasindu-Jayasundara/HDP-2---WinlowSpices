@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
@@ -22,23 +23,33 @@ import android.widget.Toast;
 
 import com.example.winloadmin.R;
 import com.example.winloadmin.dto.BannerDTO;
+import com.example.winloadmin.model.BannerRecyclerViewAdapter;
 import com.example.winloadmin.model.callback.BannerDBUpdateCallback;
+import com.example.winloadmin.model.callback.BannerLoadCallback;
 import com.example.winloadmin.model.callback.BannerUploadCallback;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BannerFragment extends Fragment {
 
     String imageUrl;
     public static List<BannerDTO> bannerDTOList;
     AlertDialog alertDialog;
+    ImageView banner;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,6 +62,22 @@ public class BannerFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerView3);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        loadBanners(new BannerLoadCallback() {
+            @Override
+            public void onBannerLoad(boolean isSuccess, List<BannerDTO> bannerDTOList2) {
+                if (isSuccess) {
+
+                    bannerDTOList = bannerDTOList2;
+                    BannerRecyclerViewAdapter bannerRecyclerViewAdapter = new BannerRecyclerViewAdapter();
+                    recyclerView.setAdapter(bannerRecyclerViewAdapter);
+
+                }
+            }
+        });
 
         Button addNewBtn = view.findViewById(R.id.button19);
         addNewBtn.setOnClickListener(new View.OnClickListener() {
@@ -60,7 +87,7 @@ public class BannerFragment extends Fragment {
                 LayoutInflater layoutInflater = LayoutInflater.from(v.getContext());
                 View inflated = layoutInflater.inflate(R.layout.new_banner, v.findViewById(R.id.recyclerView3), false);
 
-                ImageView banner = inflated.findViewById(R.id.imageView11);
+                banner = inflated.findViewById(R.id.imageView11);
                 banner.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -75,31 +102,35 @@ public class BannerFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
 
-                        if(imageUrl == null){
+                        if (imageUrl == null) {
                             Toast.makeText(v.getContext(), R.string.select_banner, Toast.LENGTH_SHORT).show();
-                        }else{
+                        } else {
+
+                            btn.setText(R.string.saving);
+
                             uploadImage(new BannerUploadCallback() {
                                 @Override
                                 public void onBannerUpload(boolean isSuccess, String newImageUrl) {
 
-                                    if(isSuccess){
+                                    if (isSuccess) {
 
                                         BannerDTO bannerDTO = new BannerDTO();
-                                        bannerDTO.setPath(imageUrl);
-                                        bannerDTOList.add(0,bannerDTO);
+                                        bannerDTO.setPath(newImageUrl);
+                                        bannerDTO.setId(bannerDTOList.get(0).getId());
+                                        bannerDTOList.add(0, bannerDTO);
 
-                                        addToDB(bannerDTO,new BannerDBUpdateCallback(){
+                                        addToDB(bannerDTO, new BannerDBUpdateCallback() {
                                             @Override
                                             public void onBannerDBUpdate(boolean isSuccess) {
 
-                                                if(isSuccess){
+                                                if (isSuccess) {
 
-                                                    RecyclerView recyclerView = getActivity().findViewById(R.id.recyclerView3);
+                                                    RecyclerView recyclerView = view.findViewById(R.id.recyclerView3);
                                                     recyclerView.getAdapter().notifyItemInserted(0);
 
                                                     Toast.makeText(v.getContext(), R.string.banner_upload_success, Toast.LENGTH_SHORT).show();
 
-                                                }else{
+                                                } else {
                                                     deleteBanner();
                                                     Toast.makeText(v.getContext(), R.string.banner_upload_failed, Toast.LENGTH_SHORT).show();
                                                 }
@@ -109,7 +140,7 @@ public class BannerFragment extends Fragment {
                                             }
                                         });
 
-                                    }else{
+                                    } else {
                                         Toast.makeText(v.getContext(), R.string.banner_upload_failed, Toast.LENGTH_SHORT).show();
                                     }
 
@@ -128,6 +159,41 @@ public class BannerFragment extends Fragment {
 
     }
 
+    private void loadBanners(BannerLoadCallback bannerLoadCallback) {
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("banner").get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                        List<BannerDTO> bannerDTOs = new ArrayList<>();
+                        List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
+                        for (DocumentSnapshot documentSnapshot : documentSnapshots) {
+
+                            List<String> pathList = (List<String>) documentSnapshot.get("path");
+                            for (String path : pathList) {
+                                BannerDTO bannerDTO = new BannerDTO(documentSnapshot.getId(), path);
+                                bannerDTO.setPath(path);
+
+                                bannerDTOs.add(bannerDTO);
+
+                            }
+
+                        }
+
+                        bannerLoadCallback.onBannerLoad(true, bannerDTOs);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        bannerLoadCallback.onBannerLoad(false, null);
+                    }
+                });
+
+    }
+
     private void deleteBanner() {
 
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
@@ -142,10 +208,11 @@ public class BannerFragment extends Fragment {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("banner")
-                .add(bannerDTO)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                .document(bannerDTO.getId())
+                .update("path", FieldValue.arrayUnion(bannerDTO.getPath()))
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onSuccess(DocumentReference documentReference) {
+                    public void onSuccess(Void unused) {
                         bannerDBUpdateCallback.onBannerDBUpdate(true);
                     }
                 })
@@ -168,15 +235,15 @@ public class BannerFragment extends Fragment {
                 .addOnSuccessListener(taskSnapshot -> fileRef.getDownloadUrl()
                         .addOnSuccessListener(uri -> {
 
-                            bannerUploadCallback.onBannerUpload(true,uri.toString());
+                            bannerUploadCallback.onBannerUpload(true, uri.toString());
 
                         })
                         .addOnFailureListener(e -> {
-                            bannerUploadCallback.onBannerUpload(false,null);
+                            bannerUploadCallback.onBannerUpload(false, null);
                         })
                 )
                 .addOnFailureListener(e -> {
-                    bannerUploadCallback.onBannerUpload(false,null);
+                    bannerUploadCallback.onBannerUpload(false, null);
                 });
 
     }
@@ -202,8 +269,7 @@ public class BannerFragment extends Fragment {
 
             imageUrl = imageUri.toString();
 
-            ImageView imageView = getActivity().findViewById(R.id.imageView11);
-            imageView.setImageURI(imageUri);
+            banner.setImageURI(imageUri);
 
         }
 
