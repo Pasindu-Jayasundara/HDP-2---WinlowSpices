@@ -4,5 +4,5 @@ import com.example.winloadmin.dto.BannerDTO;
 
 public interface BannerDeleteCallback {
 
-    void onDelete(boolean isDeleted);
+    void onDelete(boolean isDeleted,String path);
 }

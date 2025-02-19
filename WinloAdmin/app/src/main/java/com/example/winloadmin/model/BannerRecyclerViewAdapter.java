@@ -18,9 +18,11 @@ import com.example.winloadmin.dto.BannerDTO;
 import com.example.winloadmin.model.callback.BannerDeleteCallback;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
 
 public class BannerRecyclerViewAdapter extends RecyclerView.Adapter<BannerRecyclerViewAdapter.BannerRecyclerViewHolder>{
 
@@ -38,6 +40,10 @@ public class BannerRecyclerViewAdapter extends RecyclerView.Adapter<BannerRecycl
     @Override
     public void onBindViewHolder(@NonNull BannerRecyclerViewHolder holder, int position) {
 
+        if (position <= 0 || position >= bannerDTOList.size()) {
+            return; // Prevent accessing an invalid index
+        }
+
         BannerDTO bannerDTO = bannerDTOList.get(position);
 
         Glide.with(holder.itemView.getContext())
@@ -52,10 +58,11 @@ public class BannerRecyclerViewAdapter extends RecyclerView.Adapter<BannerRecycl
 
                 removeFromDB(bannerDTO, new BannerDeleteCallback() {
                     @Override
-                    public void onDelete(boolean isDeleted) {
+                    public void onDelete(boolean isDeleted,String path) {
 
                         if(isDeleted){
 
+                            removeFromStorage(path);
                             bannerDTOList.remove(position);
                             notifyItemRemoved(position);
 
@@ -72,40 +79,29 @@ public class BannerRecyclerViewAdapter extends RecyclerView.Adapter<BannerRecycl
 
     }
 
+    private void removeFromStorage(String path) {
+
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        firebaseStorage.getReferenceFromUrl(path).delete();
+
+    }
+
     private void removeFromDB(BannerDTO bannerDTO, BannerDeleteCallback bannerDeleteCallback) {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("banner")
-                .where(Filter.equalTo("path",bannerDTO.getPath()))
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                .document(bannerDTO.getId()) // Get the document by ID
+                .update("path", FieldValue.arrayRemove(bannerDTO.getPath())) // Remove specific path
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
-                        db.collection("banner").document(queryDocumentSnapshots.getDocuments().get(0).getId()).delete()
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void unused) {
-
-                                        bannerDeleteCallback.onDelete(true);
-
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-
-                                        bannerDeleteCallback.onDelete(false);
-                                    }
-                                });
-
+                    public void onSuccess(Void unused) {
+                        bannerDeleteCallback.onDelete(true, bannerDTO.getPath());
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-
-                        bannerDeleteCallback.onDelete(false);
+                        bannerDeleteCallback.onDelete(false,null);
                     }
                 });
 

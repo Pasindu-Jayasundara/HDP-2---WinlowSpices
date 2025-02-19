@@ -50,6 +50,7 @@ public class BannerFragment extends Fragment {
     public static List<BannerDTO> bannerDTOList;
     AlertDialog alertDialog;
     ImageView banner;
+    String docId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -71,9 +72,13 @@ public class BannerFragment extends Fragment {
             public void onBannerLoad(boolean isSuccess, List<BannerDTO> bannerDTOList2) {
                 if (isSuccess) {
 
-                    bannerDTOList = bannerDTOList2;
-                    BannerRecyclerViewAdapter bannerRecyclerViewAdapter = new BannerRecyclerViewAdapter();
-                    recyclerView.setAdapter(bannerRecyclerViewAdapter);
+                    if(bannerDTOList2.isEmpty()){
+                        bannerDTOList = new ArrayList<>();
+                    }else{
+                        bannerDTOList = bannerDTOList2;
+                        BannerRecyclerViewAdapter bannerRecyclerViewAdapter = new BannerRecyclerViewAdapter();
+                        recyclerView.setAdapter(bannerRecyclerViewAdapter);
+                    }
 
                 }
             }
@@ -116,7 +121,7 @@ public class BannerFragment extends Fragment {
 
                                         BannerDTO bannerDTO = new BannerDTO();
                                         bannerDTO.setPath(newImageUrl);
-                                        bannerDTO.setId(bannerDTOList.get(0).getId());
+                                        bannerDTO.setId(docId);
                                         bannerDTOList.add(0, bannerDTO);
 
                                         addToDB(bannerDTO, new BannerDBUpdateCallback() {
@@ -126,7 +131,12 @@ public class BannerFragment extends Fragment {
                                                 if (isSuccess) {
 
                                                     RecyclerView recyclerView = view.findViewById(R.id.recyclerView3);
-                                                    recyclerView.getAdapter().notifyItemInserted(0);
+                                                    if(recyclerView.getAdapter()!=null){
+                                                        recyclerView.getAdapter().notifyItemInserted(0);
+                                                    }else{
+                                                        BannerRecyclerViewAdapter bannerRecyclerViewAdapter = new BannerRecyclerViewAdapter();
+                                                        recyclerView.setAdapter(bannerRecyclerViewAdapter);
+                                                    }
 
                                                     Toast.makeText(v.getContext(), R.string.banner_upload_success, Toast.LENGTH_SHORT).show();
 
@@ -170,6 +180,8 @@ public class BannerFragment extends Fragment {
                         List<BannerDTO> bannerDTOs = new ArrayList<>();
                         List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
                         for (DocumentSnapshot documentSnapshot : documentSnapshots) {
+
+                            docId = documentSnapshot.getId();
 
                             List<String> pathList = (List<String>) documentSnapshot.get("path");
                             for (String path : pathList) {
