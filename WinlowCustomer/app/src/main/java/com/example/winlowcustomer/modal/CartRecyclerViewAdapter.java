@@ -137,7 +137,7 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
                 if (checkoutProductList.isEmpty()) {
                     CartActivity.hideCheckout(tableLayout,btn);  // Hide if empty
                 } else {
-                    CartActivity.showChekout(tableLayout);  // Show if there are items
+                    CartActivity.showChekout(tableLayout,btn);  // Show if there are items
                 }
 
             }

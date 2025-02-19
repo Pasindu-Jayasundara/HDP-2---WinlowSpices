@@ -286,11 +286,11 @@ public class CartActivity extends AppCompatActivity {
         }
     }
 
-    public static void showChekout(TableLayout tableLayout) {
+    public static void showChekout(TableLayout tableLayout,Button checkoutBtn) {
         if (tableLayout != null) {
             tableLayout.setVisibility(View.VISIBLE);
+            checkoutBtn.setVisibility(View.VISIBLE);
             calculatePriceData(tableLayout);
-
         }
     }
 
