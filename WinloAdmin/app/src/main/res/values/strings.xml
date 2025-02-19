@@ -138,6 +138,14 @@
     <string name="end_call">End Call</string>
     <string name="user_title">User</string>
     <string name="choose_email_app">Choose an Email App :</string>
+    <string name="unable_to_get_activity_context">Unable to get Activity context</string>
+    <string name="sms_permission_denied">SMS permission denied</string>
+    <string name="sms_permission_granted">SMS permission granted</string>
+    <string name="call_permission_not_granted">Call permission not granted</string>
+    <string name="cannot_call">Ending call is restricted on newer Android versions</string>
+    <string name="permission_denied">Required permissions denied</string>
+    <string name="waiting">Waiting ...</string>
+    <string name="permission_granted">Permission Granted</string>
 
     <!--  banner  -->
     <string name="add_new_banner">Add New Banner</string>

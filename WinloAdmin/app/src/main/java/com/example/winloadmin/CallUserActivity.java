@@ -5,7 +5,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.telecom.TelecomManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.view.View;
@@ -20,6 +19,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -28,15 +28,17 @@ import com.bumptech.glide.Glide;
 
 public class CallUserActivity extends AppCompatActivity {
 
-    TelephonyManager telephonyManager;
-    PhoneStateListener phoneStateListener;
-    String mobile;
+    private TelephonyManager telephonyManager;
+    private PhoneStateListener phoneStateListener;
+    private String mobile;
+    private static final int PERMISSION_REQUEST_CODE = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_call_user);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -70,23 +72,18 @@ public class CallUserActivity extends AppCompatActivity {
                 .into(profileImageView);
 
         nameView.setText(name);
-        callStatusView.setText(R.string.rigging);
+        callStatusView.setText(R.string.waiting);
 
-        endCallBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                endCall();
-            }
-        });
+        endCallBtn.setOnClickListener(v -> endCall());
 
         telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+
         phoneStateListener = new PhoneStateListener() {
             @Override
             public void onCallStateChanged(int state, String phoneNumber) {
                 super.onCallStateChanged(state, phoneNumber);
 
                 switch (state) {
-
                     case TelephonyManager.CALL_STATE_RINGING:
                         callStatusView.setText(R.string.rigging);
                         break;
@@ -95,65 +92,84 @@ public class CallUserActivity extends AppCompatActivity {
                         break;
                     case TelephonyManager.CALL_STATE_IDLE:
                         callStatusView.setText(R.string.call_end);
-                        finish(); // Return to RecyclerView screen
+                        finish(); // Return to previous screen
                         break;
                 }
             }
         };
 
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
-            telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
-            makeCall();
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CALL_PHONE}, 1);
-        }
-
+        requestPermissionsIfNeeded();
     }
 
-    private void makeCall() {
+    private void requestPermissionsIfNeeded() {
+        String[] permissions = {
+                android.Manifest.permission.READ_PHONE_STATE,
+                android.Manifest.permission.CALL_PHONE
+        };
 
-        Intent intent = new Intent(Intent.ACTION_CALL);
-        intent.setData(Uri.parse("tel:" + mobile));
-        startActivity(intent);
-
-    }
-
-    private void endCall() {
-
-        TelecomManager telecomManager = (TelecomManager) getSystemService(TELECOM_SERVICE);
-        if (telecomManager != null) {
-            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ANSWER_PHONE_CALLS) == PackageManager.PERMISSION_GRANTED) {
-                telecomManager.endCall();
-            } else {
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ANSWER_PHONE_CALLS}, 2);
+        boolean allPermissionsGranted = true;
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                allPermissionsGranted = false;
+                break;
             }
         }
 
+        if (!allPermissionsGranted) {
+            ActivityCompat.requestPermissions(this, permissions, PERMISSION_REQUEST_CODE);
+        } else {
+            setupCallListener();
+            makeCall();
+        }
+    }
+
+    private void setupCallListener() {
+        if (telephonyManager != null) {
+            telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+        }
+    }
+
+    private void makeCall() {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+            Intent intent = new Intent(Intent.ACTION_CALL);
+            intent.setData(Uri.parse("tel:" + mobile));
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, R.string.call_permission_not_granted, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void endCall() {
+        Toast.makeText(this, R.string.cannot_call, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == 1) { // CALL_PHONE permission request
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        boolean allGranted = true;
+        for (int result : grantResults) {
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                allGranted = false;
+                break;
+            }
+        }
+
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (allGranted) {
+                setupCallListener();
                 makeCall();
             } else {
-                Toast.makeText(this, "Call permission denied", Toast.LENGTH_SHORT).show();
-            }
-        } else if (requestCode == 2) { // ANSWER_PHONE_CALLS permission request
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                endCall(); // Permission granted, end the call
-            } else {
-                Toast.makeText(this, "End call permission denied", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.permission_denied, Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
+        if (telephonyManager != null) {
+            telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
+        }
     }
 }

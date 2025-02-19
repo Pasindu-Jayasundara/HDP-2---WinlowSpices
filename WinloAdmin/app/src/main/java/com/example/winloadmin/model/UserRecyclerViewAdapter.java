@@ -27,6 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.winloadmin.CallUserActivity;
@@ -59,15 +60,21 @@ public class UserRecyclerViewAdapter extends RecyclerView.Adapter<UserRecyclerVi
         holder.callBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Activity activity = getActivityFromContext(v.getContext());
+                if (activity == null) {
+                    Toast.makeText(v.getContext(), R.string.unable_to_get_activity_context, Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-                Intent intent = new Intent(v.getContext(), CallUserActivity.class);
-                intent.putExtra("name",customerDTO.getName());
-                intent.putExtra("mobile",customerDTO.getMobile());
-                intent.putExtra("profileImage",customerDTO.getProfile_image());
-                v.getContext().startActivity(intent);
-
+                if (ContextCompat.checkSelfPermission(activity, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+                    makeCall(customerDTO.getMobile(), v.getContext());
+                } else {
+                    ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.CALL_PHONE}, 200);
+                }
             }
         });
+
+
 
         // message
         holder.messageBtn.setOnClickListener(new View.OnClickListener() {
@@ -89,7 +96,7 @@ public class UserRecyclerViewAdapter extends RecyclerView.Adapter<UserRecyclerVi
                 }
 
                 if (activity == null) {
-                    Toast.makeText(v1.getContext(), "Unable to get Activity context", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(v1.getContext(), R.string.unable_to_get_activity_context, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -151,6 +158,32 @@ public class UserRecyclerViewAdapter extends RecyclerView.Adapter<UserRecyclerVi
         });
 
     }
+
+
+    private void makeCall(String mobile, Context context) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+            Intent intent = new Intent(Intent.ACTION_CALL);
+            intent.setData(Uri.parse("tel:" + mobile));
+            context.startActivity(intent);
+        } else {
+            Toast.makeText(context, R.string.call_permission_not_granted, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private Activity getActivityFromContext(Context context) {
+        if (context instanceof Activity) {
+            return (Activity) context;
+        } else if (context instanceof ContextThemeWrapper) {
+            while (context instanceof ContextThemeWrapper) {
+                context = ((ContextThemeWrapper) context).getBaseContext();
+            }
+            if (context instanceof Activity) {
+                return (Activity) context;
+            }
+        }
+        return null;
+    }
+
 
     private void sendSms(View v1,CustomerDTO customerDTO) {
 

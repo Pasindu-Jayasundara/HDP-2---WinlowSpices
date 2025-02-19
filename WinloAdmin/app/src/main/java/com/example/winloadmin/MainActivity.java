@@ -190,11 +190,21 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == 100) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "SMS permission granted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.sms_permission_granted, Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this, "SMS permission denied", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.sms_permission_denied, Toast.LENGTH_SHORT).show();
             }
         }
+
+
+        if (requestCode == 200) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, R.string.permission_granted, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, R.string.permission_denied, Toast.LENGTH_SHORT).show();
+            }
+        }
+
     }
 
 }
