@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -56,6 +57,16 @@ public class OrderHistoryActivity extends AppCompatActivity {
                 .replace(R.id.fragmentContainerView8, BottomNavigationFragment.class,null)
                 .setReorderingAllowed(true)
                 .commit();
+
+        ImageButton bck = findViewById(R.id.imageButton21);
+        bck.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                getOnBackPressedDispatcher().onBackPressed();
+
+            }
+        });
 
         SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
         String userJson = sharedPreferences.getString("user", null);
