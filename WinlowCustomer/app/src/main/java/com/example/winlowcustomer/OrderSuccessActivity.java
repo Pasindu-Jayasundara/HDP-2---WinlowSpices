@@ -1,6 +1,6 @@
 package com.example.winlowcustomer;
 
-import static com.example.winlowcustomer.MainActivity.language;
+import static com.example.winlowcustomer.modal.CartRecyclerViewAdapter.checkoutProductList;
 import static com.example.winlowcustomer.modal.PdfOperations.generateReceiptPDF;
 import static com.example.winlowcustomer.modal.PdfOperations.shareReceipt;
 
@@ -20,7 +20,6 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.winlowcustomer.dto.CartDTO;
 import com.example.winlowcustomer.dto.UserDTO;
 import com.example.winlowcustomer.modal.PdfOperations;
-import com.example.winlowcustomer.modal.SetUpLanguage;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -44,8 +43,6 @@ public class OrderSuccessActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-//        SetUpLanguage.setAppLanguage(getApplicationContext());
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
@@ -71,7 +68,8 @@ public class OrderSuccessActivity extends AppCompatActivity {
         }.getType();
         List<Item> items = gson.fromJson(itemListJson, type);
 
-        String htmlReceipt = PdfOperations.generateReceiptHtml(userDTO.getName(),orderId,total);
+        String htmlReceipt = PdfOperations.generateReceiptHtml(userDTO.getName(),orderId,total,checkoutProductList);
+        checkoutProductList.clear();
 
         // download receipt
         Button downloadButton = findViewById(R.id.button21);

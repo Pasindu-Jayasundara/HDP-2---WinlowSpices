@@ -1,30 +1,20 @@
 package com.example.winlowcustomer.modal;
 
-import static androidx.core.content.ContextCompat.getString;
-import static androidx.core.content.ContextCompat.startActivity;
-
-import static com.example.winlowcustomer.modal.CartRecyclerViewAdapter.checkoutProductList;
+//import static com.example.winlowcustomer.modal.CartRecyclerViewAdapter.checkoutProductList;
 
 import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
 
 import com.example.winlowcustomer.R;
 import com.example.winlowcustomer.dto.CartDTO;
-import com.example.winlowcustomer.dto.CartWeightCategoryDTO;
 import com.example.winlowcustomer.dto.GetReceiptItems;
-import com.example.winlowcustomer.dto.ProductDTO;
 
-import android.os.Environment;
 import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
-import android.provider.MediaStore;
 import android.text.Html;
 import android.util.Log;
 import android.webkit.WebView;
@@ -41,18 +31,11 @@ import com.itextpdf.layout.element.Table;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.List;
-
-import lk.payhere.androidsdk.model.Item;
-
 public class PdfOperations {
-
+    static List<CartDTO> productList1;
     public static void printReceipt(String htmlContent,Activity activity) {
 
         WebView webView = new WebView(activity);
@@ -67,10 +50,10 @@ public class PdfOperations {
         });
     }
     
-    private static ArrayList<GetReceiptItems> getReceiptItems(){
+    private static ArrayList<GetReceiptItems> getReceiptItems(List<CartDTO> productList){
 
         ArrayList<GetReceiptItems> items = new ArrayList<>();
-        for(CartDTO cartDTO : checkoutProductList){
+        for(CartDTO cartDTO : productList){
 
             double totalWeightPrice = 0.0;
 
@@ -100,8 +83,9 @@ public class PdfOperations {
         
     }
 
-    public static String generateReceiptHtml(String customerName, String orderId, String total) {
+    public static String generateReceiptHtml(String customerName, String orderId, String total,List<CartDTO> productList) {
 
+        productList1 = productList;
         StringBuilder html = new StringBuilder();
         html.append("<html><body>");
         html.append("<h2>Purchase Receipt</h2>");
@@ -118,7 +102,7 @@ public class PdfOperations {
                     "<th>Price</th>" +
                 "</tr>");
 
-        ArrayList<GetReceiptItems> items = getReceiptItems();
+        ArrayList<GetReceiptItems> items = getReceiptItems(productList);
         
         for (GetReceiptItems item : items) {
 
@@ -202,7 +186,7 @@ public class PdfOperations {
             table.addCell("Quantity");
             table.addCell("Price");
 
-            ArrayList<GetReceiptItems> receiptItems = getReceiptItems();
+            ArrayList<GetReceiptItems> receiptItems = getReceiptItems(productList1);
             for (GetReceiptItems item : receiptItems) {
                 table.addCell(item.getId());
                 table.addCell(item.getName());

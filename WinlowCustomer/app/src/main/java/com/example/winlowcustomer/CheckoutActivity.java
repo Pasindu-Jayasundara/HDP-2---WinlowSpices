@@ -559,7 +559,7 @@ public class CheckoutActivity extends AppCompatActivity {
         paymentData.put("activity", CheckoutActivity.this);
         paymentData.put("requestId", 22620);
 
-        checkoutProductList.clear();
+//        checkoutProductList.clear();
 
         if (payOnline) {
             Log.i("purchase", "5");
