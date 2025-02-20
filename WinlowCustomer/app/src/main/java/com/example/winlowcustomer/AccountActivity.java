@@ -1,6 +1,7 @@
 package com.example.winlowcustomer;
 
 import static com.example.winlowcustomer.MainActivity.language;
+import static com.example.winlowcustomer.MainActivity.sqliteVersion;
 
 import android.app.ComponentCaller;
 import android.content.Intent;
@@ -26,6 +27,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.winlowcustomer.dto.UserDTO;
+import com.example.winlowcustomer.modal.AddressHandling;
+import com.example.winlowcustomer.modal.SQLiteHelper;
 import com.example.winlowcustomer.modal.SetUpLanguage;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -80,6 +83,8 @@ public class AccountActivity extends AppCompatActivity {
         String userJson = sharedPreferences.getString("user", null);
         Log.i("vta","3 :"+userJson);
 
+        ImageView img = findViewById(R.id.imageView4);
+
         if(userJson!=null){
             Log.i("vta","2 :"+userJson);
 
@@ -90,7 +95,6 @@ public class AccountActivity extends AppCompatActivity {
             textView14.setText(userDTO.getName());
 
             if(userDTO.getProfile_image()!=null){
-                ImageView img = findViewById(R.id.imageView4);
                 Glide.with(this)
                         .load(userDTO.getProfile_image())
                         .circleCrop()
@@ -122,7 +126,7 @@ public class AccountActivity extends AppCompatActivity {
 
         // profile address arrow
         Button profileAddressArrow = findViewById(R.id.imageButton9);
-        profileAddressCardView.setOnClickListener(new View.OnClickListener() {
+        profileAddressArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 gotoActivity(AddressActivity.class);
@@ -157,13 +161,60 @@ public class AccountActivity extends AppCompatActivity {
         });
 
         // img
-        ImageView profileImage = findViewById(R.id.imageView4);
-        profileImage.setOnClickListener(new View.OnClickListener() {
+//        ImageView profileImage = findViewById(R.id.imageView4);
+        img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openFileChooser();
             }
         });
+
+        // logout
+        CardView logoutView = findViewById(R.id.cardView50);
+        logoutView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logout();
+            }
+        });
+
+        Button logoutViewIcon = findViewById(R.id.imageButton51);
+        logoutViewIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logout();
+            }
+        });
+
+        Button logoutViewIcon2 = findViewById(R.id.imageButton52);
+        logoutViewIcon2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logout();
+            }
+        });
+
+    }
+
+    private void logout() {
+
+        SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
+        String user = sharedPreferences.getString("user", null);
+        if(user!=null){
+
+            UserDTO userDTO = new Gson().fromJson(user, UserDTO.class);
+            SQLiteHelper sqLiteHelper = new SQLiteHelper(getApplicationContext(), "winlow.db", null, sqliteVersion);
+            sqLiteHelper.removeUser(sqLiteHelper,userDTO.getId());
+        }
+
+        AddressHandling.clearAllAddress(getApplicationContext());
+
+        String language = sharedPreferences.getString("language", "en");
+
+        sharedPreferences.edit().clear().apply();
+        sharedPreferences.edit().putString("language",language).apply();
+        gotoActivity(MainActivity.class);
+        finish();
 
     }
 

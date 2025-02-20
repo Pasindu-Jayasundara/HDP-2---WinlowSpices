@@ -1,6 +1,6 @@
 package com.example.winlowcustomer;
 
-import static com.example.winlowcustomer.HomeActivity.productDTOArrayListOriginal;
+//import static com.example.winlowcustomer.HomeActivity.productDTOArrayListOriginal;
 import static com.example.winlowcustomer.MainActivity.language;
 import static com.example.winlowcustomer.modal.CartRecyclerViewAdapter.checkoutProductList;
 import static com.example.winlowcustomer.modal.SetUpLanguage.setAppLanguage;
@@ -45,7 +45,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.auth.User;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +55,7 @@ import java.util.Map;
 public class CartActivity extends AppCompatActivity {
 
     TextView totalPriceView;
+    ArrayList<ProductDTO> productDTOArrayListOriginal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +99,16 @@ public class CartActivity extends AppCompatActivity {
         Button checkoutButton = findViewById(R.id.button4);
 
         hideCheckout(tableLayout,checkoutButton);
+
+        String productDTOArrayListOriginalJson = sharedPreferences.getString("productDTOArrayListOriginal", null);
+        if(productDTOArrayListOriginalJson!=null){
+
+            Type type = new TypeToken<ArrayList<ProductDTO>>() {
+            }.getType();
+            productDTOArrayListOriginal = gson.fromJson(productDTOArrayListOriginalJson, type);
+        }else{
+            productDTOArrayListOriginal = new ArrayList<>();
+        }
 
         // load cart list
         Log.i("xxxxx","m"+new Gson().toJson(userDTO));
@@ -220,8 +233,10 @@ public class CartActivity extends AppCompatActivity {
                             // Set adapter
 
                             TableLayout tableLayout = findViewById(R.id.tableLayout);
-                            CartRecyclerViewAdapter cartRecyclerViewAdapter = new CartRecyclerViewAdapter(cartDTOList,userDTO,getApplicationContext(),tableLayout,CartActivity.this);
-                            recyclerView.setAdapter(cartRecyclerViewAdapter);
+                            if(!cartDTOList.isEmpty()){
+                                CartRecyclerViewAdapter cartRecyclerViewAdapter = new CartRecyclerViewAdapter(cartDTOList,userDTO,getApplicationContext(),tableLayout,CartActivity.this);
+                                recyclerView.setAdapter(cartRecyclerViewAdapter);
+                            }
 
                         } else {
                             Toast.makeText(CartActivity.this, R.string.cart_empty, Toast.LENGTH_SHORT).show();

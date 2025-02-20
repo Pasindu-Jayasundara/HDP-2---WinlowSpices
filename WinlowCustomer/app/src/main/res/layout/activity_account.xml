@@ -7,6 +7,39 @@
     android:layout_height="match_parent"
     tools:context=".AccountActivity">
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView50"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        app:cardBackgroundColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/fragmentContainerView4"
+        app:layout_constraintEnd_toEndOf="@+id/cardView5"
+        app:layout_constraintStart_toStartOf="@+id/cardView5">
+
+        <Button
+            android:id="@+id/imageButton51"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/transparent"
+            android:text="@string/logout"
+            android:textColor="@color/black_1"
+            app:cornerRadius="5dp"
+            app:icon="@drawable/logout"
+            app:iconGravity="start"
+            app:iconTint="@color/black" />
+
+        <Button
+            android:id="@+id/imageButton52"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:backgroundTint="@color/transparent"
+            app:iconGravity="end"
+            app:iconTint="#000000" />
+
+    </androidx.cardview.widget.CardView>
+
     <ImageView
         android:id="@+id/imageView18"
         android:layout_width="wrap_content"
@@ -118,8 +151,8 @@
             android:backgroundTint="@color/transparent"
             android:text="@string/profile_language"
             android:textColor="@color/black_1"
-            app:icon="@drawable/language"
             app:cornerRadius="5dp"
+            app:icon="@drawable/language"
             app:iconGravity="start"
             app:iconTint="@color/black" />
 

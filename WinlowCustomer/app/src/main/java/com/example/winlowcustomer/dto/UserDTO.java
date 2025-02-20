@@ -11,23 +11,23 @@ public class UserDTO implements Serializable {
     private String email;
     private String mobile;
     private String name;
-    private List<String> orderHistory;
-    private List<PaymentCardDTO> paymentCard;
+    private List<String> order_history;
+    private List<PaymentCardDTO> payment_card;
     private String profile_image;
 
     public UserDTO() {
     }
 
 //    List<String> cart,
-    public UserDTO(String id, List<String> address,  String email, String mobile, String name, List<String> orderHistory, List<PaymentCardDTO> paymentCard, String profile_image) {
+    public UserDTO(String id, List<String> address,  String email, String mobile, String name, List<String> order_history, List<PaymentCardDTO> payment_card, String profile_image) {
         this.id = id;
         this.address = address;
 //        this.cart = cart;
         this.email = email;
         this.mobile = mobile;
         this.name = name;
-        this.orderHistory = orderHistory;
-        this.paymentCard = paymentCard;
+        this.order_history = order_history;
+        this.payment_card = payment_card;
         this.profile_image = profile_image;
     }
 
@@ -88,18 +88,18 @@ public class UserDTO implements Serializable {
     }
 
     public List<String> getOrderHistory() {
-        return orderHistory;
+        return order_history;
     }
 
     public void setOrderHistory(List<String> orderHistory) {
-        this.orderHistory = orderHistory;
+        this.order_history = orderHistory;
     }
 
     public List<PaymentCardDTO> getPaymentCard() {
-        return paymentCard;
+        return payment_card;
     }
 
     public void setPaymentCard(List<PaymentCardDTO> paymentCard) {
-        this.paymentCard = paymentCard;
+        this.payment_card = paymentCard;
     }
 }

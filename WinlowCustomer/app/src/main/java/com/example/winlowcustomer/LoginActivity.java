@@ -173,25 +173,20 @@ public class LoginActivity extends AppCompatActivity {
 
                     Intent receivedIntent = getIntent();
 
-                    Log.i("xxxxx","111111111111111111111111");
 
                     String fromCart = receivedIntent.getStringExtra("fromCart");
                     if(fromCart != null){
                         String productDTO = receivedIntent.getStringExtra("productDTO");
-                        Log.i("xxxxx","2222222222222222222222");
 
                         Gson gson = new Gson();
                         Boolean b = gson.fromJson(fromCart, Boolean.class);
                         if (b) {
-                            Log.i("xxxxx","33333333333333333333");
 
                             receivedIntent.removeExtra("fromCart");
 
                             ProductDTO productDTO1 = gson.fromJson(productDTO, ProductDTO.class);
                             if (productDTO1 != null) {
-                                Log.i("xxxxx","44444444444444444444");
 
-//                                receivedIntent.removeExtra("productDTO");
                                 String weightHashMap = receivedIntent.getStringExtra("weightHashMap");
                                 HashMap<Double,Integer> weightMap = gson.fromJson(weightHashMap, HashMap.class);
 
@@ -302,21 +297,20 @@ public class LoginActivity extends AppCompatActivity {
 
                                                 if(isSuccess){
 
-                                                    Log.i("CartOperations", "isLoggedIn: 2 def"+ "userJson");
-
                                                     // store order list
                                                     SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
                                                     String userJson = sharedPreferences.getString("user",null);
                                                     if(userJson!=null){
-                                                        Log.i("CartOperations", "isLoggedIn: 2 def"+ userJson);
-
 
                                                         UserDTO userDTO = new Gson().fromJson(userJson, UserDTO.class);
                                                         List<String> orderHistoryList = userDTO.getOrderHistory();
 
                                                         // order history
                                                         List<String> orderHistory = (List<String>) documentSnapshot.get("order_history");
-                                                        orderHistoryList.addAll(orderHistory);
+//                                                        orderHistoryList.addAll(orderHistory);
+                                                        if (orderHistory != null) {
+                                                            orderHistoryList.addAll(orderHistory);
+                                                        }
 
                                                         userDTO.setOrderHistory(orderHistoryList);
                                                         userDTO.setProfile_image(profile_image);

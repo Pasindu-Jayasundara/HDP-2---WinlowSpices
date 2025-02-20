@@ -250,6 +250,8 @@ public class HomeActivity extends AppCompatActivity {
             productDTOArrayList = gson.fromJson(product, listType);
             productDTOArrayListOriginal = gson.fromJson(product, listType);
 
+            sharedPreferences.edit().putString("productDTOArrayListOriginal", gson.toJson(productDTOArrayListOriginal)).apply();
+
             RecyclerView recyclerView = findViewById(R.id.recyclerView2);
             GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2, RecyclerView.VERTICAL, false);
             recyclerView.setLayoutManager(gridLayoutManager);

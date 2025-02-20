@@ -143,29 +143,36 @@ public class CheckoutActivity extends AppCompatActivity {
             @Override
             public void onAddressLoaded(List<String> addressList) {
 
-                if (addressList.contains(getString(R.string.checkout_select_address))) {
-                    List<String> list = new ArrayList<>();
-                    list.add(getString(R.string.checkout_select_address));
-                    list.add(getString(R.string.select_address));
-                    addressList.removeAll(list);
-                }
-                if (addressList.isEmpty()) {
-                    addAddressBtn.setVisibility(View.VISIBLE);
-                    spinner.setVisibility(View.GONE);
-                } else {
-                    addAddressBtn.setVisibility(View.GONE);
-                    spinner.setVisibility(View.VISIBLE);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (addressList.contains(getString(R.string.checkout_select_address))) {
+                            List<String> list = new ArrayList<>();
+                            list.add(getString(R.string.checkout_select_address));
+                            list.add(getString(R.string.select_address));
+                            addressList.removeAll(list);
+                        }
+                        if (addressList.isEmpty()) {
+                            addAddressBtn.setVisibility(View.VISIBLE);
+                            spinner.setVisibility(View.GONE);
+                        } else {
+                            addAddressBtn.setVisibility(View.GONE);
+                            spinner.setVisibility(View.VISIBLE);
 
 
-                    // load spinner
-                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
-                            getApplicationContext(),
-                            R.layout.checkout_selected_address_layout,
-                            addressList
-                    );
-                    arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spinner.setAdapter(arrayAdapter);
-                }
+                            // load spinner
+                            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
+                                    getApplicationContext(),
+                                    R.layout.checkout_selected_address_layout,
+                                    addressList
+                            );
+                            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            spinner.setAdapter(arrayAdapter);
+                        }
+
+                    }
+                });
 
             }
         });
@@ -236,31 +243,43 @@ public class CheckoutActivity extends AppCompatActivity {
             @Override
             public void onAddressLoaded(List<String> addressList) {
 
-                Button addAddressBtn = findViewById(R.id.button19);
-                Spinner spinner = findViewById(R.id.spinner2);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
 
-                if (addressList.contains(getString(R.string.checkout_select_address))) {
-                    List<String> list = new ArrayList<>();
-                    list.add(getString(R.string.checkout_select_address));
-                    list.add(getString(R.string.select_address));
-                    addressList.removeAll(list);
-                }
-                if (addressList.isEmpty()) {
-                    addAddressBtn.setVisibility(View.VISIBLE);
-                    spinner.setVisibility(View.GONE);
-                } else {
-                    addAddressBtn.setVisibility(View.GONE);
-                    spinner.setVisibility(View.VISIBLE);
+                        Button addAddressBtn = findViewById(R.id.button19);
+                        Spinner spinner = findViewById(R.id.spinner2);
 
-                    // load spinner
-                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
-                            getApplicationContext(),
-                            R.layout.checkout_selected_address_layout,
-                            addressList
-                    );
-                    arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spinner.setAdapter(arrayAdapter);
-                }
+                        if (addressList.contains(getString(R.string.checkout_select_address))) {
+                            List<String> list = new ArrayList<>();
+                            list.add(getString(R.string.checkout_select_address));
+                            list.add(getString(R.string.select_address));
+                            addressList.removeAll(list);
+                        }
+                        if (addressList.isEmpty()) {
+                            addAddressBtn.setVisibility(View.VISIBLE);
+                            spinner.setVisibility(View.GONE);
+                        } else {
+                            addAddressBtn.setVisibility(View.GONE);
+                            spinner.setVisibility(View.VISIBLE);
+
+                            // load spinner
+                            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
+                                    getApplicationContext(),
+                                    R.layout.checkout_selected_address_layout,
+                                    addressList
+                            );
+                            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    spinner.setAdapter(arrayAdapter);
+                                }
+                            });
+                        }
+
+                    }
+                });
 
             }
         });
@@ -384,6 +403,10 @@ public class CheckoutActivity extends AppCompatActivity {
                                         Map<String, Object> ohMap = new HashMap<>();
 
                                         List<String> orderHistoryList = (List<String>) documentSnapshot.get("order_history");
+                                        if (orderHistoryList == null) {
+                                            orderHistoryList = new ArrayList<>();
+                                        }
+
                                         orderHistoryList.add(orderId);
                                         ohMap.put("order_history", orderHistoryList);
                                         Log.i("purchase", "10");

@@ -117,4 +117,19 @@ public class AddressHandling {
             getAddressCallback.onAddressLoaded(updatedAddresses);
         }).start();
     }
+
+    public static void clearAllAddress(Context context) {
+        File file = new File(getFilePath(context));
+        new Thread(() -> {
+            if (file.exists()) {
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, false))) {
+                    // Writing an empty file to clear all addresses
+                    writer.write("");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
 }

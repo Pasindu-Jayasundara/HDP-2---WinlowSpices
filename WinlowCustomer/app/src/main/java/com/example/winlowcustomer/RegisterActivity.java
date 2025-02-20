@@ -193,7 +193,8 @@ public class RegisterActivity extends AppCompatActivity {
                         RegisterActivity.step = 2;
 
                         if (otp == null) {
-                            otp = SendOtp.send(userDTO.getMobile());
+//                            otp = SendOtp.send(userDTO.getMobile());
+                            otp = "123456";
                         }
 
                         animateProgressBar(2);
@@ -249,6 +250,9 @@ public class RegisterActivity extends AppCompatActivity {
 
         String docId = firestore.collection("user").document().getId(); // Generate unique ID
         userDTO.setId(docId);
+        userDTO.setOrderHistory(new ArrayList<>());
+        userDTO.setAddress(new ArrayList<>());
+        userDTO.setPaymentCard(new ArrayList<>());
 
         firestore.collection("user")
                 .document(docId)
