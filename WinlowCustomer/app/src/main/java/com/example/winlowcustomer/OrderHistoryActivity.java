@@ -48,7 +48,6 @@ public class OrderHistoryActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-//        setAppLanguage(getApplicationContext());
 
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
@@ -92,14 +91,17 @@ public class OrderHistoryActivity extends AppCompatActivity {
                                             .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                                 @Override
                                                 public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
                                                     List<OrderHistoryDTO> orderHistoryDTOList = new ArrayList<>();
-                                                    for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+
+                                                    List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
+                                                    for (DocumentSnapshot document : documentSnapshots) {
                                                         OrderHistoryDTO orderHistoryDTO = document.toObject(OrderHistoryDTO.class);
                                                         orderHistoryDTOList.add(orderHistoryDTO);
                                                     }
 
                                                     RecyclerView recyclerView = findViewById(R.id.orderHistoryRecyclerView);
-                                                    recyclerView.setLayoutManager(new LinearLayoutManager(OrderHistoryActivity.this, RecyclerView.VERTICAL, false));
+                                                    recyclerView.setLayoutManager(new LinearLayoutManager(OrderHistoryActivity.this, LinearLayoutManager.VERTICAL, false));
                                                     recyclerView.setAdapter(new OrderHistoryRecyclerViewAdapter(orderHistoryDTOList,OrderHistoryActivity.this));
                                                 }
                                             })
