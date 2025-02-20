@@ -3,10 +3,13 @@ package com.example.winlowcustomer;
 import static com.example.winlowcustomer.MainActivity.language;
 import static com.example.winlowcustomer.modal.SetUpLanguage.setAppLanguage;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -26,6 +29,8 @@ import com.example.winlowcustomer.dto.BannerDTO;
 import com.example.winlowcustomer.dto.ProductDTO;
 import com.example.winlowcustomer.modal.HomeRecyclerViewAdapter;
 import com.example.winlowcustomer.modal.SetUpLanguage;
+import com.example.winlowcustomer.modal.Translate;
+import com.example.winlowcustomer.modal.callback.TranslationCallback;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
@@ -43,6 +48,7 @@ public class SearchProductActivity extends AppCompatActivity {
     ArrayList<ProductDTO> productDTOArrayList;
     ArrayList<ProductDTO> productDTOArrayListOriginal;
     HashSet<String> categoryHashSet;
+    final boolean[] isFirstTime = {true};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -203,7 +209,7 @@ public class SearchProductActivity extends AppCompatActivity {
 
             ChipGroup chipGroup = findViewById(R.id.chipGroup2);
 
-            new HomeActivity().loadCategories(categoryHashSet,chipGroup,this);
+            loadCategories(categoryHashSet,chipGroup,this);
         }
 
         if(product != null){
@@ -220,4 +226,87 @@ public class SearchProductActivity extends AppCompatActivity {
         recyclerView.setAdapter(homeRecyclerViewAdapter);
 
     }
+
+    public void loadCategories(HashSet<String> categoryHashSet, ChipGroup chipGroup, Activity activity) {
+        chipGroup.removeAllViews();
+
+        SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", Context.MODE_PRIVATE);
+        language = sharedPreferences.getString("language", "");
+
+        if (!language.equals("en")) {
+
+            for (String category : categoryHashSet) {
+                Translate.translateText(category, language, new TranslationCallback() {
+                    @Override
+                    public void onSuccess(String translatedText) {
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                loadCategory(translatedText, chipGroup, activity);
+                            }
+                        });
+
+                    }
+
+                    @Override
+                    public void onFailure(String errorMessage) {
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                loadCategory(category, chipGroup, activity);
+                            }
+                        });
+
+                    }
+                });
+            }
+
+        } else {
+            for (String category : categoryHashSet) {
+
+                Chip chip = new Chip(new ContextThemeWrapper(activity, com.mobven.progress.R.style.Widget_MaterialComponents_Chip_Filter));
+                chip.setText(category);
+                chip.setCheckable(true);
+                chip.setClickable(true);
+
+                chip.setId(View.generateViewId());
+
+                if (isFirstTime[0]) {
+                    chip.setChecked(true);
+                    isFirstTime[0] = false;
+                    chipGroup.removeAllViews();
+                } else {
+                    chip.setChecked(false);
+                }
+
+                chipGroup.addView(chip);
+
+            }
+        }
+
+
+    }
+
+    private void loadCategory(String category, ChipGroup chipGroup, Activity activity) {
+
+        Chip chip = new Chip(new ContextThemeWrapper(activity, com.mobven.progress.R.style.Widget_MaterialComponents_Chip_Filter));
+        chip.setText(category);
+        chip.setCheckable(true);
+        chip.setClickable(true);
+
+        chip.setId(View.generateViewId());
+
+        if (isFirstTime[0]) {
+            chip.setChecked(true);
+            isFirstTime[0] = false;
+            chipGroup.removeAllViews();
+        } else {
+            chip.setChecked(false);
+        }
+
+        chipGroup.addView(chip);
+    }
+
 }
