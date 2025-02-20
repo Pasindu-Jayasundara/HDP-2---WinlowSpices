@@ -3,9 +3,11 @@ package com.example.winlowcustomer;
 import static com.example.winlowcustomer.MainActivity.language;
 
 import com.example.winlowcustomer.modal.SetUpLanguage;
+import com.example.winlowcustomer.modal.callback.SaveAddressCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -14,6 +16,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -206,12 +209,12 @@ public class AddNewAddressActivity extends AppCompatActivity {
                     ActivityCompat.requestPermissions(AddNewAddressActivity.this, permissionArray,1);
                 }
 
-//                LatLng latLng = new LatLng(6.930053224303333, 79.84787284365264);
-//                googleMap.animateCamera(
-//                        CameraUpdateFactory.newCameraPosition(
-//                                new CameraPosition.Builder().target(latLng).zoom(15).build()
-//                        )
-//                );
+                LatLng latLng = new LatLng(6.930053224303333, 79.84787284365264);
+                googleMap.animateCamera(
+                        CameraUpdateFactory.newCameraPosition(
+                                new CameraPosition.Builder().target(latLng).zoom(15).build()
+                        )
+                );
 
                 googleMap.getUiSettings().setZoomControlsEnabled(true);
                 googleMap.getUiSettings().setZoomGesturesEnabled(true);
@@ -277,16 +280,44 @@ public class AddNewAddressActivity extends AppCompatActivity {
                    }
 
                     String typeText = addressList.get(spinner.getSelectedItemPosition()-1);
-                    AddressHandling.saveAddress(typeText,getApplicationContext());
+                    AddressHandling.saveAddress(typeText, getApplicationContext(), new SaveAddressCallback() {
+                        @Override
+                        public void onAddressSave(boolean isSuccess) {
 
-                    getOnBackPressedDispatcher().onBackPressed();
+                                Intent receivedIntent = getIntent();
+                                if(receivedIntent.hasExtra("to")){
+
+                                    String from = receivedIntent.getStringExtra("to");
+                                    if(from!=null && from.equals("checkout")){
+                                        Intent intent = new Intent(AddNewAddressActivity.this, CheckoutActivity.class);
+
+                                        Log.i("cccccccccc","111111111");
+
+                                        intent.putExtra("cameFrom","addNewAddress");
+                                        intent.putExtra("paymentData",receivedIntent.getStringExtra("paymentData"));
+                                        intent.putExtra("userDto",receivedIntent.getStringExtra("userDto"));
+                                        intent.putExtra("totalPrice",receivedIntent.getStringExtra("totalPrice"));
+
+                                        startActivity(intent);
+                                    }
+
+                                }else{
+                                    getOnBackPressedDispatcher().onBackPressed();
+                                }
+
+                        }
+                    });
 
                 }else{
 
                     String typeText = typeAddress.getText().toString();
-                    AddressHandling.saveAddress(typeText,getApplicationContext());
+                    AddressHandling.saveAddress(typeText, getApplicationContext(), new SaveAddressCallback() {
+                        @Override
+                        public void onAddressSave(boolean isSuccess) {
+                            getOnBackPressedDispatcher().onBackPressed();
 
-                    getOnBackPressedDispatcher().onBackPressed();
+                        }
+                    });
 
                 }
 

@@ -56,18 +56,19 @@ public class CartOperations {
 
     public static void isLoggedIn(Context context, LoginCallback loginCallback) {
 
-        final boolean[] hasLoggedInDataFound = {false};
-
         sharedPreferences = context.getSharedPreferences("com.example.winlowcustomer.data", Context.MODE_PRIVATE);
         String user = sharedPreferences.getString("user", null);
 
         if (user == null) {
+
+            Log.i("CartOperations", "isLoggedIn: 2 abc 1");
 
             SQLiteHelper sqLiteHelper = new SQLiteHelper(context, "winlow.db", null, 1);
             sqLiteHelper.getUser(sqLiteHelper, new GetDataCallback() {
                 @Override
                 public void onGetData(Cursor cursor) {
                     if (cursor.getCount() == 1) {
+                        Log.i("CartOperations", "isLoggedIn: 2 abc 2");
 
                         cursor.moveToFirst();
 
@@ -80,6 +81,7 @@ public class CartOperations {
                         sqLiteHelper.getAddress(sqLiteHelper, new GetDataCallback() {
                             @Override
                             public void onGetData(Cursor cursor) {
+                                Log.i("CartOperations", "isLoggedIn: 2 abc 3");
 
                                 while (cursor.moveToNext()) {
                                     addressList.add(cursor.getString(0));
@@ -133,7 +135,7 @@ public class CartOperations {
 
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString("user", json);
-                        editor.apply();
+                        editor.commit();
 
                         loginCallback.onLogin(true);
                         Log.i("CartOperations", "isLoggedIn: 2"+ gson.toJson(userDTO));

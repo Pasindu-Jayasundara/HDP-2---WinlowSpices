@@ -31,6 +31,7 @@ import com.example.winlowcustomer.modal.SetUpLanguage;
 import com.example.winlowcustomer.modal.Verify;
 import com.example.winlowcustomer.modal.callback.IsNewUserCallback;
 import com.example.winlowcustomer.modal.callback.LoginCallback;
+import com.example.winlowcustomer.modal.callback.SingleInsertCallback;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -260,33 +261,38 @@ public class RegisterActivity extends AppCompatActivity {
 
                         // store user in sqlite
                         SQLiteHelper sqLiteHelper = new SQLiteHelper(RegisterActivity.this, "winlow.db", null, 1);
-                        sqLiteHelper.insertSingleUser(sqLiteHelper, docId, userDTO.getName(), userDTO.getMobile(), userDTO.getEmail(), null);
-
-                        // store user in shared preferences
-                        CartOperations.isLoggedIn(getApplicationContext(), new LoginCallback() {
+                        sqLiteHelper.insertSingleUser(sqLiteHelper, new SingleInsertCallback() {
                             @Override
-                            public void onLogin(boolean isSuccess) {
+                            public void onUserInserted(long insertedId) {
 
-                                Intent reIntent = getIntent();
-                                if (reIntent.hasExtra("fromCart")) {
+                                // store user in shared preferences
+                                CartOperations.isLoggedIn(getApplicationContext(), new LoginCallback() {
+                                    @Override
+                                    public void onLogin(boolean isSuccess) {
 
-                                    reIntent.removeExtra("fromCart");
+                                        Intent reIntent = getIntent();
+                                        if (reIntent.hasExtra("fromCart")) {
 
-                                    Intent intent = new Intent(RegisterActivity.this, ProductViewActivity.class);
-                                    startActivity(intent);
+                                            reIntent.removeExtra("fromCart");
 
-                                    finish();
+                                            Intent intent = new Intent(RegisterActivity.this, ProductViewActivity.class);
+                                            startActivity(intent);
 
-                                } else {
-                                    Intent intent = new Intent(RegisterActivity.this, HomeActivity.class);
-                                    startActivity(intent);
+                                            finish();
 
-                                    finish();
-                                }
+                                        } else {
+                                            Intent intent = new Intent(RegisterActivity.this, HomeActivity.class);
+                                            startActivity(intent);
 
+                                            finish();
+                                        }
+
+
+                                    }
+                                });
 
                             }
-                        });
+                        }, docId, userDTO.getName(), userDTO.getMobile(), userDTO.getEmail(), null);
 
                     }
                 })

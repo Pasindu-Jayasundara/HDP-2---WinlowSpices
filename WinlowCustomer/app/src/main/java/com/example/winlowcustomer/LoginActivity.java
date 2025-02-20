@@ -34,6 +34,7 @@ import com.example.winlowcustomer.modal.Verify;
 import com.example.winlowcustomer.modal.callback.GetDataCallback;
 import com.example.winlowcustomer.modal.callback.IsNewUserCallback;
 import com.example.winlowcustomer.modal.callback.LoginCallback;
+import com.example.winlowcustomer.modal.callback.SingleInsertCallback;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
@@ -159,7 +160,12 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (!isNew) {
 
-                    Toast.makeText(getApplicationContext(), R.string.login_success, Toast.LENGTH_LONG).show();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), R.string.login_success, Toast.LENGTH_LONG).show();
+                        }
+                    });
 
                     Intent receivedIntent = getIntent();
 
@@ -212,7 +218,12 @@ public class LoginActivity extends AppCompatActivity {
                     }
 
                 }else{
-                    Toast.makeText(LoginActivity.this, R.string.user_not_found, Toast.LENGTH_SHORT).show();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(LoginActivity.this, R.string.user_not_found, Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
 
             }
@@ -245,50 +256,62 @@ public class LoginActivity extends AppCompatActivity {
 
                                 // store user in sqlite
                                 SQLiteHelper sqLiteHelper = new SQLiteHelper(getApplicationContext(), "winlow.db", null, 1);
-                                sqLiteHelper.insertSingleUser(sqLiteHelper, id, name, mobile, email, profile_image);
-
-                                Log.i("CartOperations", "isLoggedIn: 2 abc");
-
-                                // store user in shared preferences
-                                CartOperations.isLoggedIn(getApplicationContext(), new LoginCallback() {
+                                sqLiteHelper.insertSingleUser(sqLiteHelper, new SingleInsertCallback() {
                                     @Override
-                                    public void onLogin(boolean isSuccess) {
+                                    public void onUserInserted(long insertedId) {
 
-                                        if(isSuccess){
+                                        // store user in shared preferences
+                                        CartOperations.isLoggedIn(getApplicationContext(), new LoginCallback() {
+                                            @Override
+                                            public void onLogin(boolean isSuccess) {
 
-                                            // store order list
-                                            SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
-                                            String userJson = sharedPreferences.getString("user",null);
-                                            if(userJson!=null){
+                                                if(isSuccess){
 
-                                                UserDTO userDTO = new Gson().fromJson(userJson, UserDTO.class);
-                                                List<String> orderHistoryList = userDTO.getOrderHistory();
+                                                    Log.i("CartOperations", "isLoggedIn: 2 def"+ "userJson");
 
-                                                // order history
-                                                List<String> orderHistory = (List<String>) documentSnapshot.get("order_history");
-                                                orderHistoryList.addAll(orderHistory);
+                                                    // store order list
+                                                    SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
+                                                    String userJson = sharedPreferences.getString("user",null);
+                                                    if(userJson!=null){
+                                                        Log.i("CartOperations", "isLoggedIn: 2 def"+ userJson);
 
-                                                userDTO.setOrderHistory(orderHistoryList);
-                                                userDTO.setProfile_image(profile_image);
 
-                                                sharedPreferences.edit().putString("user",new Gson().toJson(userDTO)).apply();
+                                                        UserDTO userDTO = new Gson().fromJson(userJson, UserDTO.class);
+                                                        List<String> orderHistoryList = userDTO.getOrderHistory();
+
+                                                        // order history
+                                                        List<String> orderHistory = (List<String>) documentSnapshot.get("order_history");
+                                                        orderHistoryList.addAll(orderHistory);
+
+                                                        userDTO.setOrderHistory(orderHistoryList);
+                                                        userDTO.setProfile_image(profile_image);
+
+                                                        sharedPreferences.edit().putString("user",new Gson().toJson(userDTO)).apply();
+
+                                                    }else{
+                                                        Log.i("CartOperations", "isLoggedIn: 2 def null");
+
+                                                    }
+
+                                                }else{
+                                                    Log.i("CartOperations", "isLoggedIn: 2 def");
+
+                                                }
+                                                isNewUserCallback.onResult(false);
 
                                             }
+                                        });
 
-                                        }else{
-
-                                        }
 
                                     }
-                                });
-                                Log.i("CartOperations", "isLoggedIn: 2 def");
-
+                                },id, name, mobile, email, profile_image);
 
                             }
 
+                        }else{
+                            isNewUserCallback.onResult(isNew);
                         }
 
-                        isNewUserCallback.onResult(isNew);
                     }
                 });
 

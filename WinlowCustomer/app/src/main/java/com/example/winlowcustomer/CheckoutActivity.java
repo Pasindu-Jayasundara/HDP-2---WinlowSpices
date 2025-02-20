@@ -95,9 +95,22 @@ public class CheckoutActivity extends AppCompatActivity {
         Gson gson = new Gson();
         userDTO = gson.fromJson(userJson, UserDTO.class);
 
+        if(getIntent().hasExtra("cameFrom")){
+
+            String from = getIntent().getStringExtra("cameFrom");
+            if(from != null && from.equals("addNewAddress")){
+
+                String paymentData1 = getIntent().getStringExtra("paymentData");
+                paymentData = gson.fromJson(paymentData1, HashMap.class);
+
+                totalPrice = getIntent().getStringExtra("totalPrice");
+
+            }
+        }else{
+            totalPrice = getIntent().getStringExtra("total_price");
+        }
 
         //get total price
-        String totalPrice = getIntent().getStringExtra("total_price");
         TextView totalPriceView = findViewById(R.id.textView18);
         totalPriceView.setText(totalPrice);
 
@@ -118,6 +131,10 @@ public class CheckoutActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 Intent intent = new Intent(CheckoutActivity.this,AddressActivity.class);
+                intent.putExtra("from","checkout");
+                intent.putExtra("paymentData",gson.toJson(paymentData));
+                intent.putExtra("userDto",gson.toJson(userDTO));
+                intent.putExtra("totalPrice",totalPrice);
                 startActivity(intent);
 
             }
@@ -201,6 +218,41 @@ public class CheckoutActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        loadAddress(getApplicationContext(), new GetAddressCallback() {
+            @Override
+            public void onAddressLoaded(List<String> addressList) {
+
+                Button addAddressBtn = findViewById(R.id.button19);
+                Spinner spinner = findViewById(R.id.spinner2);
+
+                if(addressList.contains(getString(R.string.checkout_select_address))){
+                    List<String> list = new ArrayList<>();
+                    list.add(getString(R.string.checkout_select_address));
+                    list.add(getString(R.string.select_address));
+                    addressList.removeAll(list);
+                }
+                if(addressList.isEmpty()){
+                    addAddressBtn.setVisibility(View.VISIBLE);
+                }else{
+                    addAddressBtn.setVisibility(View.GONE);
+
+                    // load spinner
+                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
+                            getApplicationContext(),
+                            R.layout.checkout_selected_address_layout,
+                            addressList
+                    );
+                    arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinner.setAdapter(arrayAdapter);
+                }
+
+            }
+        });
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

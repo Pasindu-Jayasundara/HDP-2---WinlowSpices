@@ -78,7 +78,14 @@ public class AddressActivity extends AppCompatActivity {
 
         // Go back button
         ImageButton backBtn = findViewById(R.id.imageButton15);
-        backBtn.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                getOnBackPressedDispatcher().onBackPressed();
+
+            }
+        });
     }
 
     // Load addresses if permissions are granted
@@ -115,14 +122,31 @@ public class AddressActivity extends AppCompatActivity {
 
     // Request Storage Permission when adding an address
     private void requestStoragePermission() {
+
+        Intent intent = new Intent(AddressActivity.this, AddNewAddressActivity.class);
+        Intent receivedIntent = getIntent();
+        if(receivedIntent.hasExtra("from")){
+
+            String from = receivedIntent.getStringExtra("from");
+            if(from !=null && from.equals("checkout")){
+
+                intent.putExtra("to","checkout");
+                intent.putExtra("paymentData",receivedIntent.getStringExtra("paymentData"));
+                intent.putExtra("userDto",receivedIntent.getStringExtra("userDto"));
+                intent.putExtra("totalPrice",receivedIntent.getStringExtra("totalPrice"));
+
+            }
+
+        }
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
             } else {
-                startActivity(new Intent(AddressActivity.this, AddNewAddressActivity.class));
+                startActivity(intent);
             }
         } else {
-            startActivity(new Intent(AddressActivity.this, AddNewAddressActivity.class)); // No need for permission
+            startActivity(intent); // No need for permission
         }
     }
 

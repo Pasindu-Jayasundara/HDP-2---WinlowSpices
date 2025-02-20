@@ -219,61 +219,6 @@ public class CartActivity extends AppCompatActivity {
                     Toast.makeText(CartActivity.this, R.string.cart_empty, Toast.LENGTH_SHORT).show();
                 }
 
-//                if(documentSnapshot != null && documentSnapshot.exists()){
-//
-//                    Map<String, Object> documentSnapshotData = documentSnapshot.getData();
-//                    List<Map<String,Object>> cartDataMapList = (List<Map<String, Object>>) documentSnapshotData.get("cart");
-//
-//                    if(cartDataMapList != null && !cartDataMapList.isEmpty()){
-//
-//                        // recycler view
-//                        RecyclerView recyclerView = findViewById(R.id.cartRecyclerView);
-//                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(CartActivity.this,LinearLayoutManager.VERTICAL,false);
-//                        recyclerView.setLayoutManager(linearLayoutManager);
-//
-//                        // data from cart
-//                        List<CartDTO> cartDTOList = new ArrayList<>();
-//
-//                        for(Map<String,Object> cartDataMap : cartDataMapList){
-//
-//                            List<CartWeightCategoryDTO> cartWeightCategoryDTOList = new ArrayList<>();
-//
-//                            List<Map<String,Object>> weightCategoryListMap = (List<Map<String, Object>>) cartDataMap.get("weight_category");
-//                            for(Map<String,Object> weightCategoryMap : weightCategoryListMap){
-//
-//                                CartWeightCategoryDTO cartWeightCategoryDTO = new CartWeightCategoryDTO();
-//
-//                                double weight = Double.parseDouble(String.valueOf(weightCategoryMap.get("weight")));
-//                                int qty = Integer.parseInt(String.valueOf(weightCategoryMap.get("qty")));
-//
-//                                cartWeightCategoryDTO.setQty(qty);
-//                                cartWeightCategoryDTO.setWeight(weight);
-//
-//                                cartWeightCategoryDTOList.add(cartWeightCategoryDTO);
-//
-//                            }
-//
-//                            CartDTO cartDTO = new CartDTO();
-//                            cartDTO.setReferencePath(cartDataMap.get("ref_path").toString());
-//                            cartDTO.setCartWeightCategoryDTOList(cartWeightCategoryDTOList);
-//                            cartDTO.setName(cartDataMap.get("ref_path").toString());
-//                            cartDTO.setFieldPath();
-//
-//
-//                            cartDTOList.add(cartDTO);
-//
-//                        }
-//
-//                        // set data and adapter to recycler view
-//                        CartRecyclerViewAdapter cartRecyclerViewAdapter = new CartRecyclerViewAdapter(cartDTOList);
-//                        recyclerView.setAdapter(cartRecyclerViewAdapter);
-//
-//                    }
-//
-//                }else{
-//                    Toast.makeText(CartActivity.this, R.string.cart_empty, Toast.LENGTH_SHORT).show();
-//                }
-
             }
         }, CartActivity.this, userDTO);
 

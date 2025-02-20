@@ -4,6 +4,8 @@ import android.content.Context;
 import android.widget.Toast;
 import com.example.winlowcustomer.R;
 import com.example.winlowcustomer.modal.callback.GetAddressCallback;
+import com.example.winlowcustomer.modal.callback.SaveAddressCallback;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +40,7 @@ public class AddressHandling {
         }).start();
     }
 
-    public static void saveAddress(String typeText, Context context) {
+    public static void saveAddress(String typeText, Context context, SaveAddressCallback saveAddressCallback) {
         File file = new File(getFilePath(context));
 
         new Thread(() -> {
@@ -66,7 +68,10 @@ public class AddressHandling {
                                 writer.write(address);
                                 writer.newLine();
                             }
+                            saveAddressCallback.onAddressSave(true);
                         } catch (IOException e) {
+                            saveAddressCallback.onAddressSave(false);
+
                             e.printStackTrace();
                         }
                     }
