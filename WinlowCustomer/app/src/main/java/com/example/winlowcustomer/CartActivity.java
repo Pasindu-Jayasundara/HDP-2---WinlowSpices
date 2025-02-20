@@ -187,11 +187,23 @@ public class CartActivity extends AppCompatActivity {
                                     CartDTO cartDTO = new CartDTO();
                                     cartDTO.setReferencePath(String.valueOf(cartDataMap.get("ref_path")));
 
-                                    for(ProductDTO productDTO : productDTOArrayListOriginal){
-                                        if(productDTO.getReferencePath().equals(cartDTO.getReferencePath())){
-                                            cartDTO.setProduct(productDTO);
+//                                    for(ProductDTO productDTO : productDTOArrayListOriginal){
+//                                        if(productDTO.getReferencePath().equals(cartDTO.getReferencePath())){
+//                                            cartDTO.setProduct(productDTO);
+//                                        }
+//                                    }
+                                    if (productDTOArrayListOriginal != null) {
+                                        for (ProductDTO productDTO : productDTOArrayListOriginal) {
+                                            if (cartDTO.getReferencePath() != null && productDTO.getReferencePath() != null) {
+                                                if (cartDTO.getReferencePath().equals(productDTO.getReferencePath())) {
+                                                    cartDTO.setProduct(productDTO);
+                                                }
+                                            }
                                         }
+                                    } else {
+                                        Log.e("CartActivity", "productDTOArrayListOriginal is null");
                                     }
+
 
                                     cartDTO.setCartWeightCategoryDTOList(cartWeightCategoryDTOList);
 

@@ -54,6 +54,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static int sqliteVersion = 2;
+
     private static boolean isDataLoadingFinished;
     private ArrayList<ProductDTO> productDTOArrayList =new ArrayList<>();
     private ArrayList<BannerDTO> bannerArrayList = new ArrayList<>();

@@ -25,7 +25,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                 "    id     TEXT PRIMARY KEY,\n" +
                 "    mobile TEXT,\n" +
                 "    email  TEXT,\n" +
-                "    profile_image  TEXT\n" +
+                "    profile_image  TEXT" +
                 ")");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS address (\n" +
@@ -104,7 +104,12 @@ public class SQLiteHelper extends SQLiteOpenHelper {
                 contentValues.put("email",email);
                 contentValues.put("profile_image",profile_image);
 
-                long insertedId = db.insertWithOnConflict("user", null, contentValues, SQLiteDatabase.CONFLICT_REPLACE);
+                long insertedId;
+                try {
+                    insertedId = db.insert("user", null, contentValues);
+                }catch (Exception e){
+                    insertedId = db.insertWithOnConflict("user", null, contentValues, SQLiteDatabase.CONFLICT_REPLACE);
+                }
 //                db.close();
 
                 if(singleInsertCallback !=null){

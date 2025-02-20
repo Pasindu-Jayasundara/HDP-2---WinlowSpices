@@ -59,7 +59,7 @@ import lk.payhere.androidsdk.model.StatusResponse;
 public class CheckoutActivity extends AppCompatActivity {
 
     UserDTO userDTO;
-    HashMap<String,Object> paymentData = new HashMap<>();
+    HashMap<String, Object> paymentData = new HashMap<>();
     String totalPrice;
 
     @Override
@@ -73,8 +73,6 @@ public class CheckoutActivity extends AppCompatActivity {
             return insets;
         });
 
-//        SetUpLanguage.setAppLanguage(getApplicationContext());
-
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
@@ -83,10 +81,10 @@ public class CheckoutActivity extends AppCompatActivity {
                 .setReorderingAllowed(true)
                 .commit();
 
-        SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data",MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
         String userJson = sharedPreferences.getString("user", null);
 
-        if(userJson == null){
+        if (userJson == null) {
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
@@ -95,10 +93,10 @@ public class CheckoutActivity extends AppCompatActivity {
         Gson gson = new Gson();
         userDTO = gson.fromJson(userJson, UserDTO.class);
 
-        if(getIntent().hasExtra("cameFrom")){
+        if (getIntent().hasExtra("cameFrom")) {
 
             String from = getIntent().getStringExtra("cameFrom");
-            if(from != null && from.equals("addNewAddress")){
+            if (from != null && from.equals("addNewAddress")) {
 
                 String paymentData1 = getIntent().getStringExtra("paymentData");
                 paymentData = gson.fromJson(paymentData1, HashMap.class);
@@ -106,7 +104,7 @@ public class CheckoutActivity extends AppCompatActivity {
                 totalPrice = getIntent().getStringExtra("totalPrice");
 
             }
-        }else{
+        } else {
             totalPrice = getIntent().getStringExtra("total_price");
         }
 
@@ -130,30 +128,34 @@ public class CheckoutActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(CheckoutActivity.this,AddressActivity.class);
-                intent.putExtra("from","checkout");
-                intent.putExtra("paymentData",gson.toJson(paymentData));
-                intent.putExtra("userDto",gson.toJson(userDTO));
-                intent.putExtra("totalPrice",totalPrice);
+                Intent intent = new Intent(CheckoutActivity.this, AddressActivity.class);
+                intent.putExtra("from", "checkout");
+                intent.putExtra("paymentData", gson.toJson(paymentData));
+                intent.putExtra("userDto", gson.toJson(userDTO));
+                intent.putExtra("totalPrice", totalPrice);
                 startActivity(intent);
 
             }
         });
 
+
         loadAddress(getApplicationContext(), new GetAddressCallback() {
             @Override
             public void onAddressLoaded(List<String> addressList) {
 
-                if(addressList.contains(getString(R.string.checkout_select_address))){
+                if (addressList.contains(getString(R.string.checkout_select_address))) {
                     List<String> list = new ArrayList<>();
                     list.add(getString(R.string.checkout_select_address));
                     list.add(getString(R.string.select_address));
                     addressList.removeAll(list);
                 }
-                if(addressList.isEmpty()){
+                if (addressList.isEmpty()) {
                     addAddressBtn.setVisibility(View.VISIBLE);
-                }else{
+                    spinner.setVisibility(View.GONE);
+                } else {
                     addAddressBtn.setVisibility(View.GONE);
+                    spinner.setVisibility(View.VISIBLE);
+
 
                     // load spinner
                     ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
@@ -182,33 +184,41 @@ public class CheckoutActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if(deliveryNameView.getText().toString().isBlank()){
+                if (deliveryNameView.getText().toString().isBlank()) {
                     Toast.makeText(CheckoutActivity.this, R.string.checkout_need_name, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                if(deliveryMobileView.getText().toString().isBlank()){
+                if (deliveryMobileView.getText().toString().isBlank()) {
                     Toast.makeText(CheckoutActivity.this, R.string.checkout_need_mobile, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                if(spinner.getSelectedItem().toString().equals(getString(R.string.select_address)) ||
-                        spinner.getSelectedItem().toString().equals(getString(R.string.checkout_select_address))){
-                    Toast.makeText(CheckoutActivity.this, R.string.checkout_need_address, Toast.LENGTH_SHORT).show();
+                if(spinner.getVisibility() == View.VISIBLE){
+                    if (spinner.getSelectedItem().toString().equals(getString(R.string.select_address)) ||
+                            spinner.getSelectedItem().toString().equals(getString(R.string.checkout_select_address))) {
+                        Toast.makeText(CheckoutActivity.this, R.string.checkout_need_address, Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }else{
+                    Toast.makeText(CheckoutActivity.this, R.string.add_adderss, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
+
                 List<CartDTO> checkoutProductList = CartRecyclerViewAdapter.checkoutProductList;
-                if(checkoutProductList == null){
+                if (checkoutProductList == null) {
                     Toast.makeText(CheckoutActivity.this, R.string.checkout_need_product, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 RadioGroup radioGroup = findViewById(R.id.radioGroup);
                 boolean payOnline = false;
-                if(radioGroup.getCheckedRadioButtonId() == R.id.radioButton6){ // online
+                if (radioGroup.getCheckedRadioButtonId() == R.id.radioButton6) { // online
                     payOnline = true;
                 }
+
+                Log.i("purchase", "1");
 
                 purchase(payOnline);
 
@@ -229,16 +239,18 @@ public class CheckoutActivity extends AppCompatActivity {
                 Button addAddressBtn = findViewById(R.id.button19);
                 Spinner spinner = findViewById(R.id.spinner2);
 
-                if(addressList.contains(getString(R.string.checkout_select_address))){
+                if (addressList.contains(getString(R.string.checkout_select_address))) {
                     List<String> list = new ArrayList<>();
                     list.add(getString(R.string.checkout_select_address));
                     list.add(getString(R.string.select_address));
                     addressList.removeAll(list);
                 }
-                if(addressList.isEmpty()){
+                if (addressList.isEmpty()) {
                     addAddressBtn.setVisibility(View.VISIBLE);
-                }else{
+                    spinner.setVisibility(View.GONE);
+                } else {
                     addAddressBtn.setVisibility(View.GONE);
+                    spinner.setVisibility(View.VISIBLE);
 
                     // load spinner
                     ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
@@ -267,9 +279,9 @@ public class CheckoutActivity extends AppCompatActivity {
 
                 String msg;
 
-                if (response != null){
+                if (response != null) {
 
-                    if (response.isSuccess()){
+                    if (response.isSuccess()) {
                         msg = "Success:" + response.getData().toString();
                         Log.d("paymentpayhere", msg);
 
@@ -277,13 +289,13 @@ public class CheckoutActivity extends AppCompatActivity {
                         convertToFirebase("Online", new ConvertToFirebaseCallback() {
                             @Override
                             public void onConvert(boolean isSuccess, Map<String, Object> map) {
-                                if(isSuccess){
+                                if (isSuccess) {
                                     addToFirebase(map);
                                 }
                             }
                         });
 
-                    }else{
+                    } else {
                         msg = "Failed:" + response.getData().toString();
                         Log.d("paymentpayhere", msg);
 
@@ -291,7 +303,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
                     }
 
-                } else{
+                } else {
                     msg = "Result: no response";
                     Log.d("paymentpayhere", msg);
                 }
@@ -301,7 +313,7 @@ public class CheckoutActivity extends AppCompatActivity {
                 Toast.makeText(CheckoutActivity.this, R.string.payment_cancelled, Toast.LENGTH_SHORT).show();
 
                 if (response != null) {
-                    Log.d("paymentpayhere","canceled: null"+ response.toString());
+                    Log.d("paymentpayhere", "canceled: null" + response.toString());
                 } else {
                     Log.d("paymentpayhere", "User canceled the request");
                 }
@@ -312,34 +324,34 @@ public class CheckoutActivity extends AppCompatActivity {
 
     private void convertToFirebase(String paymentMethod, ConvertToFirebaseCallback convertToFirebaseCallback) {
 
-        Map<String,Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
 
         CartOperations.isLoggedIn(getApplicationContext(), new LoginCallback() {
             @Override
             public void onLogin(boolean isSuccess) {
 
-                if(isSuccess){
+                if (isSuccess) {
 
-                    SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data",MODE_PRIVATE);
+                    SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
                     String userTxt = sharedPreferences.getString("user", null);
                     if (userTxt != null) {
 
                         Gson gson = new Gson();
                         UserDTO userDTO = gson.fromJson(userTxt, UserDTO.class);
 
-                        map.put("user_id",userDTO.getId());
-                        map.put("order_list",paymentData.get("items"));
-                        map.put("payment_method",paymentMethod);
-                        map.put("date_time",System.currentTimeMillis());
-                        map.put("order_status","Pending");
-                        map.put("order_id",paymentData.get("orderId"));
+                        map.put("user_id", userDTO.getId());
+                        map.put("order_list", paymentData.get("items"));
+                        map.put("payment_method", paymentMethod);
+                        map.put("date_time", System.currentTimeMillis());
+                        map.put("order_status", "Pending");
+                        map.put("order_id", paymentData.get("orderId"));
 
-                        convertToFirebaseCallback.onConvert(true,map);
+                        convertToFirebaseCallback.onConvert(true, map);
 
                     }
 
-                }else{
-                    convertToFirebaseCallback.onConvert(false,null);
+                } else {
+                    convertToFirebaseCallback.onConvert(false, null);
 
                     Toast.makeText(getApplicationContext(), R.string.not_logged_in, Toast.LENGTH_SHORT).show();
                 }
@@ -349,7 +361,8 @@ public class CheckoutActivity extends AppCompatActivity {
 
     }
 
-    private void addToFirebase(Map<String, Object> map){
+    private void addToFirebase(Map<String, Object> map) {
+        Log.i("purchase", "7");
 
         String orderId = (String) paymentData.get("orderId");
 
@@ -360,6 +373,7 @@ public class CheckoutActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
+                        Log.i("purchase", "8");
 
 
                         db.collection("user").document(userDTO.getId()).get()
@@ -367,27 +381,30 @@ public class CheckoutActivity extends AppCompatActivity {
                                     @Override
                                     public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-                                        Map<String,Object> ohMap = new HashMap<>();
+                                        Map<String, Object> ohMap = new HashMap<>();
 
                                         List<String> orderHistoryList = (List<String>) documentSnapshot.get("order_history");
                                         orderHistoryList.add(orderId);
-                                        ohMap.put("order_history",orderHistoryList);
+                                        ohMap.put("order_history", orderHistoryList);
+                                        Log.i("purchase", "10");
 
                                         db.collection("user")
                                                 .document(userDTO.getId())
-                                                .set(ohMap,SetOptions.mergeFields("order_history"))
+                                                .set(ohMap, SetOptions.mergeFields("order_history"))
                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
                                                     public void onSuccess(Void unused) {
+                                                        Log.i("purchase", "11");
 
                                                         Toast.makeText(CheckoutActivity.this, R.string.order_placed_success, Toast.LENGTH_SHORT).show();
 
                                                         Gson gson = new Gson();
 
                                                         Intent intent = new Intent(CheckoutActivity.this, OrderSuccessActivity.class);
-                                                        intent.putExtra("order_id",orderId);
-                                                        intent.putExtra("itemList",gson.toJson(paymentData.get("items")));
-                                                        intent.putExtra("total",totalPrice);
+                                                        intent.putExtra("order_id", orderId);
+                                                        intent.putExtra("itemList", gson.toJson(paymentData.get("items")));
+                                                        intent.putExtra("total", totalPrice);
+
                                                         startActivity(intent);
                                                         finish();
 
@@ -426,7 +443,6 @@ public class CheckoutActivity extends AppCompatActivity {
 //                        userDTO.setOrderHistory(orderHistory);
 
 
-
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -443,10 +459,11 @@ public class CheckoutActivity extends AppCompatActivity {
 
     }
 
-    private void purchase(boolean payOnline){
+    private void purchase(boolean payOnline) {
+        Log.i("purchase", "2");
 
         // price
-        totalPrice = getIntent().getStringExtra("total_price");
+//        totalPrice = getIntent().getStringExtra("total_price");
         String total = totalPrice.replaceAll("[^0-9.]", "");
 
         // address
@@ -460,7 +477,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
         String firstName = s[0];
         String lastName = "";
-        if(s.length == 2){
+        if (s.length == 2) {
             lastName = s[1];
         }
 
@@ -474,12 +491,13 @@ public class CheckoutActivity extends AppCompatActivity {
         // items
         List<Item> items = new ArrayList<>();
 
-        for(CartDTO cartDTO : checkoutProductList) {
+        for (CartDTO cartDTO : checkoutProductList) {
+            Log.i("purchase", "3");
 
             double totalPrice2 = 0.0;
 
             List<CartWeightCategoryDTO> cartWeightCategoryDTOList = cartDTO.getCartWeightCategoryDTOList();
-            for(CartWeightCategoryDTO cartWeightCategoryDTO : cartWeightCategoryDTOList) {
+            for (CartWeightCategoryDTO cartWeightCategoryDTO : cartWeightCategoryDTOList) {
 
                 double weight = cartWeightCategoryDTO.getWeight();
                 double qty = cartWeightCategoryDTO.getQty();
@@ -493,38 +511,45 @@ public class CheckoutActivity extends AppCompatActivity {
                         break;
                     }
                 }
-                String name = product.getName()+"  (" + String.valueOf(cartDTO.getWeight())+")";
-                items.add(new Item(product.getId(),name, (int) qty, totalPrice2));
+                String name = product.getName() + "  (" + String.valueOf(cartDTO.getWeight()) + ")";
+                items.add(new Item(product.getId(), name, (int) qty, totalPrice2));
 
             }
 
         }
 
+        Log.i("purchase", "4");
+
         // order id
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String orderId = db.collection("orders").document().getId();
 
-        paymentData.put("id",userDTO.getId());
-        paymentData.put("firstName",firstName);
-        paymentData.put("lastName",lastName);
-        paymentData.put("email",email);
-        paymentData.put("mobile",deliveryMobile);
-        paymentData.put("address",selectedAddress);
-        paymentData.put("totalPrice",total);
-        paymentData.put("orderId",orderId);
-        paymentData.put("items",items);
-        paymentData.put("activity",CheckoutActivity.this);
-        paymentData.put("requestId",22620);
+        paymentData.put("id", userDTO.getId());
+        paymentData.put("firstName", firstName);
+        paymentData.put("lastName", lastName);
+        paymentData.put("email", email);
+        paymentData.put("mobile", deliveryMobile);
+        paymentData.put("address", selectedAddress);
+        paymentData.put("totalPrice", total);
+        paymentData.put("orderId", orderId);
+        paymentData.put("items", items);
+        paymentData.put("activity", CheckoutActivity.this);
+        paymentData.put("requestId", 22620);
 
-        if(payOnline){
-            Payhere.pay(paymentData,CheckoutActivity.this);
-        }else{
+        checkoutProductList.clear();
+
+        if (payOnline) {
+            Log.i("purchase", "5");
+
+            Payhere.pay(paymentData, CheckoutActivity.this);
+        } else {
+            Log.i("purchase", "6");
 
             convertToFirebase("Cash On Delivery", new ConvertToFirebaseCallback() {
                 @Override
                 public void onConvert(boolean isSuccess, Map<String, Object> map) {
 
-                    if(isSuccess){
+                    if (isSuccess) {
                         addToFirebase(map);
                     }
 

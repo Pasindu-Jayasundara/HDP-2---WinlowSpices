@@ -1,6 +1,7 @@
 package com.example.winlowcustomer;
 
 import static com.example.winlowcustomer.MainActivity.language;
+import static com.example.winlowcustomer.MainActivity.sqliteVersion;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -260,7 +261,7 @@ public class RegisterActivity extends AppCompatActivity {
                         Toast.makeText(RegisterActivity.this, R.string.user_registration_success, Toast.LENGTH_SHORT).show();
 
                         // store user in sqlite
-                        SQLiteHelper sqLiteHelper = new SQLiteHelper(RegisterActivity.this, "winlow.db", null, 1);
+                        SQLiteHelper sqLiteHelper = new SQLiteHelper(RegisterActivity.this, "winlow.db", null, sqliteVersion);
                         sqLiteHelper.insertSingleUser(sqLiteHelper, new SingleInsertCallback() {
                             @Override
                             public void onUserInserted(long insertedId) {

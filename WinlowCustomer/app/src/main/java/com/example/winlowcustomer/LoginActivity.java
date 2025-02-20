@@ -1,6 +1,7 @@
 package com.example.winlowcustomer;
 
 import static com.example.winlowcustomer.MainActivity.language;
+import static com.example.winlowcustomer.MainActivity.sqliteVersion;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -195,6 +196,7 @@ public class LoginActivity extends AppCompatActivity {
 
                             Intent intent = new Intent(LoginActivity.this, ProductViewActivity.class);
                             startActivity(intent);
+                            finish();
                         }
                     }else{
 
@@ -204,15 +206,18 @@ public class LoginActivity extends AppCompatActivity {
                                 receivedIntent.removeExtra("back");
                                 Intent intent = new Intent(LoginActivity.this, CartActivity.class);
                                 startActivity(intent);
+                                finish();
                             }
                             if(back.equals("order")){
                                 receivedIntent.removeExtra("back");
                                 Intent intent = new Intent(LoginActivity.this, OrderHistoryActivity.class);
                                 startActivity(intent);
+                                finish();
                             }
                         }else{
                             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                             startActivity(intent);
+                            finish();
                         }
 
                     }
@@ -255,7 +260,7 @@ public class LoginActivity extends AppCompatActivity {
                                 String profile_image = documentSnapshot.getString("profile_image");
 
                                 // store user in sqlite
-                                SQLiteHelper sqLiteHelper = new SQLiteHelper(getApplicationContext(), "winlow.db", null, 1);
+                                SQLiteHelper sqLiteHelper = new SQLiteHelper(getApplicationContext(), "winlow.db", null, sqliteVersion);
                                 sqLiteHelper.insertSingleUser(sqLiteHelper, new SingleInsertCallback() {
                                     @Override
                                     public void onUserInserted(long insertedId) {

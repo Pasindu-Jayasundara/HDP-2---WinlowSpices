@@ -4,6 +4,7 @@ import static com.example.winlowcustomer.MainActivity.language;
 import static com.example.winlowcustomer.modal.SetUpLanguage.setAppLanguage;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -265,7 +266,10 @@ public class HomeActivity extends AppCompatActivity {
 
     public void loadCategories(HashSet<String> categoryHashSet, ChipGroup chipGroup, Activity activity) {
         chipGroup.removeAllViews();
-        Log.i("language",language);
+
+        SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", Context.MODE_PRIVATE);
+        language = sharedPreferences.getString("language", "");
+
         if (!language.equals("en")) {
 
             for (String category : categoryHashSet) {

@@ -1,5 +1,7 @@
 package com.example.winlowcustomer.modal;
 
+import static com.example.winlowcustomer.MainActivity.sqliteVersion;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -149,7 +151,7 @@ public class MainLoadData {
         if (productDTOArrayList.isEmpty()) {
             // load recently viewed products
 
-            SQLiteHelper helper = new SQLiteHelper(context.getApplicationContext(), "winlow.db", null, 1);
+            SQLiteHelper helper = new SQLiteHelper(context.getApplicationContext(), "winlow.db", null, sqliteVersion);
             helper.getRecentlyViewedProduct(helper, new GetDataCallback() {
                 @Override
                 public void onGetData(Cursor cursor) {

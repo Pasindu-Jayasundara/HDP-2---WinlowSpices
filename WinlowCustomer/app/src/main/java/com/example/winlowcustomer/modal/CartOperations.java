@@ -1,5 +1,6 @@
 package com.example.winlowcustomer.modal;
 
+import static com.example.winlowcustomer.MainActivity.sqliteVersion;
 import static com.example.winlowcustomer.modal.SingleProductViewRecyclerViewAdapter.weightHashMap;
 
 import android.annotation.SuppressLint;
@@ -63,7 +64,7 @@ public class CartOperations {
 
             Log.i("CartOperations", "isLoggedIn: 2 abc 1");
 
-            SQLiteHelper sqLiteHelper = new SQLiteHelper(context, "winlow.db", null, 1);
+            SQLiteHelper sqLiteHelper = new SQLiteHelper(context, "winlow.db", null, sqliteVersion);
             sqLiteHelper.getUser(sqLiteHelper, new GetDataCallback() {
                 @Override
                 public void onGetData(Cursor cursor) {
