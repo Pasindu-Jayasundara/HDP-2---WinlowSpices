@@ -9,7 +9,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.example.winlowcustomer.MainActivity;
 import com.example.winlowcustomer.dto.BannerDTO;
 import com.example.winlowcustomer.dto.ProductDTO;
 import com.example.winlowcustomer.dto.WeightCategoryDTO;
@@ -29,7 +28,7 @@ import java.util.List;
 
 public class MainLoadData {
 
-    public static boolean mainLoadData(ArrayList<ProductDTO> productDTOArrayList, ArrayList<BannerDTO> bannerArrayList, HashSet<String> categoryHashSet, boolean isDataLoadingFinished,Context context) {
+    public static boolean mainLoadData(ArrayList<ProductDTO> productDTOArrayList, ArrayList<BannerDTO> bannerArrayList, HashSet<String> categoryHashSet, Context context) {
 
         Gson gson = new Gson();
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
@@ -126,8 +125,6 @@ public class MainLoadData {
                                 Type listType = new TypeToken<ArrayList<String>>() {
                                 }.getType();
 
-                                Log.i("xyz", bannerPathJson);
-
                                 List<String> bannerList = gson.fromJson(bannerPathJson, listType);
 
                                 BannerDTO bannerDTO = new BannerDTO();
@@ -171,7 +168,7 @@ public class MainLoadData {
                         productDTO.setStock(stock);
                         productDTO.setDiscount(Double.parseDouble(discount));
                         productDTO.setWeightCategoryDTOList(new ArrayList<>());
-                        productDTO.setImagePath(imagePath);
+                        productDTO.setImage_path(imagePath);
 
                         productDTOArrayList.add(productDTO);
 
@@ -184,4 +181,6 @@ public class MainLoadData {
         return true;
 
     }
+
+
 }

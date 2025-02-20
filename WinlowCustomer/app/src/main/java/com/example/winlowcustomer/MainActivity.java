@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         NetworkConnection.register(getApplicationContext());
 
 
-        isDataLoadingFinished = MainLoadData.mainLoadData(productDTOArrayList, bannerArrayList, categoryHashSet, isDataLoadingFinished, this);
+        isDataLoadingFinished = MainLoadData.mainLoadData(productDTOArrayList, bannerArrayList, categoryHashSet, this);
 
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.welcome_animation_fade_up);
         ImageView imageView = findViewById(R.id.imageView15);

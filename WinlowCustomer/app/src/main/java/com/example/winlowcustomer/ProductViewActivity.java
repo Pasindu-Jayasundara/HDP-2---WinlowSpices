@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +22,6 @@ import com.bumptech.glide.Glide;
 import com.example.winlowcustomer.dto.ProductDTO;
 import com.example.winlowcustomer.dto.WeightCategoryDTO;
 import com.example.winlowcustomer.modal.CartOperations;
-import com.example.winlowcustomer.modal.SetUpLanguage;
 import com.example.winlowcustomer.modal.SingleProductViewRecyclerViewAdapter;
 import com.example.winlowcustomer.modal.Translate;
 import com.example.winlowcustomer.modal.callback.ProductAddToCartCallback;
@@ -36,7 +34,6 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static com.example.winlowcustomer.MainActivity.language;
 import static com.example.winlowcustomer.modal.SetUpLanguage.setAppLanguage;
@@ -82,15 +79,15 @@ public class ProductViewActivity extends AppCompatActivity {
 
         // image load
         ImageView imageView = findViewById(R.id.imageView2);
-        if (productDTO != null && productDTO.getImagePath() != null) {
+        if (productDTO != null && productDTO.getImage_path() != null) {
             Glide.with(this)
-                    .load(productDTO.getImagePath())
+                    .load(productDTO.getImage_path())
                     .placeholder(R.drawable.product_placeholder)
                     .error(R.drawable.product_placeholder)
                     .into(imageView);
         } else {
             Log.i("productDTO", "productDTO: " + productDTO);
-            Log.i("productDTO", "product im ph: " + productDTO.getImagePath());
+            Log.i("productDTO", "product im ph: " + productDTO.getImage_path());
 
         }
 

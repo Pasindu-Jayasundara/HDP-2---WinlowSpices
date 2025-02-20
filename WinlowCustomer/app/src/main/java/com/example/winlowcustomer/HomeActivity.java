@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -40,6 +41,12 @@ import com.example.winlowcustomer.modal.callback.TranslationCallback;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.search.SearchBar;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -181,7 +188,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onRefresh() {
 
-                MainLoadData.mainLoadData(productDTOArrayList, bannerArrayList, categoryHashSet, false, HomeActivity.this);
+                MainLoadData.mainLoadData(productDTOArrayList, bannerArrayList, categoryHashSet, HomeActivity.this);
                 loadData();
 
                 RecyclerView recyclerView = findViewById(R.id.recyclerView2);
@@ -192,7 +199,146 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        registerProductListener(productDTOArrayList,bannerArrayList,categoryHashSet);
+
     }
+
+    private void registerProductListener(ArrayList<ProductDTO> productDTOArrayList, ArrayList<BannerDTO> bannerArrayList, HashSet<String> categoryHashSet) {
+
+        Gson gson = new Gson();
+        SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("product")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+
+                        if(error != null){
+                            Log.e("firestore error", error.getMessage());
+                            return;
+                        }
+
+                        if (value != null){
+
+                            for (DocumentChange dc : value.getDocumentChanges()) {
+                                switch (dc.getType()) {
+                                    case ADDED:{
+
+                                        ProductDTO newProduct = dc.getDocument().toObject(ProductDTO.class);
+                                        newProduct.setId(dc.getDocument().getId());
+
+                                        boolean exists = false;
+                                        for (ProductDTO product : productDTOArrayList) {
+                                            if (product.getId().equals(newProduct.getId())) {
+                                                exists = true;
+                                                break;
+                                            }
+                                        }
+
+                                        if (!exists) {
+                                            categoryHashSet.add(newProduct.getCategory());
+                                            productDTOArrayList.add(newProduct);
+                                        }
+
+                                        String categoryJson = gson.toJson(categoryHashSet);
+                                        String productJson = gson.toJson(productDTOArrayList);
+                                        editor.putString("category", categoryJson);
+                                        editor.putString("product", productJson);
+                                        editor.apply();
+                                        break;
+
+                                    }
+
+                                    case MODIFIED:{
+
+                                        String modifiedId = dc.getDocument().getId();
+
+                                        for (int i = 0; i < productDTOArrayList.size(); i++) {
+
+                                            if (productDTOArrayList.get(i).getId().equals(modifiedId)) {
+
+                                                ProductDTO object = dc.getDocument().toObject(ProductDTO.class);
+
+                                                Log.d("FirestoreListener", "Document modified: " + modifiedId);
+                                                Log.d("FirestoreListener", "Document modified: " + gson.toJson(object));
+
+                                                productDTOArrayList.set(i,object );
+
+                                                String productJson = gson.toJson(productDTOArrayList);
+
+                                                editor.putString("product", productJson);
+                                                editor.apply();
+
+                                                break;
+                                            }
+                                        }
+
+                                        break;
+
+                                    }
+
+                                    case REMOVED:{
+
+                                        String removedId = dc.getDocument().getId();
+                                        productDTOArrayList.removeIf(product -> product.getId().equals(removedId));
+                                        Log.d("FirestoreListener", "Document removed: " + removedId);
+
+                                        break;
+
+                                    }
+                                }
+
+                            }
+
+                            loadData();
+
+                        }
+
+                    }
+                });
+
+        db.collection("banner")
+                .limit(1)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if (error != null) {
+                            Log.e("firestore error", error.getMessage());
+                            return;
+                        }
+
+                        if (value != null && !value.isEmpty()) {
+                            for (DocumentSnapshot document : value.getDocuments()) {
+                                if (document.exists()) {
+                                    List<String> bannerList = (List<String>) document.get("path");
+
+                                    if (bannerList != null) {
+                                        bannerArrayList.clear(); // Clear old data
+
+                                        // Create a single BannerDTO object and add the full list
+                                        BannerDTO bannerDTO = new BannerDTO(bannerList);
+                                        bannerArrayList.add(bannerDTO);
+
+                                        // Save banner data to SharedPreferences
+                                        String bannerString = gson.toJson(bannerArrayList);
+
+                                        editor.putString("banner", bannerString);
+                                        editor.apply();
+
+                                        // Update UI if necessary
+                                    }
+                                }
+                            }
+
+                            loadData();
+                        }
+                    }
+                });
+
+    }
+
 
     @Override
     protected void onResume() {
@@ -264,9 +410,9 @@ public class HomeActivity extends AppCompatActivity {
 
             loadCategories(categoryHashSet, chipGroup, this);
         }
-//        Log.i("bcd", product);
 
         if (product != null) {
+
             Type listType = new TypeToken<ArrayList<ProductDTO>>() {
             }.getType();
             productDTOArrayList = gson.fromJson(product, listType);
@@ -275,11 +421,15 @@ public class HomeActivity extends AppCompatActivity {
             sharedPreferences.edit().putString("productDTOArrayListOriginal", gson.toJson(productDTOArrayListOriginal)).apply();
 
             RecyclerView recyclerView = findViewById(R.id.recyclerView2);
-            GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2, RecyclerView.VERTICAL, false);
-            recyclerView.setLayoutManager(gridLayoutManager);
-
-            HomeRecyclerViewAdapter homeRecyclerViewAdapter = new HomeRecyclerViewAdapter(productDTOArrayList, HomeActivity.this);
-            recyclerView.setAdapter(homeRecyclerViewAdapter);
+            if(recyclerView.getLayoutManager()==null){
+                GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2, RecyclerView.VERTICAL, false);
+                recyclerView.setLayoutManager(gridLayoutManager);
+            }
+            if(recyclerView.getAdapter()==null){
+                HomeRecyclerViewAdapter homeRecyclerViewAdapter = new HomeRecyclerViewAdapter(productDTOArrayList, HomeActivity.this);
+                recyclerView.setAdapter(homeRecyclerViewAdapter);
+            }
+            recyclerView.getAdapter().notifyDataSetChanged();
         }
 
         if (banner != null) {
@@ -350,6 +500,8 @@ public class HomeActivity extends AppCompatActivity {
                 chipGroup.addView(chip);
 
             }
+            isFirstTime[0] = true;
+
         }
 
 
