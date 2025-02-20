@@ -7,16 +7,18 @@
     android:layout_height="match_parent"
     tools:context=".HomeActivity">
 
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="@string/addr_text_2"
-            android:textColor="@color/grey"
-            app:layout_constraintStart_toStartOf="@+id/textView3"
-            app:layout_constraintTop_toBottomOf="@+id/textView3"
-            app:layout_wrapBehaviorInParent="horizontal_only" />
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="50dp"
+        android:text="@string/addr_text_2"
+        android:textColor="@color/grey"
+        app:layout_constraintEnd_toStartOf="@+id/imageView"
+        app:layout_constraintStart_toStartOf="@+id/textView3"
+        app:layout_constraintTop_toBottomOf="@+id/textView3"
+        app:layout_wrapBehaviorInParent="horizontal_only" />
 
         <TextView
             android:id="@+id/textView3"
