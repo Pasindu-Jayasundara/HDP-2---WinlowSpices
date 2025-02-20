@@ -200,6 +200,28 @@ public class HomeActivity extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("com.example.winlowcustomer.data", MODE_PRIVATE);
         loadProfileImage(sharedPreferences);
+
+        AddressHandling.loadAddress(getApplicationContext(), new GetAddressCallback() {
+            @Override
+            public void onAddressLoaded(List<String> addressList) {
+
+                TextView selectLocation = findViewById(R.id.textView4);
+
+                if (addressList.contains(getString(R.string.checkout_select_address))) {
+                    List<String> list = new ArrayList<>();
+                    list.add(getString(R.string.checkout_select_address));
+                    list.add(getString(R.string.select_address));
+                    addressList.removeAll(list);
+                }
+                if (addressList.isEmpty()) {
+                    selectLocation.setText(getString(R.string.checkout_select_address));
+                    return;
+                }
+
+                selectLocation.setText(addressList.get(0));
+
+            }
+        });
     }
 
     private void loadProfileImage(SharedPreferences sharedPreferences) {

@@ -45,8 +45,6 @@ public class AddressActivity extends AppCompatActivity {
             return insets;
         });
 
-//        SetUpLanguage.setAppLanguage(getApplicationContext());
-
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
@@ -54,18 +52,6 @@ public class AddressActivity extends AppCompatActivity {
                 .replace(R.id.fragmentContainerView5, BottomNavigationFragment.class, null)
                 .setReorderingAllowed(true)
                 .commit();
-
-
-        // Check and request storage permissions
-//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) { // Android 13+
-//            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
-//            } else {
-//                loadAddresses();
-//            }
-//        } else {
-//            loadAddresses(); // No need for permissions in Android 13+
-//        }
 
         // Add new address button click listener
         Button btn = findViewById(R.id.button9);
@@ -91,10 +77,6 @@ public class AddressActivity extends AppCompatActivity {
     // Load addresses if permissions are granted
     private void loadAddresses() {
 
-//        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
-//        }
-
         RecyclerView addressRecyclerView = findViewById(R.id.addressRecyclerView);
         addressRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -115,15 +97,14 @@ public class AddressActivity extends AppCompatActivity {
                         public void run() {
                             AddressLoadingRecyclerViewAdapter adapter = new AddressLoadingRecyclerViewAdapter(addressListNew, getApplicationContext());
                             addressRecyclerView.setAdapter(adapter);
+                            addressRecyclerView.getAdapter().notifyDataSetChanged();
                         }
                     });
 
                 }
             }
         });
-//        AddressHandling.loadAddress(getApplicationContext(), addressList -> {
-//
-//        });
+
     }
 
     // Request Storage Permission when adding an address
