@@ -110,8 +110,14 @@ public class AddressActivity extends AppCompatActivity {
                         list.add(getString(R.string.select_address));
                         addressListNew.removeAll(list);
                     }
-                    AddressLoadingRecyclerViewAdapter adapter = new AddressLoadingRecyclerViewAdapter(addressListNew, getApplicationContext());
-                    addressRecyclerView.setAdapter(adapter);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            AddressLoadingRecyclerViewAdapter adapter = new AddressLoadingRecyclerViewAdapter(addressListNew, getApplicationContext());
+                            addressRecyclerView.setAdapter(adapter);
+                        }
+                    });
+
                 }
             }
         });

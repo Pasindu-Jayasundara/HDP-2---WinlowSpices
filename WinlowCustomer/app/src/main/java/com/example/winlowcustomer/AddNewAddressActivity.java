@@ -302,7 +302,12 @@ public class AddNewAddressActivity extends AppCompatActivity {
                                     }
 
                                 }else{
-                                    getOnBackPressedDispatcher().onBackPressed();
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            getOnBackPressedDispatcher().onBackPressed();
+                                        }
+                                    });
                                 }
 
                         }
@@ -314,8 +319,13 @@ public class AddNewAddressActivity extends AppCompatActivity {
                     AddressHandling.saveAddress(typeText, getApplicationContext(), new SaveAddressCallback() {
                         @Override
                         public void onAddressSave(boolean isSuccess) {
-                            getOnBackPressedDispatcher().onBackPressed();
 
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    getOnBackPressedDispatcher().onBackPressed();
+                                }
+                            });
                         }
                     });
 
