@@ -93,6 +93,7 @@ public class AccountActivity extends AppCompatActivity {
                 ImageView img = findViewById(R.id.imageView4);
                 Glide.with(this)
                         .load(userDTO.getProfile_image())
+                        .circleCrop()
                         .placeholder(R.drawable.empty_profile_2)
                         .error(R.drawable.empty_profile_2)
                         .into(img);

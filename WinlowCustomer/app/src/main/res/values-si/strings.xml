@@ -173,5 +173,6 @@
     <string name="upload_success">උඩුගත කිරීම සාර්ථකයි !</string>
     <string name="failed_to_delete_old_image">පැරණි රූපය මකා දැමීමට අසමත් විය</string>
     <string name="add_adderss">ලිපිනය එක් කරන්න</string>
+    <string name="no_user">පරිශීලකයා සොයා ගත නොහැක</string>
 
 </resources>

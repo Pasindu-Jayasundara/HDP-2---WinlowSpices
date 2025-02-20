@@ -210,6 +210,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 Glide.with(HomeActivity.this)
                         .load(Uri.parse(userDTO.getProfile_image()))
+                        .circleCrop()
                         .placeholder(R.drawable.empty_profile_2)
                         .error(R.drawable.empty_profile_2)
                         .into(img);

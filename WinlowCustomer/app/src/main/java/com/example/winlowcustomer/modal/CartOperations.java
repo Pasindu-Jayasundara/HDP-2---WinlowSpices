@@ -27,6 +27,7 @@ import com.example.winlowcustomer.dto.WeightCategoryDTO;
 import com.example.winlowcustomer.modal.callback.GetDataCallback;
 import com.example.winlowcustomer.modal.callback.GetFirebaseDocumentSnapshot;
 import com.example.winlowcustomer.modal.callback.LoginCallback;
+import com.example.winlowcustomer.modal.callback.ProductAddToCartCallback;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -151,7 +152,7 @@ public class CartOperations {
 
     }
 
-    public void addToCart(ProductDTO productDTO, Activity activity) {
+    public void addToCart(ProductDTO productDTO, Activity activity, ProductAddToCartCallback productAddToCartCallback) {
 
 //        boolean loggedIn =
         CartOperations.isLoggedIn(activity.getApplicationContext(), new LoginCallback() {
@@ -298,13 +299,17 @@ public class CartOperations {
                                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                             @Override
                                                             public void onSuccess(Void unused) {
-                                                                Toast.makeText(activity, R.string.add_to_cart_success, Toast.LENGTH_SHORT).show();
+                                                                productAddToCartCallback.onAddingToCart(true,R.string.add_to_cart_success);
+
+//                                                                Toast.makeText(activity, R.string.add_to_cart_success, Toast.LENGTH_SHORT).show();
                                                             }
                                                         })
                                                         .addOnFailureListener(new OnFailureListener() {
                                                             @Override
                                                             public void onFailure(@NonNull Exception e) {
-                                                                Toast.makeText(activity, R.string.add_to_cart_failed, Toast.LENGTH_SHORT).show();
+                                                                productAddToCartCallback.onAddingToCart(false,R.string.add_to_cart_failed);
+
+//                                                                Toast.makeText(activity, R.string.add_to_cart_failed, Toast.LENGTH_SHORT).show();
                                                             }
                                                         });
                                             }else{
@@ -316,13 +321,17 @@ public class CartOperations {
                                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                             @Override
                                                             public void onSuccess(Void unused) {
-                                                                Toast.makeText(activity, R.string.add_to_cart_success, Toast.LENGTH_SHORT).show();
+                                                                productAddToCartCallback.onAddingToCart(true,R.string.add_to_cart_success);
+
+//                                                                Toast.makeText(activity, R.string.add_to_cart_success, Toast.LENGTH_SHORT).show();
                                                             }
                                                         })
                                                         .addOnFailureListener(new OnFailureListener() {
                                                             @Override
                                                             public void onFailure(@NonNull Exception e) {
-                                                                Toast.makeText(activity, R.string.add_to_cart_failed, Toast.LENGTH_SHORT).show();
+                                                                productAddToCartCallback.onAddingToCart(false,R.string.add_to_cart_failed);
+
+//                                                                Toast.makeText(activity, R.string.add_to_cart_failed, Toast.LENGTH_SHORT).show();
                                                             }
                                                         });
 
@@ -363,13 +372,17 @@ public class CartOperations {
                                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                         @Override
                                                         public void onSuccess(Void unused) {
-                                                            Toast.makeText(activity, R.string.add_to_cart_success, Toast.LENGTH_SHORT).show();
+                                                            productAddToCartCallback.onAddingToCart(true,R.string.add_to_cart_success);
+
+//                                                            Toast.makeText(activity, R.string.add_to_cart_success, Toast.LENGTH_SHORT).show();
                                                         }
                                                     })
                                                     .addOnFailureListener(new OnFailureListener() {
                                                         @Override
                                                         public void onFailure(@NonNull Exception e) {
-                                                            Toast.makeText(activity, R.string.add_to_cart_failed, Toast.LENGTH_SHORT).show();
+                                                            productAddToCartCallback.onAddingToCart(false,R.string.add_to_cart_failed);
+
+//                                                            Toast.makeText(activity, R.string.add_to_cart_failed, Toast.LENGTH_SHORT).show();
                                                         }
                                                     });
 
@@ -381,6 +394,8 @@ public class CartOperations {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
 
+                                        productAddToCartCallback.onAddingToCart(false,R.string.no_user);
+
                                         Log.i("cart", "onFailure: " + e.getMessage());
                                     }
                                 });
@@ -388,21 +403,32 @@ public class CartOperations {
                     }
 
                 }else{
-                    Snackbar.make(activity.findViewById(R.id.coordinatorLayout), R.string.not_logged_in, Snackbar.LENGTH_LONG)
-                            .setAction(R.string.not_logged_in_btn, new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
 
-                                    Gson gson = new Gson();
+                    productAddToCartCallback.onAddingToCart(false,R.string.not_logged_in);
 
-                                    Intent intent = new Intent(activity, LoginActivity.class);
-                                    intent.putExtra("fromCart", gson.toJson(true));
-                                    intent.putExtra("productDTO", gson.toJson(productDTO));
-                                    activity.startActivity(intent);
+//                    activity.runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//
+//                            Snackbar.make(activity.findViewById(R.id.coordinatorLayout), R.string.not_logged_in, Snackbar.LENGTH_LONG)
+//                                    .setAction(R.string.not_logged_in_btn, new View.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(View v) {
+//
+//                                            Gson gson = new Gson();
+//
+//                                            Intent intent = new Intent(activity, LoginActivity.class);
+//                                            intent.putExtra("fromCart", gson.toJson(true));
+//                                            intent.putExtra("productDTO", gson.toJson(productDTO));
+//                                            activity.startActivity(intent);
+//
+//                                        }
+//                                    })
+//                                    .show();
+//
+//                        }
+//                    });
 
-                                }
-                            })
-                            .show();
                 }
 
             }

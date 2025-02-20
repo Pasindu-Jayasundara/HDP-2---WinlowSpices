@@ -255,4 +255,5 @@
 
     <string name="send_email">Send Email</string>
     <string name="add_adderss">Add Address</string>
+    <string name="no_user">Cannot Find User</string>
 </resources>

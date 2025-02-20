@@ -35,9 +35,11 @@ import com.example.winlowcustomer.modal.Verify;
 import com.example.winlowcustomer.modal.callback.GetDataCallback;
 import com.example.winlowcustomer.modal.callback.IsNewUserCallback;
 import com.example.winlowcustomer.modal.callback.LoginCallback;
+import com.example.winlowcustomer.modal.callback.ProductAddToCartCallback;
 import com.example.winlowcustomer.modal.callback.SingleInsertCallback;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Filter;
@@ -186,7 +188,19 @@ public class LoginActivity extends AppCompatActivity {
                                 receivedIntent.removeExtra("productDTO");
 
                                 CartOperations cartOperations = new CartOperations();
-                                cartOperations.addToCart(productDTO1, LoginActivity.this);
+                                cartOperations.addToCart(productDTO1, LoginActivity.this, new ProductAddToCartCallback() {
+                                    @Override
+                                    public void onAddingToCart(boolean isSuccess, int messageResourceId) {
+
+                                            runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    Toast.makeText(LoginActivity.this, messageResourceId, Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+
+                                    }
+                                });
 
                             }
 

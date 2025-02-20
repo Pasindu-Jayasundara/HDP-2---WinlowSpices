@@ -26,7 +26,9 @@ import com.example.winlowcustomer.modal.CartOperations;
 import com.example.winlowcustomer.modal.SetUpLanguage;
 import com.example.winlowcustomer.modal.SingleProductViewRecyclerViewAdapter;
 import com.example.winlowcustomer.modal.Translate;
+import com.example.winlowcustomer.modal.callback.ProductAddToCartCallback;
 import com.example.winlowcustomer.modal.callback.TranslationCallback;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.Gson;
@@ -59,6 +61,11 @@ public class ProductViewActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
+        // bottom navigation
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainerView11, BottomNavigationFragment.class, null)
+                .setReorderingAllowed(true)
+                .commit();
 
         Intent intent = getIntent();
         String productDTOString = intent.getStringExtra("productDTO");
@@ -213,9 +220,9 @@ public class ProductViewActivity extends AppCompatActivity {
 
         // back button
         ImageButton backButton = findViewById(R.id.imageButton);
-        ImageButton backButton2 = findViewById(R.id.imageButton3);
+//        ImageButton backButton2 = findViewById(R.id.imageButton3);
         backButton.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
-        backButton2.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+//        backButton2.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         // add to cart
         Button addToCart = findViewById(R.id.button3);
@@ -225,7 +232,48 @@ public class ProductViewActivity extends AppCompatActivity {
 
                 if (SingleProductViewRecyclerViewAdapter.weightHashMap != null && !SingleProductViewRecyclerViewAdapter.weightHashMap.isEmpty()) {
                     CartOperations cartOperations = new CartOperations();
-                    cartOperations.addToCart(productDTO, ProductViewActivity.this);
+                    cartOperations.addToCart(productDTO, ProductViewActivity.this,new ProductAddToCartCallback(){
+                        @Override
+                        public void onAddingToCart(boolean isSuccess,int messageResourceId) {
+
+                            if(messageResourceId != R.string.not_logged_in){
+
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(ProductViewActivity.this, messageResourceId, Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+                            }else{
+
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                        Snackbar.make(findViewById(R.id.coordinatorLayout), R.string.not_logged_in, Snackbar.LENGTH_LONG)
+                                                .setAction(R.string.not_logged_in_btn, new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View v) {
+
+                                                        Gson gson = new Gson();
+
+                                                        Intent intent = new Intent(ProductViewActivity.this, LoginActivity.class);
+                                                        intent.putExtra("fromCart", gson.toJson(true));
+                                                        intent.putExtra("productDTO", gson.toJson(productDTO));
+                                                        startActivity(intent);
+
+                                                    }
+                                                })
+                                                .show();
+
+                                    }
+                                });
+
+                            }
+
+                        }
+                    });
                 }else{
                     Toast.makeText(ProductViewActivity.this,R.string.add_to_cart_qty,Toast.LENGTH_LONG).show();
                 }
