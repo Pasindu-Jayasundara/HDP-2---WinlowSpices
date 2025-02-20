@@ -1,7 +1,7 @@
 package com.example.winlowcustomer.modal;
 
 import static com.example.winlowcustomer.MainActivity.sqliteVersion;
-import static com.example.winlowcustomer.modal.SingleProductViewRecyclerViewAdapter.weightHashMap;
+//import static com.example.winlowcustomer.modal.SingleProductViewRecyclerViewAdapter.weightHashMap;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -58,10 +58,13 @@ public class CartOperations {
 
     public static void isLoggedIn(Context context, LoginCallback loginCallback) {
 
+        Log.i("xxxxx","e");
+
         sharedPreferences = context.getSharedPreferences("com.example.winlowcustomer.data", Context.MODE_PRIVATE);
         String user = sharedPreferences.getString("user", null);
 
         if (user == null) {
+            Log.i("xxxxx","f");
 
             Log.i("CartOperations", "isLoggedIn: 2 abc 1");
 
@@ -69,8 +72,11 @@ public class CartOperations {
             sqLiteHelper.getUser(sqLiteHelper, new GetDataCallback() {
                 @Override
                 public void onGetData(Cursor cursor) {
+                    Log.i("xxxxx","g");
+
                     if (cursor.getCount() == 1) {
                         Log.i("CartOperations", "isLoggedIn: 2 abc 2");
+                        Log.i("xxxxx","h");
 
                         cursor.moveToFirst();
 
@@ -139,9 +145,15 @@ public class CartOperations {
                         editor.putString("user", json);
                         editor.commit();
 
+                        Log.i("xxxxx","j");
+
                         loginCallback.onLogin(true);
                         Log.i("CartOperations", "isLoggedIn: 2"+ gson.toJson(userDTO));
 
+                    }else{
+                        Log.i("xxxxx","i");
+
+                        loginCallback.onLogin(false);
                     }
                 }
             });
@@ -152,14 +164,19 @@ public class CartOperations {
 
     }
 
-    public void addToCart(ProductDTO productDTO, Activity activity, ProductAddToCartCallback productAddToCartCallback) {
+    public void addToCart(ProductDTO productDTO, Activity activity,HashMap<Double, Integer> weightHashMap, ProductAddToCartCallback productAddToCartCallback) {
+
+        Log.i("xxxxx","a");
+
 
 //        boolean loggedIn =
         CartOperations.isLoggedIn(activity.getApplicationContext(), new LoginCallback() {
             @Override
             public void onLogin(boolean isSuccess) {
+                Log.i("xxxxx","b");
 
                 if(isSuccess){
+                    Log.i("xxxxx","c");
 
                     // if not in cart add to cart
                     // if in cart add to cart increase qty
@@ -403,6 +420,7 @@ public class CartOperations {
                     }
 
                 }else{
+                    Log.i("xxxxx","d");
 
                     productAddToCartCallback.onAddingToCart(false,R.string.not_logged_in);
 

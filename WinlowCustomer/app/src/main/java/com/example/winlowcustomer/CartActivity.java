@@ -98,6 +98,8 @@ public class CartActivity extends AppCompatActivity {
         hideCheckout(tableLayout,checkoutButton);
 
         // load cart list
+        Log.i("xxxxx","m"+new Gson().toJson(userDTO));
+
         loadCartList(userDTO);
 
         totalPriceView = findViewById(R.id.textView12);

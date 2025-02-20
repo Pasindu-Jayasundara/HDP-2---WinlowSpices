@@ -47,6 +47,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
@@ -172,25 +173,43 @@ public class LoginActivity extends AppCompatActivity {
 
                     Intent receivedIntent = getIntent();
 
+                    Log.i("xxxxx","111111111111111111111111");
+
                     String fromCart = receivedIntent.getStringExtra("fromCart");
                     if(fromCart != null){
                         String productDTO = receivedIntent.getStringExtra("productDTO");
+                        Log.i("xxxxx","2222222222222222222222");
 
                         Gson gson = new Gson();
                         Boolean b = gson.fromJson(fromCart, Boolean.class);
                         if (b) {
+                            Log.i("xxxxx","33333333333333333333");
 
                             receivedIntent.removeExtra("fromCart");
 
                             ProductDTO productDTO1 = gson.fromJson(productDTO, ProductDTO.class);
                             if (productDTO1 != null) {
+                                Log.i("xxxxx","44444444444444444444");
 
-                                receivedIntent.removeExtra("productDTO");
+//                                receivedIntent.removeExtra("productDTO");
+                                String weightHashMap = receivedIntent.getStringExtra("weightHashMap");
+                                HashMap<Double,Integer> weightMap = gson.fromJson(weightHashMap, HashMap.class);
+
 
                                 CartOperations cartOperations = new CartOperations();
-                                cartOperations.addToCart(productDTO1, LoginActivity.this, new ProductAddToCartCallback() {
+                                cartOperations.addToCart(productDTO1, LoginActivity.this,weightMap, new ProductAddToCartCallback() {
                                     @Override
                                     public void onAddingToCart(boolean isSuccess, int messageResourceId) {
+
+                                        Intent intent = new Intent(LoginActivity.this, ProductViewActivity.class);
+
+                                        if(receivedIntent.hasExtra("productDTO")){
+                                            intent.putExtra("productDTO", receivedIntent.getStringExtra("productDTO"));
+                                            receivedIntent.removeExtra("productDTO");
+                                        }
+
+                                        startActivity(intent);
+                                        finish();
 
                                             runOnUiThread(new Runnable() {
                                                 @Override
@@ -202,15 +221,12 @@ public class LoginActivity extends AppCompatActivity {
                                     }
                                 });
 
+                            }else{
+                                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                                startActivity(intent);
+                                finish();
                             }
 
-                            if(receivedIntent.hasExtra("productDTO")){
-                                receivedIntent.removeExtra("productDTO");
-                            }
-
-                            Intent intent = new Intent(LoginActivity.this, ProductViewActivity.class);
-                            startActivity(intent);
-                            finish();
                         }
                     }else{
 

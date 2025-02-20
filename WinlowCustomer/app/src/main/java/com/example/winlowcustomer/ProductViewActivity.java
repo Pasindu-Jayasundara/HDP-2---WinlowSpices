@@ -231,12 +231,17 @@ public class ProductViewActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (SingleProductViewRecyclerViewAdapter.weightHashMap != null && !SingleProductViewRecyclerViewAdapter.weightHashMap.isEmpty()) {
+
+                    Log.i("xxxxx","1");
+
                     CartOperations cartOperations = new CartOperations();
-                    cartOperations.addToCart(productDTO, ProductViewActivity.this,new ProductAddToCartCallback(){
+                    cartOperations.addToCart(productDTO, ProductViewActivity.this,SingleProductViewRecyclerViewAdapter.weightHashMap,new ProductAddToCartCallback(){
                         @Override
                         public void onAddingToCart(boolean isSuccess,int messageResourceId) {
+                            Log.i("xxxxx","2");
 
                             if(messageResourceId != R.string.not_logged_in){
+                                Log.i("xxxxx","5");
 
                                 runOnUiThread(new Runnable() {
                                     @Override
@@ -246,10 +251,12 @@ public class ProductViewActivity extends AppCompatActivity {
                                 });
 
                             }else{
+                                Log.i("xxxxx","3");
 
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
+                                        Log.i("xxxxx","4");
 
                                         Snackbar.make(findViewById(R.id.coordinatorLayout), R.string.not_logged_in, Snackbar.LENGTH_LONG)
                                                 .setAction(R.string.not_logged_in_btn, new View.OnClickListener() {
@@ -261,6 +268,7 @@ public class ProductViewActivity extends AppCompatActivity {
                                                         Intent intent = new Intent(ProductViewActivity.this, LoginActivity.class);
                                                         intent.putExtra("fromCart", gson.toJson(true));
                                                         intent.putExtra("productDTO", gson.toJson(productDTO));
+                                                        intent.putExtra("weightHashMap", gson.toJson(SingleProductViewRecyclerViewAdapter.weightHashMap));
                                                         startActivity(intent);
 
                                                     }

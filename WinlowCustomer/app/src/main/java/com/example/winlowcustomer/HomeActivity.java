@@ -87,6 +87,9 @@ public class HomeActivity extends AppCompatActivity {
                 .setReorderingAllowed(true)
                 .commit();
 
+        productDTOArrayList = new ArrayList<>();
+        productDTOArrayListOriginal = new ArrayList<>();
+
         // data load
         loadData();
 
@@ -246,6 +249,13 @@ public class HomeActivity extends AppCompatActivity {
             }.getType();
             productDTOArrayList = gson.fromJson(product, listType);
             productDTOArrayListOriginal = gson.fromJson(product, listType);
+
+            RecyclerView recyclerView = findViewById(R.id.recyclerView2);
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2, RecyclerView.VERTICAL, false);
+            recyclerView.setLayoutManager(gridLayoutManager);
+
+            HomeRecyclerViewAdapter homeRecyclerViewAdapter = new HomeRecyclerViewAdapter(productDTOArrayList, HomeActivity.this);
+            recyclerView.setAdapter(homeRecyclerViewAdapter);
         }
 
         if (banner != null) {
@@ -255,13 +265,6 @@ public class HomeActivity extends AppCompatActivity {
             bannerArrayList = gson.fromJson(banner, listType);
             loadBanner();
         }
-
-        RecyclerView recyclerView = findViewById(R.id.recyclerView2);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2, RecyclerView.VERTICAL, false);
-        recyclerView.setLayoutManager(gridLayoutManager);
-
-        HomeRecyclerViewAdapter homeRecyclerViewAdapter = new HomeRecyclerViewAdapter(productDTOArrayList, HomeActivity.this);
-        recyclerView.setAdapter(homeRecyclerViewAdapter);
 
     }
 
