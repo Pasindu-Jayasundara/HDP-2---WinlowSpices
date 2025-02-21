@@ -258,4 +258,17 @@
     <string name="no_user">Cannot Find User</string>
     <string name="logout">Logout</string>
     <string name="refreshing">Refreshing ...</string>
+
+    <!--  help  -->
+    <string name="help_video_title">Quick Tour</string>
+    <string name="help_contact">Contact Us</string>
+    <string name="help_contact_message">Message</string>
+    <string name="help_contact_message_send">Send Message</string>
+
+    <!--  about us  -->
+    <string name="title_about_us">About Us</string>
+    <string name="title_about_us_locations">Our Locations</string>
+    <string name="title_about_us_website">Our Website</string>
+    <string name="title_about_us_txt">Winlo Spices was founded to provide genuine, high-quality spices, ensuring better taste and health. As an ISO-certified company, it prioritizes hygiene, quality, and continuous improvement. Committed to authenticity, Winlo encourages consumers to "KNOW WHAT YOU EAT."</string>
+
 </resources>
