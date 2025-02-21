@@ -1,6 +1,5 @@
 package com.example.winlowcustomer;
 
-import static com.example.winlowcustomer.MainActivity.language;
 import static com.example.winlowcustomer.modal.AddressHandling.loadAddress;
 import static com.example.winlowcustomer.modal.CartRecyclerViewAdapter.checkoutProductList;
 
@@ -33,7 +32,6 @@ import com.example.winlowcustomer.dto.WeightCategoryDTO;
 import com.example.winlowcustomer.modal.CartOperations;
 import com.example.winlowcustomer.modal.CartRecyclerViewAdapter;
 import com.example.winlowcustomer.modal.Payhere;
-import com.example.winlowcustomer.modal.SetUpLanguage;
 import com.example.winlowcustomer.modal.callback.ConvertToFirebaseCallback;
 import com.example.winlowcustomer.modal.callback.GetAddressCallback;
 import com.example.winlowcustomer.modal.callback.LoginCallback;
@@ -45,7 +43,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.gson.Gson;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -527,7 +524,7 @@ public class CheckoutActivity extends AppCompatActivity {
 
                 ProductDTO product = cartDTO.getProduct();
 
-                List<WeightCategoryDTO> weightCategoryDTOList = product.getWeightCategoryDTOList();
+                List<WeightCategoryDTO> weightCategoryDTOList = product.getWeight_category();
                 for (WeightCategoryDTO weightCategoryDTO : weightCategoryDTOList) {
                     if (weightCategoryDTO.getWeight() == weight) {
                         totalPrice2 += weightCategoryDTO.getUnitPrice() * qty;

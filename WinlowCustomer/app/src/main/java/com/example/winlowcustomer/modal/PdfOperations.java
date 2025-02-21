@@ -57,7 +57,7 @@ public class PdfOperations {
 
             double totalWeightPrice = 0.0;
 
-            List<WeightCategoryDTO> weightCategoryDTOList = cartDTO.getProduct().getWeightCategoryDTOList();
+            List<WeightCategoryDTO> weightCategoryDTOList = cartDTO.getProduct().getWeight_category();
             for(WeightCategoryDTO weightCategoryDTO : weightCategoryDTOList){
 
                 GetReceiptItems item = new GetReceiptItems();

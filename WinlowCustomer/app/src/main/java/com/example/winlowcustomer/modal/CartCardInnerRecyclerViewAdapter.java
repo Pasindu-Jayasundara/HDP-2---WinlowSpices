@@ -85,7 +85,7 @@ public class CartCardInnerRecyclerViewAdapter extends RecyclerView.Adapter<CartC
         ProductDTO product = cartDTO.getProduct();
 
         double unitPrice=0.0;
-        List<WeightCategoryDTO> weightCategoryDTOList = product.getWeightCategoryDTOList();
+        List<WeightCategoryDTO> weightCategoryDTOList = product.getWeight_category();
         for (WeightCategoryDTO weightCategoryDTO : weightCategoryDTOList) {
 //            Log.i("sendingIn","unitPrice 1:"+new Gson().toJson(weightCategoryDTO));
 

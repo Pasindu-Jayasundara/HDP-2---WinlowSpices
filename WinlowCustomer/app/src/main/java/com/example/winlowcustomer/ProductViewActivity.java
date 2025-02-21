@@ -201,11 +201,11 @@ public class ProductViewActivity extends AppCompatActivity {
                                 weightCategoryDTOList.add(weightCategoryDTO);
 
                             }
-                            productDTO.setWeightCategoryDTOList(weightCategoryDTOList);
+                            productDTO.setWeight_category(weightCategoryDTOList);
 
                         }
 
-                        if(productDTO.getWeightCategoryDTOList() != null && !productDTO.getWeightCategoryDTOList().isEmpty()){
+                        if(productDTO.getWeight_category() != null && !productDTO.getWeight_category().isEmpty()){
                             SingleProductViewRecyclerViewAdapter singleProductViewRecyclerViewAdapter = new SingleProductViewRecyclerViewAdapter(productDTO);
                             recyclerView.setAdapter(singleProductViewRecyclerViewAdapter);
                         }

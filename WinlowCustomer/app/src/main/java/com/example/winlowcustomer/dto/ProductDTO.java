@@ -10,20 +10,20 @@ public class ProductDTO implements Serializable {
     private String name;
     private String stock;
     private double discount;
-    private List<WeightCategoryDTO> weightCategoryDTOList;
+    private List<WeightCategoryDTO> weight_category;
     private String image_path;
     private String referencePath;
 
     public ProductDTO() {
     }
 
-    public ProductDTO(String id, String category, String name, String stock, double discount, List<WeightCategoryDTO> weightCategoryDTOList, String image_path, String referencePath) {
+    public ProductDTO(String id, String category, String name, String stock, double discount, List<WeightCategoryDTO> weight_category, String image_path, String referencePath) {
         this.id = id;
         this.category = category;
         this.name = name;
         this.stock = stock;
         this.discount = discount;
-        this.weightCategoryDTOList = weightCategoryDTOList;
+        this.weight_category = weight_category;
         this.image_path = image_path;
         this.referencePath = referencePath;
     }
@@ -68,12 +68,12 @@ public class ProductDTO implements Serializable {
         this.discount = discount;
     }
 
-    public List<WeightCategoryDTO> getWeightCategoryDTOList() {
-        return weightCategoryDTOList;
+    public List<WeightCategoryDTO> getWeight_category() {
+        return weight_category;
     }
 
-    public void setWeightCategoryDTOList(List<WeightCategoryDTO> weightCategoryDTOList) {
-        this.weightCategoryDTOList = weightCategoryDTOList;
+    public void setWeight_category(List<WeightCategoryDTO> weight_category) {
+        this.weight_category = weight_category;
     }
 
     public String getImage_path() {

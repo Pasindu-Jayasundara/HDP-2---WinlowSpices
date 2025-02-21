@@ -46,6 +46,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -226,7 +227,11 @@ public class HomeActivity extends AppCompatActivity {
                                 switch (dc.getType()) {
                                     case ADDED:{
 
-                                        ProductDTO newProduct = dc.getDocument().toObject(ProductDTO.class);
+                                        QueryDocumentSnapshot document = dc.getDocument();
+                                        Log.d("FirestoreListener", "Document added: " + document.toString());
+                                        ProductDTO newProduct = document.toObject(ProductDTO.class);
+                                        Log.d("FirestoreListener", "Document added: " + gson.toJson(newProduct));
+
                                         newProduct.setId(dc.getDocument().getId());
 
                                         boolean exists = false;
@@ -259,21 +264,27 @@ public class HomeActivity extends AppCompatActivity {
 
                                             if (productDTOArrayList.get(i).getId().equals(modifiedId)) {
 
-                                                ProductDTO object = dc.getDocument().toObject(ProductDTO.class);
+                                                QueryDocumentSnapshot document = dc.getDocument();
 
-                                                Log.d("FirestoreListener", "Document modified: " + modifiedId);
-                                                Log.d("FirestoreListener", "Document modified: " + gson.toJson(object));
+//                                                Log.d("FirestoreListener", "Document modified: " + gson.toJson(dc.getDocument()));
+                                                Log.d("FirestoreListener", "Document modified: " + document.toString());
+
+                                                ProductDTO object = dc.getDocument().toObject(ProductDTO.class);
+                                                object.setReferencePath(modifiedId);
+
+                                                Log.d("FirestoreListener", "Document modified 2: " + gson.toJson(object));
 
                                                 productDTOArrayList.set(i,object );
-
-                                                String productJson = gson.toJson(productDTOArrayList);
-
-                                                editor.putString("product", productJson);
-                                                editor.apply();
 
                                                 break;
                                             }
                                         }
+
+                                        String productJson = gson.toJson(productDTOArrayList);
+
+                                        editor.putString("product", productJson);
+                                        editor.apply();
+
 
                                         break;
 
@@ -284,6 +295,11 @@ public class HomeActivity extends AppCompatActivity {
                                         String removedId = dc.getDocument().getId();
                                         productDTOArrayList.removeIf(product -> product.getId().equals(removedId));
                                         Log.d("FirestoreListener", "Document removed: " + removedId);
+
+                                        String productJson = gson.toJson(productDTOArrayList);
+
+                                        editor.putString("product", productJson);
+                                        editor.apply();
 
                                         break;
 

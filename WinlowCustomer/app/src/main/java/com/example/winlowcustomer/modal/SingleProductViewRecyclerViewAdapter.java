@@ -13,10 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.winlowcustomer.R;
 import com.example.winlowcustomer.dto.ProductDTO;
 import com.example.winlowcustomer.dto.WeightCategoryDTO;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -47,7 +44,7 @@ public class SingleProductViewRecyclerViewAdapter extends RecyclerView.Adapter<S
     }
 
     public SingleProductViewRecyclerViewAdapter(ProductDTO productDTO) {
-        this.weightCategoryDTOArrayList = productDTO.getWeightCategoryDTOList();
+        this.weightCategoryDTOArrayList = productDTO.getWeight_category();
 //        this.product = productDTO;
     }
 

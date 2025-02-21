@@ -167,7 +167,7 @@ public class MainLoadData {
                         productDTO.setName(name);
                         productDTO.setStock(stock);
                         productDTO.setDiscount(Double.parseDouble(discount));
-                        productDTO.setWeightCategoryDTOList(new ArrayList<>());
+                        productDTO.setWeight_category(new ArrayList<>());
                         productDTO.setImage_path(imagePath);
 
                         productDTOArrayList.add(productDTO);
