@@ -92,5 +92,8 @@ dependencies {
 //    implementation(libs.deepl.java)
 //    implementation("com.deepl.api:deepl-java:1.8.1")
 
+    // bottom sheet
+    implementation(platform("androidx.compose:compose-bom:2025.01.01"))
+
 
 }

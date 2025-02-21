@@ -1,7 +1,9 @@
 package com.example.winlowcustomer;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageButton;
 
@@ -24,6 +26,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
@@ -40,6 +43,7 @@ public class AboutUsActivity extends AppCompatActivity {
     boolean isMapLoaded;
     boolean isDataLoaded;
     GoogleMap googleMap2;
+    public static final String webUrl = "https://winloflavors.com/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,16 +140,31 @@ public class AboutUsActivity extends AppCompatActivity {
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                bottomSheet();
             }
         });
         Button imgBtn = findViewById(R.id.imageButton55);
         imgBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                bottomSheet();
             }
         });
+
+    }
+
+    private void bottomSheet() {
+
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        bottomSheetDialog.setCancelable(true);
+
+        View inflated = getLayoutInflater().inflate(R.layout.bottom_sheet_dialog_layout, null);
+        WebView webView = inflated.findViewById(R.id.web);
+        webView.loadUrl(webUrl);
+        webView.getSettings().setJavaScriptEnabled(true);
+
+        bottomSheetDialog.setContentView(inflated);
+        bottomSheetDialog.show();
 
     }
 

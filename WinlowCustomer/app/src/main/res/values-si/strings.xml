@@ -190,4 +190,6 @@
     <string name="sms_permission_denied">අවසරය ප්‍රතික්ෂේප කරන ලදී</string>
     <string name="fill_message">කරුණාකර පණිවිඩය Type කරන්න</string>
     <string name="message_sent">පණිවිඩය යැව්වේ සාර්ථකයි</string>
+    <string name="title_about_us_shop">කඩය</string>
+
 </resources>
