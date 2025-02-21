@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageButton;
 
@@ -158,9 +159,13 @@ public class AboutUsActivity extends AppCompatActivity {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         bottomSheetDialog.setCancelable(true);
 
+        WebViewClient webViewClient = new WebViewClient();
+
         View inflated = getLayoutInflater().inflate(R.layout.bottom_sheet_dialog_layout, null);
         WebView webView = inflated.findViewById(R.id.web);
+
         webView.loadUrl(webUrl);
+        webView.setWebViewClient(webViewClient);
         webView.getSettings().setJavaScriptEnabled(true);
 
         bottomSheetDialog.setContentView(inflated);
