@@ -175,5 +175,6 @@
     <string name="add_adderss">ලිපිනය එක් කරන්න</string>
     <string name="no_user">පරිශීලකයා සොයා ගත නොහැක</string>
     <string name="logout">පිටවීම</string>
+    <string name="refreshing">අලුත් නිශ්පාදන ගනිමින් ...</string>
 
 </resources>

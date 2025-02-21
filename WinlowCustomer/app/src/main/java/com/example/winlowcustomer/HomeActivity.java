@@ -7,6 +7,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +18,7 @@ import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -34,7 +39,6 @@ import com.example.winlowcustomer.modal.AddressHandling;
 import com.example.winlowcustomer.modal.MainLoadData;
 import com.example.winlowcustomer.modal.NetworkConnection;
 import com.example.winlowcustomer.modal.HomeRecyclerViewAdapter;
-import com.example.winlowcustomer.modal.SetUpLanguage;
 import com.example.winlowcustomer.modal.Translate;
 import com.example.winlowcustomer.modal.callback.GetAddressCallback;
 import com.example.winlowcustomer.modal.callback.MainLoadDataCallback;
@@ -61,7 +65,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -71,7 +74,13 @@ public class HomeActivity extends AppCompatActivity {
     HashSet<String> categoryHashSet;
     //    public static String language;
     final boolean[] isFirstTime = {true};
-    public static boolean once;
+    public static boolean isRefreshing;
+    private float accelerationCurrent;
+    private float accelerationLast;
+    private float shakeThreshold = 4f;
+    private long lastRefreshTime = 0;
+    private final long REFRESH_INTERVAL = 10000; // 10 seconds
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +108,7 @@ public class HomeActivity extends AppCompatActivity {
 
         productDTOArrayList = new ArrayList<>();
         productDTOArrayListOriginal = new ArrayList<>();
-        Log.i("ccccc",new Gson().toJson(productDTOArrayList));
+        Log.i("ccccc", new Gson().toJson(productDTOArrayList));
 
         // data load
         loadData();
@@ -192,30 +201,93 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onRefresh() {
 
-                MainLoadData.mainLoadData(productDTOArrayList, bannerArrayList, categoryHashSet, HomeActivity.this, new MainLoadDataCallback() {
-                    @Override
-                    public void onMainLoadData(boolean isCompleted) {
+                if(!isRefreshing){
+                    isRefreshing = true;
+                    refreshData(swipeRefreshLayout);
+                }
 
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                loadData();
+            }
+        });
 
-                                RecyclerView recyclerView = findViewById(R.id.recyclerView2);
-                                recyclerView.getAdapter().notifyDataSetChanged();
+        // collection listeners
+        registerProductListener(productDTOArrayList, bannerArrayList, categoryHashSet);
 
+        // sensor
+        SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        Sensor accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        if (accelerometerSensor != null) {
 
-                                swipeRefreshLayout.setRefreshing(false);
+            sensorManager.registerListener(new SensorEventListener() {
+                @Override
+                public void onSensorChanged(SensorEvent event) {
+
+                    float x = event.values[0];
+                    float y = event.values[1];
+                    float z = event.values[2];
+
+                    // Compute the magnitude of acceleration
+                    float acceleration = (float) Math.sqrt(x * x + y * y + z * z);
+
+                    // Compute change in acceleration
+                    float accelerationChange = acceleration - accelerationLast;
+                    accelerationLast = acceleration;
+
+                    // Detect shake
+                    if (Math.abs(accelerationChange) > shakeThreshold) {
+                        long currentTime = System.currentTimeMillis();
+
+                        // Check if 10 seconds have passed since the last refresh
+                        if ((currentTime - lastRefreshTime) > REFRESH_INTERVAL) {
+                            lastRefreshTime = currentTime; // Update last refresh time
+                            Log.i("refreshing", "refreshing");
+
+                            if (!isRefreshing) {
+                                isRefreshing = true;
+                                Toast.makeText(getApplicationContext(), R.string.refreshing, Toast.LENGTH_SHORT).show();
+
+                                swipeRefreshLayout.setRefreshing(true);
+                                refreshData(swipeRefreshLayout);
                             }
-                        });
+                        }
 
+                    }
+
+                }
+
+                @Override
+                public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+                }
+            }, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
+
+            accelerationCurrent = SensorManager.GRAVITY_EARTH; // Normal gravity force
+            accelerationLast = SensorManager.GRAVITY_EARTH;
+        }
+
+    }
+
+    private void refreshData(SwipeRefreshLayout swipeRefreshLayout) {
+
+        MainLoadData.mainLoadData(productDTOArrayList, bannerArrayList, categoryHashSet, HomeActivity.this, new MainLoadDataCallback() {
+            @Override
+            public void onMainLoadData(boolean isCompleted) {
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadData();
+
+                        RecyclerView recyclerView = findViewById(R.id.recyclerView2);
+                        recyclerView.getAdapter().notifyDataSetChanged();
+
+
+                        swipeRefreshLayout.setRefreshing(false);
+                        isRefreshing = false;
                     }
                 });
 
             }
         });
-
-        registerProductListener(productDTOArrayList,bannerArrayList,categoryHashSet);
 
     }
 
@@ -231,16 +303,16 @@ public class HomeActivity extends AppCompatActivity {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
 
-                        if(error != null){
+                        if (error != null) {
                             Log.e("firestore error", error.getMessage());
                             return;
                         }
 
-                        if (value != null){
+                        if (value != null) {
 
                             for (DocumentChange dc : value.getDocumentChanges()) {
                                 switch (dc.getType()) {
-                                    case ADDED:{
+                                    case ADDED: {
 
                                         QueryDocumentSnapshot document = dc.getDocument();
                                         Log.d("FirestoreListener", "Document added: " + document.toString());
@@ -248,15 +320,15 @@ public class HomeActivity extends AppCompatActivity {
                                         Log.d("FirestoreListener", "Document added 2: " + gson.toJson(productDTOArrayList));
 
                                         newProduct.setId(document.getId());
-                                        if(!dc.getDocument().getId().contains("product/")){
-                                            newProduct.setReferencePath("product/"+dc.getDocument().getId());
-                                        }else{
+                                        if (!dc.getDocument().getId().contains("product/")) {
+                                            newProduct.setReferencePath("product/" + dc.getDocument().getId());
+                                        } else {
                                             newProduct.setReferencePath(dc.getDocument().getId());
                                         }
 
                                         boolean exists = false;
                                         for (ProductDTO product : productDTOArrayList) {
-                                            Log.i("ccccc",new Gson().toJson(product));
+                                            Log.i("ccccc", new Gson().toJson(product));
 
                                             if (product.getId().equals(newProduct.getId())) {
                                                 exists = true;
@@ -278,7 +350,7 @@ public class HomeActivity extends AppCompatActivity {
 
                                     }
 
-                                    case MODIFIED:{
+                                    case MODIFIED: {
 
                                         String modifiedId = dc.getDocument().getId();
 
@@ -293,15 +365,15 @@ public class HomeActivity extends AppCompatActivity {
 
                                                 ProductDTO object = dc.getDocument().toObject(ProductDTO.class);
                                                 object.setId(document.getId());
-                                                if(!object.getId().contains("product/")){
-                                                    object.setReferencePath("product/"+document.getId());
-                                                }else{
+                                                if (!object.getId().contains("product/")) {
+                                                    object.setReferencePath("product/" + document.getId());
+                                                } else {
                                                     object.setReferencePath(document.getId());
                                                 }
 
                                                 Log.d("FirestoreListener", "Document modified 2: " + gson.toJson(object));
 
-                                                productDTOArrayList.set(i,object );
+                                                productDTOArrayList.set(i, object);
 
                                                 break;
                                             }
@@ -324,7 +396,7 @@ public class HomeActivity extends AppCompatActivity {
 
                                     }
 
-                                    case REMOVED:{
+                                    case REMOVED: {
 
                                         String removedId = dc.getDocument().getId();
                                         productDTOArrayList.removeIf(product -> product.getId().equals(removedId));
@@ -388,7 +460,6 @@ public class HomeActivity extends AppCompatActivity {
                 });
 
     }
-
 
     @Override
     protected void onResume() {
@@ -468,17 +539,17 @@ public class HomeActivity extends AppCompatActivity {
             productDTOArrayList = gson.fromJson(product, listType);
             productDTOArrayListOriginal = gson.fromJson(product, listType);
 
-            Log.i("ccccc",new Gson().toJson(productDTOArrayList));
+            Log.i("ccccc", new Gson().toJson(productDTOArrayList));
 
 
             sharedPreferences.edit().putString("productDTOArrayListOriginal", gson.toJson(productDTOArrayListOriginal)).apply();
 
             RecyclerView recyclerView = findViewById(R.id.recyclerView2);
-            if(recyclerView.getLayoutManager()==null){
+            if (recyclerView.getLayoutManager() == null) {
                 GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2, RecyclerView.VERTICAL, false);
                 recyclerView.setLayoutManager(gridLayoutManager);
             }
-            if(recyclerView.getAdapter()==null){
+            if (recyclerView.getAdapter() == null) {
                 HomeRecyclerViewAdapter homeRecyclerViewAdapter = new HomeRecyclerViewAdapter(productDTOArrayList, HomeActivity.this);
                 recyclerView.setAdapter(homeRecyclerViewAdapter);
             }

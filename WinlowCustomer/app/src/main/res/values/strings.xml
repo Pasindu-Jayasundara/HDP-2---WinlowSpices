@@ -257,4 +257,5 @@
     <string name="add_adderss">Add Address</string>
     <string name="no_user">Cannot Find User</string>
     <string name="logout">Logout</string>
+    <string name="refreshing">Refreshing ...</string>
 </resources>
