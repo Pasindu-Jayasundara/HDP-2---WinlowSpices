@@ -8,7 +8,7 @@
     tools:context=".AboutUsActivity">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView5"
+        android:id="@+id/cardView50"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="@+id/fragmentContainerView14">
 
         <Button
-            android:id="@+id/imageButton10"
+            android:id="@+id/imageButton55"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/transparent"
@@ -85,7 +85,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
-        app:layout_constraintBottom_toTopOf="@+id/cardView5"
+        app:layout_constraintBottom_toTopOf="@+id/cardView50"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/textView31"
         app:layout_constraintTop_toBottomOf="@+id/textView31" />

@@ -186,5 +186,8 @@
         WinloSpices ආරම්භ කරන ලද්දේ අව්‍යාජ, උසස් තත්ත්වයේ කුළුබඩු සැපයීම, වඩා හොඳ රසයක් සහ සෞඛ්‍යයක් සහතික කිරීම සඳහා ය. ISO සහතික ලත් සමාගමක් ලෙස අප, සනීපාරක්ෂාව, ගුණාත්මකභාවය සහ අඛණ්ඩ වැඩිදියුණු කිරීමට ප්‍රමුඛත්වය දෙයි. අව්‍යාජභාවයට කැපවී සිටින වින්ලෝ පාරිභෝගිකයින් "ඔබ කන දේ දැන ගැනීමට" දිරිමත් කරයි.
     </string>
     <string name="title_about_us_website">අපගේ වෙබ් අඩවිය</string>
-
+    <string name="sms_permission_granted">අවසරය ලබා දී ඇත</string>
+    <string name="sms_permission_denied">අවසරය ප්‍රතික්ෂේප කරන ලදී</string>
+    <string name="fill_message">කරුණාකර පණිවිඩය Type කරන්න</string>
+    <string name="message_sent">පණිවිඩය යැව්වේ සාර්ථකයි</string>
 </resources>

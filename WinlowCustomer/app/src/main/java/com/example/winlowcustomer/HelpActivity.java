@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,6 +51,14 @@ public class HelpActivity extends AppCompatActivity {
                 .setReorderingAllowed(true)
                 .commit();
 
+        // back
+        ImageButton back = findViewById(R.id.imageButton60);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getOnBackPressedDispatcher().onBackPressed();
+            }
+        });
 
         // send Msg
         Button btn = findViewById(R.id.button5);
