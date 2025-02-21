@@ -37,6 +37,7 @@ import com.example.winlowcustomer.modal.MainLoadData;
 import com.example.winlowcustomer.modal.NetworkConnection;
 import com.example.winlowcustomer.modal.SQLiteHelper;
 import com.example.winlowcustomer.modal.callback.GetDataCallback;
+import com.example.winlowcustomer.modal.callback.MainLoadDataCallback;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -90,7 +91,14 @@ public class MainActivity extends AppCompatActivity {
         NetworkConnection.register(getApplicationContext());
 
 
-        isDataLoadingFinished = MainLoadData.mainLoadData(productDTOArrayList, bannerArrayList, categoryHashSet, this);
+        MainLoadData.mainLoadData(productDTOArrayList, bannerArrayList, categoryHashSet, this, new MainLoadDataCallback() {
+            @Override
+            public void onMainLoadData(boolean isCompleted) {
+
+                isDataLoadingFinished = isCompleted;
+
+            }
+        });
 
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.welcome_animation_fade_up);
         ImageView imageView = findViewById(R.id.imageView15);

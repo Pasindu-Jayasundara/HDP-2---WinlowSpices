@@ -37,6 +37,7 @@ import com.example.winlowcustomer.modal.HomeRecyclerViewAdapter;
 import com.example.winlowcustomer.modal.SetUpLanguage;
 import com.example.winlowcustomer.modal.Translate;
 import com.example.winlowcustomer.modal.callback.GetAddressCallback;
+import com.example.winlowcustomer.modal.callback.MainLoadDataCallback;
 import com.example.winlowcustomer.modal.callback.TranslationCallback;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -191,14 +192,26 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onRefresh() {
 
-                MainLoadData.mainLoadData(productDTOArrayList, bannerArrayList, categoryHashSet, HomeActivity.this);
-                loadData();
+                MainLoadData.mainLoadData(productDTOArrayList, bannerArrayList, categoryHashSet, HomeActivity.this, new MainLoadDataCallback() {
+                    @Override
+                    public void onMainLoadData(boolean isCompleted) {
 
-                RecyclerView recyclerView = findViewById(R.id.recyclerView2);
-                recyclerView.getAdapter().notifyDataSetChanged();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                loadData();
+
+                                RecyclerView recyclerView = findViewById(R.id.recyclerView2);
+                                recyclerView.getAdapter().notifyDataSetChanged();
 
 
-                swipeRefreshLayout.setRefreshing(false);
+                                swipeRefreshLayout.setRefreshing(false);
+                            }
+                        });
+
+                    }
+                });
+
             }
         });
 

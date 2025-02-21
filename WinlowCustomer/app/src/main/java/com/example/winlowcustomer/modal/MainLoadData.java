@@ -13,6 +13,7 @@ import com.example.winlowcustomer.dto.BannerDTO;
 import com.example.winlowcustomer.dto.ProductDTO;
 import com.example.winlowcustomer.dto.WeightCategoryDTO;
 import com.example.winlowcustomer.modal.callback.GetDataCallback;
+import com.example.winlowcustomer.modal.callback.MainLoadDataCallback;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -28,7 +29,10 @@ import java.util.List;
 
 public class MainLoadData {
 
-    public static boolean mainLoadData(ArrayList<ProductDTO> productDTOArrayList, ArrayList<BannerDTO> bannerArrayList, HashSet<String> categoryHashSet, Context context) {
+    public static boolean isProductLoadingDone;
+    public static boolean isBannerLoadingDone;
+
+    public static void mainLoadData(ArrayList<ProductDTO> productDTOArrayList, ArrayList<BannerDTO> bannerArrayList, HashSet<String> categoryHashSet, Context context, MainLoadDataCallback mainLoadDataCallback) {
 
         Gson gson = new Gson();
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
@@ -96,8 +100,48 @@ public class MainLoadData {
 
                             editor.putString("category", categoryJson);
                             editor.putString("product", productJson);
-                            editor.apply();
+                            editor.commit();
 
+                        }
+
+                        if (productDTOArrayList.isEmpty()) {
+                            // load recently viewed products
+
+                            SQLiteHelper helper = new SQLiteHelper(context.getApplicationContext(), "winlow.db", null, sqliteVersion);
+                            helper.getRecentlyViewedProduct(helper, new GetDataCallback() {
+                                @Override
+                                public void onGetData(Cursor cursor) {
+
+                                    while (cursor.moveToNext()) {
+
+                                        String name = cursor.getString(0);
+                                        String stock = cursor.getString(1);
+                                        String docId = cursor.getString(3);
+                                        String discount = cursor.getString(4);
+                                        String imagePath = cursor.getString(5);
+
+
+                                        ProductDTO productDTO = new ProductDTO();
+                                        productDTO.setId(docId);
+                                        productDTO.setName(name);
+                                        productDTO.setStock(stock);
+                                        productDTO.setDiscount(Double.parseDouble(discount));
+                                        productDTO.setWeight_category(new ArrayList<>());
+                                        productDTO.setImage_path(imagePath);
+
+                                        productDTOArrayList.add(productDTO);
+
+                                    }
+
+                                    isProductLoadingDone = true;
+                                    goBack(mainLoadDataCallback);
+
+                                }
+                            });
+
+                        }else{
+                            isProductLoadingDone = true;
+                            goBack(mainLoadDataCallback);
                         }
 
                     }
@@ -139,46 +183,22 @@ public class MainLoadData {
                             String bannerString = gson.toJson(bannerArrayList);
 
                             editor.putString("banner", bannerString);
-                            editor.apply();
+                            editor.commit();
 
                         }
+                        isBannerLoadingDone = true;
+                        goBack(mainLoadDataCallback);
                     }
                 });
 
-        if (productDTOArrayList.isEmpty()) {
-            // load recently viewed products
 
-            SQLiteHelper helper = new SQLiteHelper(context.getApplicationContext(), "winlow.db", null, sqliteVersion);
-            helper.getRecentlyViewedProduct(helper, new GetDataCallback() {
-                @Override
-                public void onGetData(Cursor cursor) {
+    }
 
-                    while (cursor.moveToNext()) {
+    private static void goBack(MainLoadDataCallback mainLoadDataCallback) {
 
-                        String name = cursor.getString(0);
-                        String stock = cursor.getString(1);
-                        String docId = cursor.getString(3);
-                        String discount = cursor.getString(4);
-                        String imagePath = cursor.getString(5);
-
-
-                        ProductDTO productDTO = new ProductDTO();
-                        productDTO.setId(docId);
-                        productDTO.setName(name);
-                        productDTO.setStock(stock);
-                        productDTO.setDiscount(Double.parseDouble(discount));
-                        productDTO.setWeight_category(new ArrayList<>());
-                        productDTO.setImage_path(imagePath);
-
-                        productDTOArrayList.add(productDTO);
-
-                    }
-
-                }
-            });
+        if(isBannerLoadingDone && isProductLoadingDone){
+            mainLoadDataCallback.onMainLoadData(true);
         }
-
-        return true;
 
     }
 
