@@ -90,6 +90,7 @@ public class CartActivity extends AppCompatActivity {
 
         String productDTOArrayListOriginalJson = sharedPreferences.getString("productDTOArrayListOriginal", null);
         if(productDTOArrayListOriginalJson!=null){
+            Log.i("xxxxx","m"+productDTOArrayListOriginalJson);
 
             Type type = new TypeToken<ArrayList<ProductDTO>>() {
             }.getType();
@@ -99,7 +100,6 @@ public class CartActivity extends AppCompatActivity {
         }
 
         // load cart list
-        Log.i("xxxxx","m"+new Gson().toJson(userDTO));
 
         loadCartList(userDTO);
 

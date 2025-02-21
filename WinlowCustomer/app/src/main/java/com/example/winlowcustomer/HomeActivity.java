@@ -60,6 +60,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -97,6 +98,7 @@ public class HomeActivity extends AppCompatActivity {
 
         productDTOArrayList = new ArrayList<>();
         productDTOArrayListOriginal = new ArrayList<>();
+        Log.i("ccccc",new Gson().toJson(productDTOArrayList));
 
         // data load
         loadData();
@@ -230,12 +232,19 @@ public class HomeActivity extends AppCompatActivity {
                                         QueryDocumentSnapshot document = dc.getDocument();
                                         Log.d("FirestoreListener", "Document added: " + document.toString());
                                         ProductDTO newProduct = document.toObject(ProductDTO.class);
-                                        Log.d("FirestoreListener", "Document added: " + gson.toJson(newProduct));
+                                        Log.d("FirestoreListener", "Document added 2: " + gson.toJson(productDTOArrayList));
 
-                                        newProduct.setId(dc.getDocument().getId());
+                                        newProduct.setId(document.getId());
+                                        if(!dc.getDocument().getId().contains("product/")){
+                                            newProduct.setReferencePath("product/"+dc.getDocument().getId());
+                                        }else{
+                                            newProduct.setReferencePath(dc.getDocument().getId());
+                                        }
 
                                         boolean exists = false;
                                         for (ProductDTO product : productDTOArrayList) {
+                                            Log.i("ccccc",new Gson().toJson(product));
+
                                             if (product.getId().equals(newProduct.getId())) {
                                                 exists = true;
                                                 break;
@@ -270,7 +279,12 @@ public class HomeActivity extends AppCompatActivity {
                                                 Log.d("FirestoreListener", "Document modified: " + document.toString());
 
                                                 ProductDTO object = dc.getDocument().toObject(ProductDTO.class);
-                                                object.setReferencePath(modifiedId);
+                                                object.setId(document.getId());
+                                                if(!object.getId().contains("product/")){
+                                                    object.setReferencePath("product/"+document.getId());
+                                                }else{
+                                                    object.setReferencePath(document.getId());
+                                                }
 
                                                 Log.d("FirestoreListener", "Document modified 2: " + gson.toJson(object));
 
@@ -280,9 +294,16 @@ public class HomeActivity extends AppCompatActivity {
                                             }
                                         }
 
+//                                        Set<ProductDTO> set = new HashSet<>(productDTOArrayListOriginal);
+//                                        set.addAll(productDTOArrayList);
+//                                        productDTOArrayListOriginal.clear();
+//                                        productDTOArrayListOriginal.addAll(set);
+
                                         String productJson = gson.toJson(productDTOArrayList);
+//                                        String productOriginalJson = gson.toJson(productDTOArrayListOriginal);
 
                                         editor.putString("product", productJson);
+//                                        editor.putString("productDTOArrayListOriginal", productOriginalJson);
                                         editor.apply();
 
 
@@ -433,6 +454,9 @@ public class HomeActivity extends AppCompatActivity {
             }.getType();
             productDTOArrayList = gson.fromJson(product, listType);
             productDTOArrayListOriginal = gson.fromJson(product, listType);
+
+            Log.i("ccccc",new Gson().toJson(productDTOArrayList));
+
 
             sharedPreferences.edit().putString("productDTOArrayListOriginal", gson.toJson(productDTOArrayListOriginal)).apply();
 
